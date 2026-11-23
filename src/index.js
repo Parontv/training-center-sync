@@ -330,6 +330,18 @@ async function runSync(env, rangeOverride = null) {
                 const detail = await garminGet(detailPath, token);
                 if (detail != null) await saveActivityDetail(env.DB, activityId, detail, detailPath);
               }
+              const existingWorkouts = await env.DB.prepare(
+                "SELECT 1 AS found FROM garmin_records WHERE dataset='activity_workouts' AND record_key=? LIMIT 1"
+              ).bind(String(activityId)).first();
+              if (!existingWorkouts) {
+                const workoutsPath = `/activity-service/activity/${encodeURIComponent(String(activityId))}/workouts`;
+                const workouts = await garminGet(workoutsPath, token);
+                if (workouts != null) {
+                  const activityDate = normalizeGarminDate(item.startTimeLocal ?? item.startTimeGMT, endDate);
+                  await saveDaily(env.DB, activityDate, "activity_workouts", { activityId: String(activityId), workouts }, workoutsPath);
+                  dailyCount++;
+                }
+              }
               if (env.RAW_BUCKET) {
                 await saveActivityFile(env.DB, env.RAW_BUCKET, activityId, token);
               }
@@ -358,6 +370,27 @@ async function runSync(env, rangeOverride = null) {
     ];
 
     let dailyCount = 0;
+    const singletonDatasets = [
+      ["profile_settings", "/userprofile-service/userprofile/settings"],
+      ["heart_rate_zones", "/biometric-service/heartRateZones/v2"]
+    ];
+    for (const [dataset, path] of singletonDatasets) {
+      try {
+        const existing = await env.DB.prepare(
+          "SELECT 1 AS found FROM garmin_records WHERE dataset=? LIMIT 1"
+        ).bind(dataset).first();
+        if (!existing) {
+          const result = await garminGet(path, token);
+          if (result != null) {
+            await saveDaily(env.DB, endDate, dataset, result, path);
+            dailyCount++;
+          }
+        }
+      } catch (error) {
+        datasetErrors.push({ dataset, error: String(error?.message || error).slice(0, 250) });
+      }
+    }
+
     for (const [dataset, path] of datasets) {
       try {
         const result = await garminGet(path, token);
@@ -381,7 +414,10 @@ async function runSync(env, rangeOverride = null) {
     const dateScopedDatasets = [
       ["daily_heart_rate", date => `/wellness-service/wellness/dailyHeartRate?date=${date}`],
       ["fitness_age", date => `/fitnessage-service/fitnessage/v2/${date}`],
-      ["spo2_acclimation", date => `/wellness-service/wellness/daily/spo2acclimation/${date}`]
+      ["spo2_acclimation", date => `/wellness-service/wellness/daily/spo2acclimation/${date}`],
+      ["daily_hrv_detail", date => `/hrv-service/hrv/${date}`],
+      ["daily_sleep_detail", date => `/sleep-service/sleep/dailySleep?date=${date}`],
+      ["food_logs", date => `/nutrition-service/food/logs/${date}`]
     ];
     for (const [dataset, pathForDate] of dateScopedDatasets) {
       for (let date = startDate; date <= endDate; date = addDays(date, 1)) {
