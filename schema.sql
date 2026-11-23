@@ -50,3 +50,11 @@ CREATE TABLE IF NOT EXISTS garmin_records (
 
 CREATE INDEX IF NOT EXISTS idx_garmin_records_date
   ON garmin_records(record_date, dataset);
+
+ 
+-- Resumable historical backfill cursor.
+CREATE TABLE IF NOT EXISTS sync_state (
+  state_key TEXT PRIMARY KEY,
+  state_value TEXT NOT NULL,
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
