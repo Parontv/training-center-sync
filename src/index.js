@@ -221,12 +221,31 @@ function addDays(iso, days) {
 }
 
 async function runScheduledSync(env) {
-  // Keep the recent window current, then advance historical import by one
-  // bounded seven-day chunk per daily cron until the cursor reaches today.
+  // During the initial archive, spend each scheduled invocation on exactly
+  // one bounded historical window. Do not repeatedly spend requests refreshing
+  // recent data while the cursor is still years behind.
+  await env.DB.prepare(`
+    CREATE TABLE IF NOT EXISTS sync_state (
+      state_key TEXT PRIMARY KEY,
+      state_value TEXT NOT NULL,
+      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )
+  `).run();
+
+  const today = new Date().toISOString().slice(0, 10);
+  const state = await env.DB.prepare(
+    "SELECT state_value FROM sync_state WHERE state_key='backfill_next_date'"
+  ).first();
+  const nextDate = state?.state_value || env.BACKFILL_START_DATE || "2015-01-01";
+
+  if (nextDate <= today) {
+    const backfill = await runBackfill(env);
+    return { mode: "historical_backfill", recent: null, backfill };
+  }
+
+  // Historical archive is complete: return to the normal rolling sync.
   const recent = await runSync(env);
-  if (!recent.ok || recent.partial) return { recent, backfill: null };
-  const backfill = await runBackfill(env);
-  return { recent, backfill };
+  return { mode: "daily_sync", recent, backfill: null };
 }
 
 async function runBackfill(env) {
