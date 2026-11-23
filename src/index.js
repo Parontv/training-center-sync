@@ -18,7 +18,7 @@ export default {
       }
     }
     if (url.pathname === "/run" && request.method === "GET") {
-      return new Response(`<!doctype html><html lang="it"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Center Sync</title><body style="font:16px system-ui;max-width:560px;margin:40px auto;padding:16px;background:#111;color:#eee"><h2>Training Center Sync</h2><p>Inserisci il tuo SYNC_BEARER_TOKEN configurato nei Secrets Cloudflare. Non è la chiave Garmin.</p><input id="token" type="password" autocomplete="off" placeholder="SYNC_BEARER_TOKEN" style="box-sizing:border-box;width:100%;padding:12px;margin:8px 0;background:#222;color:#fff;border:1px solid #555;border-radius:8px"><label style="display:block;margin:4px 0 12px;color:#ccc"><input id="remember" type="checkbox" checked> Ricorda il token su questo dispositivo</label><div id="feedback" role="status" style="padding:10px;margin:8px 0;background:#263238;border-radius:8px;color:#fff">Pagina caricata. Inserisci il token e scegli un’operazione.</div><button id="go" style="padding:12px 18px">Sincronizza ultimi giorni</button> <button id="backfill" style="padding:12px 18px;margin-top:8px">Importa storico (7 giorni)</button> <button id="status" style="padding:12px 18px;margin-top:8px">Stato agente</button> <button id="export" style="padding:12px 18px;margin-top:8px">Esporta tutti i dati D1</button> <button id="xlsx" style="padding:12px 18px;margin-top:8px">Genera Excel aggiornato</button><pre id="out" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#222;padding:12px;border-radius:8px"></pre><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+      return new Response(`<!doctype html><html lang="it"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Center Sync</title><body style="font:16px system-ui;max-width:560px;margin:40px auto;padding:16px;background:#111;color:#eee"><h2>Training Center Sync</h2><p>Inserisci il tuo SYNC_BEARER_TOKEN configurato nei Secrets Cloudflare. Non è la chiave Garmin.</p><input id="token" type="password" autocomplete="off" placeholder="SYNC_BEARER_TOKEN" style="box-sizing:border-box;width:100%;padding:12px;margin:8px 0;background:#222;color:#fff;border:1px solid #555;border-radius:8px"><label style="display:block;margin:4px 0 12px;color:#ccc"><input id="remember" type="checkbox" checked> Ricorda il token su questo dispositivo</label><div id="feedback" role="status" style="padding:10px;margin:8px 0;background:#263238;border-radius:8px;color:#fff">Pagina caricata. Inserisci il token e scegli un’operazione.</div><button id="go" style="padding:12px 18px">Sincronizza ultimi giorni</button> <button id="backfill" style="padding:12px 18px;margin-top:8px">Importa prossimo blocco (3 giorni)</button> <button id="status" style="padding:12px 18px;margin-top:8px">Stato agente</button> <button id="export" style="padding:12px 18px;margin-top:8px">Esporta tutti i dati D1</button> <button id="xlsx" style="padding:12px 18px;margin-top:8px">Genera Excel aggiornato</button><pre id="out" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#222;padding:12px;border-radius:8px"></pre><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
 (function () {
   const $ = id => document.getElementById(id);
@@ -157,8 +157,21 @@ export default {
       const latest = await env.DB.prepare(
         "SELECT started_at, finished_at, status, activities_seen, daily_records_seen, message FROM sync_runs ORDER BY id DESC LIMIT 1"
       ).first();
+      await ensureSyncLockSchema(env.DB);
+      const counts = {};
+      for (const table of ["activities", "activity_details", "daily_records", "garmin_records", "sync_runs"]) {
+        try {
+          const row = await env.DB.prepare("SELECT COUNT(*) AS count FROM " + table).first();
+          counts[table] = Number(row?.count || 0);
+        } catch { counts[table] = 0; }
+      }
+      const lock = await env.DB.prepare(
+        "SELECT lease_until FROM sync_locks WHERE lock_key='garmin_sync'"
+      ).first();
       return json({
         ok: true,
+        counts,
+        agent: { cronConfiguredInRepository: "*/15 * * * *", lockUntil: lock?.lease_until || null },
         mode: nextDate > today ? "daily_sync" : "historical_backfill",
         backfill: {
           startDate: configuredStart,
@@ -208,16 +221,16 @@ export default {
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) {
         return json({ error: "unauthorized" }, 401);
       }
-      const result = await runBackfill(env);
-      return json(result, result.ok ? 200 : 502);
+      const result = await withSyncLock(env.DB, () => runBackfill(env));
+      return json(result, result.busy ? 409 : result.ok ? 200 : 502);
     }
     if (url.pathname === "/sync" && request.method === "POST") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) {
         return json({ error: "unauthorized" }, 401);
       }
-      const result = await runSync(env);
-      return json(result, result.ok ? 200 : 502);
+      const result = await withSyncLock(env.DB, () => runSync(env));
+      return json(result, result.busy ? 409 : result.ok ? 200 : 502);
     }
     return json({ error: "not_found" }, 404);
   }
@@ -228,6 +241,43 @@ function json(data, status = 200) {
     status,
     headers: { "content-type": "application/json; charset=utf-8" }
   });
+}
+
+async function ensureSyncLockSchema(db) {
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS sync_locks (
+      lock_key TEXT PRIMARY KEY,
+      owner TEXT NOT NULL,
+      lease_until TEXT NOT NULL,
+      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )
+  `).run();
+}
+
+async function acquireSyncLock(db, owner) {
+  await ensureSyncLockSchema(db);
+  const result = await db.prepare(`
+    INSERT INTO sync_locks (lock_key, owner, lease_until, updated_at)
+    VALUES ('garmin_sync', ?, datetime('now', '+20 minutes'), CURRENT_TIMESTAMP)
+    ON CONFLICT(lock_key) DO UPDATE SET
+      owner=excluded.owner,
+      lease_until=excluded.lease_until,
+      updated_at=CURRENT_TIMESTAMP
+    WHERE sync_locks.lease_until < CURRENT_TIMESTAMP
+  `).bind(owner).run();
+  return Number(result.meta?.changes || 0) > 0;
+}
+
+async function releaseSyncLock(db, owner) {
+  await db.prepare("DELETE FROM sync_locks WHERE lock_key='garmin_sync' AND owner=?").bind(owner).run();
+}
+
+async function withSyncLock(db, task) {
+  if (!db) return { ok: false, error: "D1 binding DB is missing" };
+  const owner = crypto.randomUUID();
+  if (!await acquireSyncLock(db, owner)) return { ok: false, busy: true, error: "A Garmin sync is already running. Check /status shortly." };
+  try { return await task(); }
+  finally { await releaseSyncLock(db, owner).catch(error => console.error("Could not release manual sync lock:", error)); }
 }
 
 function isoDateDaysAgo(days) {
@@ -396,8 +446,13 @@ function addDays(iso, days) {
 async function runScheduledSync(env) {
   // Keep new Garmin data fresh while the historical archive advances.
   // Reuse one 24-hour bearer token for both bounded sync operations.
+  const owner = crypto.randomUUID();
   try {
     if (!env.DB) throw new Error("D1 binding DB is missing");
+    if (!await acquireSyncLock(env.DB, owner)) {
+      console.log("Garmin sync skipped: another run holds the D1 lock.");
+      return { ok: true, skipped: true, reason: "sync_already_running" };
+    }
     if (!env.GARMIN_PERSONAL_API_KEY) throw new Error("Worker Secret GARMIN_PERSONAL_API_KEY is missing");
     await env.DB.prepare(`
       CREATE TABLE IF NOT EXISTS sync_state (
@@ -414,7 +469,10 @@ async function runScheduledSync(env) {
     const backfill = await runBackfill(env, token);
     return { ok: Boolean(backfill.ok), mode: "scheduled_sync", recent, backfill };
   } catch (error) {
+    console.error("Scheduled Garmin sync failed:", error);
     return { ok: false, mode: "scheduled_sync", error: String(error?.message || error).slice(0, 500) };
+  } finally {
+    if (env.DB) await releaseSyncLock(env.DB, owner).catch(error => console.error("Could not release Garmin sync lock:", error));
   }
 }
 
