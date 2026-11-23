@@ -56,3 +56,6 @@ The normal daily cron remains a rolling-window sync. Backfill is manually advanc
 During activity synchronization, the Worker now fetches the Garmin activity detail endpoint for activities that do not yet have a detail row in D1. Full detail JSON is stored in `activity_details`, keyed by Garmin activity ID. Existing details are not repeatedly downloaded on every rolling sync. The activity summary and detail are separate records by design.
 
 Original FIT/TCX/ZIP downloads are not yet enabled: they require a configured Cloudflare R2 bucket binding and a separate storage migration. They must not be stored as large blobs in D1.
+
+### Additional date-scoped health datasets
+The sync also archives daily heart-rate detail (`daily_heart_rate`), fitness age (`fitness_age`), and SpO2/acclimation (`spo2_acclimation`) using Garmin Personal API endpoints documented by Garmin's reference client. These endpoints are date-scoped, so the Worker checks D1 first and requests only dates not already present for that dataset. Missing responses are left missing; they are not converted to zero values.
