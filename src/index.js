@@ -248,6 +248,14 @@ async function runSync(env, rangeOverride = null) {
       )
     `).run();
     await env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_garmin_records_date ON garmin_records(record_date, dataset)").run();
+    await env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS activity_details (
+        activity_id TEXT PRIMARY KEY,
+        source_endpoint TEXT NOT NULL,
+        raw_json TEXT NOT NULL,
+        retrieved_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
+    `).run();
 
     const token = await getBearerToken(env.GARMIN_PERSONAL_API_KEY);
     const lookback = Math.min(Math.max(Number(env.SYNC_LOOKBACK_DAYS || 27), 3), 27);
