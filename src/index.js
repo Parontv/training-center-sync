@@ -18,7 +18,7 @@ export default {
       }
     }
     if (url.pathname === "/run" && request.method === "GET") {
-      return new Response(`<!doctype html><html lang="it"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Center Sync</title><body style="font:16px system-ui;max-width:560px;margin:40px auto;padding:16px;background:#111;color:#eee"><h2>Training Center Sync</h2><p>Inserisci il tuo SYNC_BEARER_TOKEN configurato nei Secrets Cloudflare. Non è la chiave Garmin.</p><input id="token" type="password" autocomplete="off" placeholder="SYNC_BEARER_TOKEN" style="box-sizing:border-box;width:100%;padding:12px;margin:8px 0;background:#222;color:#fff;border:1px solid #555;border-radius:8px"><label style="display:block;margin:4px 0 12px;color:#ccc"><input id="remember" type="checkbox" checked> Ricorda il token su questo dispositivo</label><div id="feedback" role="status" style="padding:10px;margin:8px 0;background:#263238;border-radius:8px;color:#fff">Pagina caricata. Inserisci il token e scegli un’operazione.</div><button id="go" style="padding:12px 18px">Sincronizza ultimi giorni</button> <button id="backfill" style="padding:12px 18px;margin-top:8px">Importa prossimo blocco (3 giorni)</button> <button id="status" style="padding:12px 18px;margin-top:8px">Stato agente</button> <button id="export" style="padding:12px 18px;margin-top:8px">Esporta tutti i dati D1</button> <button id="xlsx" style="padding:12px 18px;margin-top:8px">Genera Excel aggiornato</button><pre id="out" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#222;padding:12px;border-radius:8px"></pre><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+      return new Response(`<!doctype html><html lang="it"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Center Sync</title><body style="font:16px system-ui;max-width:560px;margin:40px auto;padding:16px;background:#111;color:#eee"><h2>Training Center Sync</h2><p>Inserisci il tuo SYNC_BEARER_TOKEN configurato nei Secrets Cloudflare. Non è la chiave Garmin.</p><input id="token" type="password" autocomplete="off" placeholder="SYNC_BEARER_TOKEN" style="box-sizing:border-box;width:100%;padding:12px;margin:8px 0;background:#222;color:#fff;border:1px solid #555;border-radius:8px"><label style="display:block;margin:4px 0 12px;color:#ccc"><input id="remember" type="checkbox" checked> Ricorda il token su questo dispositivo</label><div id="feedback" role="status" style="padding:10px;margin:8px 0;background:#263238;border-radius:8px;color:#fff">Pagina caricata. Inserisci il token e scegli un’operazione.</div><button id="backfill" style="padding:12px 18px;margin-top:8px">Importa prossimo blocco (3 giorni)</button> <button id="status" style="padding:12px 18px;margin-top:8px">Stato agente</button> <button id="export" style="padding:12px 18px;margin-top:8px">Esporta tutti i dati D1</button> <button id="xlsx" style="padding:12px 18px;margin-top:8px">Genera Excel aggiornato</button><pre id="out" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#222;padding:12px;border-radius:8px"></pre><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
 (function () {
   const $ = id => document.getElementById(id);
@@ -59,7 +59,6 @@ export default {
     } catch (error) { show('Errore di connessione: ' + String(error)); }
     finally { button.disabled = false; }
   }
-  $('go').addEventListener('click', () => request('/sync', 'POST'));
   $('backfill').addEventListener('click', () => request('/backfill', 'POST'));
   $('status').addEventListener('click', () => request('/status', 'GET'));
   async function refreshStatus() {
@@ -193,7 +192,7 @@ export default {
         ok: true,
         counts,
         agent: { cronConfiguredInRepository: "*/15 * * * *", lockUntil: lock?.lease_until || null },
-        mode: nextDate > today ? "daily_sync" : "historical_backfill",
+        mode: nextDate > today ? "historical_backfill_complete" : "historical_backfill",
         backfill: {
           startDate: configuredStart,
           nextDate,
@@ -484,11 +483,10 @@ async function runScheduledSync(env) {
     `).run();
 
     const token = await getBearerToken(env.GARMIN_PERSONAL_API_KEY);
-    const recent = await runSync(env, null, token);
-    if (!recent.ok) return { ok: false, mode: "scheduled_sync", recent, backfill: null };
-
+    // This scheduled agent is dedicated to historical recovery only.
+    // Daily/current-data refresh is handled by the separate existing Garmin integration.
     const backfill = await runBackfill(env, token);
-    return { ok: Boolean(backfill.ok), mode: "scheduled_sync", recent, backfill };
+    return { ok: Boolean(backfill.ok), mode: "historical_backfill_only", backfill };
   } catch (error) {
     console.error("Scheduled Garmin sync failed:", error);
     return { ok: false, mode: "scheduled_sync", error: String(error?.message || error).slice(0, 500) };
