@@ -245,7 +245,7 @@ async function runBackfill(env) {
     ).first();
     const startDate = state?.state_value || configuredStart;
     if (startDate > today) return { ok: true, complete: true, nextDate: startDate };
-    const proposedEnd = addDays(startDate, 6);
+    const proposedEnd = addDays(startDate, 2);
     const endDate = proposedEnd > today ? today : proposedEnd;
     const result = await runSync(env, { startDate, endDate });
     if (!result.ok || result.partial) {
@@ -297,12 +297,14 @@ async function runSync(env, rangeOverride = null) {
     `).run();
 
     const token = await getBearerToken(env.GARMIN_PERSONAL_API_KEY);
-    const lookback = Math.min(Math.max(Number(env.SYNC_LOOKBACK_DAYS || 27), 3), 27);
+    const lookback = 3;
     const startDate = rangeOverride?.startDate || isoDateDaysAgo(lookback);
     const endDate = rangeOverride?.endDate || new Date().toISOString().slice(0, 10);
 
     let activityCount = 0;
     let dailyCount = 0;
+    let activityDetailsProcessed = 0;
+    const activityDetailsPerRun = 3;
     const datasetErrors = [];
     let offset = 0;
     const pageSize = 100;
@@ -318,7 +320,8 @@ async function runSync(env, rangeOverride = null) {
         if (await saveActivity(env.DB, item)) {
           activityCount++;
           const activityId = item.activityId ?? item.activity_id ?? item.id;
-          if (activityId != null) {
+          if (activityId != null && activityDetailsProcessed < activityDetailsPerRun) {
+            activityDetailsProcessed++;
             try {
               const existingDetail = await env.DB.prepare(
                 "SELECT activity_id FROM activity_details WHERE activity_id=?"
@@ -326,7 +329,7 @@ async function runSync(env, rangeOverride = null) {
               if (!existingDetail) {
                 const detailPath = `/activity-service/activity/${encodeURIComponent(String(activityId))}`;
                 const detail = await garminGet(detailPath, token);
-                if (detail != null) await saveActivityDetail(env.DB, activityId, detail, detailPath);
+                await saveActivityDetail(env.DB, activityId, detail, detailPath);
               }
               const existingWorkouts = await env.DB.prepare(
                 "SELECT 1 AS found FROM garmin_records WHERE dataset='activity_workouts' AND record_key=? LIMIT 1"
@@ -334,11 +337,9 @@ async function runSync(env, rangeOverride = null) {
               if (!existingWorkouts) {
                 const workoutsPath = `/activity-service/activity/${encodeURIComponent(String(activityId))}/workouts`;
                 const workouts = await garminGet(workoutsPath, token);
-                if (workouts != null) {
-                  const activityDate = normalizeGarminDate(item.startTimeLocal ?? item.startTimeGMT, endDate);
-                  await saveDaily(env.DB, activityDate, "activity_workouts", { activityId: String(activityId), workouts }, workoutsPath);
-                  dailyCount++;
-                }
+                const activityDate = normalizeGarminDate(item.startTimeLocal ?? item.startTimeGMT, endDate);
+                await saveDaily(env.DB, activityDate, "activity_workouts", { activityId: String(activityId), workouts }, workoutsPath);
+                dailyCount++;
               }
             } catch (error) {
               datasetErrors.push({ dataset: "activity_details", activityId: String(activityId), error: String(error?.message || error).slice(0, 200) });
@@ -434,12 +435,15 @@ async function runSync(env, rangeOverride = null) {
       }
     }
 
+    const pendingDetails = await env.DB.prepare("SELECT COUNT(*) AS count FROM activities a LEFT JOIN activity_details d ON d.activity_id = a.activity_id LEFT JOIN garmin_records w ON w.dataset = 'activity_workouts' AND w.record_key = a.activity_id WHERE (d.activity_id IS NULL OR w.record_key IS NULL) AND a.start_time_local >= ? AND a.start_time_local < ?").bind(startDate, addDays(endDate, 1)).first();
+    const pendingActivityDetails = Number(pendingDetails?.count || 0);
+    if (pendingActivityDetails > 0) datasetErrors.push({ dataset: "activity_details_queue", pending: pendingActivityDetails, processedThisRun: activityDetailsProcessed, message: "Remaining activity details/workouts will be processed in subsequent sync runs" });
     const finalStatus = datasetErrors.length ? "partial" : "success";
 
     await env.DB.prepare(
       "UPDATE sync_runs SET finished_at=?, status=?, activities_seen=?, daily_records_seen=?, message=? WHERE id=?"
     ).bind(new Date().toISOString(), finalStatus, activityCount, dailyCount, datasetErrors.length ? JSON.stringify(datasetErrors) : null, runId).run();
-    return { ok: true, partial: datasetErrors.length > 0, startDate, endDate, activitiesSeen: activityCount, dailyRecordsSeen: dailyCount, datasetErrors };
+    return { ok: true, partial: datasetErrors.length > 0, startDate, endDate, activitiesSeen: activityCount, activityDetailsProcessed, pendingActivityDetails, dailyRecordsSeen: dailyCount, datasetErrors };
   } catch (error) {
     const message = String(error?.message || error).slice(0, 500);
     if (runId) {
