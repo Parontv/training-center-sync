@@ -331,6 +331,32 @@ async function runSync(env, rangeOverride = null) {
         datasetErrors.push({ dataset, error: String(error?.message || error).slice(0, 300) });
       }
     }
+
+    // Date-scoped Garmin datasets: fetch only dates not already archived.
+    const dateScopedDatasets = [
+      ["daily_heart_rate", date => `/wellness-service/wellness/dailyHeartRate?date=${date}`],
+      ["fitness_age", date => `/fitnessage-service/fitnessage/v2/${date}`],
+      ["spo2_acclimation", date => `/wellness-service/wellness/daily/spo2acclimation/${date}`]
+    ];
+    for (const [dataset, pathForDate] of dateScopedDatasets) {
+      for (let date = startDate; date <= endDate; date = addDays(date, 1)) {
+        try {
+          const existing = await env.DB.prepare(
+            "SELECT 1 AS found FROM garmin_records WHERE dataset=? AND record_date=? LIMIT 1"
+          ).bind(dataset, date).first();
+          if (existing) continue;
+          const path = pathForDate(date);
+          const result = await garminGet(path, token);
+          if (result != null) {
+            await saveDaily(env.DB, date, dataset, result, path);
+            dailyCount++;
+          }
+        } catch (error) {
+          datasetErrors.push({ dataset, date, error: String(error?.message || error).slice(0, 250) });
+        }
+      }
+    }
+
     const finalStatus = datasetErrors.length ? "partial" : "success";
 
     await env.DB.prepare(
