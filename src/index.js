@@ -520,7 +520,7 @@ async function runSync(env, rangeOverride = null, tokenOverride = null) {
       )
     `).run();
 
-    const token = await getBearerToken(env.GARMIN_PERSONAL_API_KEY);
+    const token = tokenOverride || await getBearerToken(env.GARMIN_PERSONAL_API_KEY);
     const lookback = 3;
     const startDate = rangeOverride?.startDate || isoDateDaysAgo(lookback);
     const endDate = rangeOverride?.endDate || new Date().toISOString().slice(0, 10);
