@@ -34,6 +34,7 @@ Official references:
 
 ## Endpoints
 - `GET /health`: non-sensitive service status.
+- `GET /status`: authenticated backfill cursor, progress percentage, mode, and latest sync run; requires `Authorization: Bearer <SYNC_BEARER_TOKEN>`.
 - `POST /sync`: manual sync; requires `Authorization: Bearer <SYNC_BEARER_TOKEN>`.
 
 ## Important
