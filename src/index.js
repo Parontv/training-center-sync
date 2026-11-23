@@ -305,6 +305,7 @@ async function runSync(env, rangeOverride = null) {
     const endDate = rangeOverride?.endDate || new Date().toISOString().slice(0, 10);
 
     let activityCount = 0;
+    let dailyCount = 0;
     const datasetErrors = [];
     let offset = 0;
     const pageSize = 100;
@@ -369,7 +370,6 @@ async function runSync(env, rangeOverride = null) {
       ["wellness_activity_summaries", `/wellnessactivity-service/activity/summary/range/${startDate}/${endDate}`]
     ];
 
-    let dailyCount = 0;
     const singletonDatasets = [
       ["profile_settings", "/userprofile-service/userprofile/settings"],
       ["heart_rate_zones", "/biometric-service/heartRateZones/v2"]
