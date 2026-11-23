@@ -321,12 +321,12 @@ async function runSync(env, rangeOverride = null) {
           activityCount++;
           const activityId = item.activityId ?? item.activity_id ?? item.id;
           if (activityId != null && activityDetailsProcessed < activityDetailsPerRun) {
-            activityDetailsProcessed++;
             try {
               const existingDetail = await env.DB.prepare(
                 "SELECT activity_id FROM activity_details WHERE activity_id=?"
               ).bind(String(activityId)).first();
               if (!existingDetail) {
+                activityDetailsProcessed++;
                 const detailPath = `/activity-service/activity/${encodeURIComponent(String(activityId))}`;
                 const detail = await garminGet(detailPath, token);
                 await saveActivityDetail(env.DB, activityId, detail, detailPath);
@@ -335,6 +335,7 @@ async function runSync(env, rangeOverride = null) {
                 "SELECT 1 AS found FROM garmin_records WHERE dataset='activity_workouts' AND record_key=? LIMIT 1"
               ).bind(String(activityId)).first();
               if (!existingWorkouts) {
+                if (existingDetail) activityDetailsProcessed++;
                 const workoutsPath = `/activity-service/activity/${encodeURIComponent(String(activityId))}/workouts`;
                 const workouts = await garminGet(workoutsPath, token);
                 const activityDate = normalizeGarminDate(item.startTimeLocal ?? item.startTimeGMT, endDate);
