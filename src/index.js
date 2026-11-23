@@ -116,6 +116,39 @@ async function saveActivity(db, item) {
   return true;
 }
 
+async function garminGetBytes(path, token) {
+  const response = await fetch(GARMIN_BASE + path, {
+    headers: { Authorization: `Bearer ${token}`, Accept: "*/*" }
+  });
+  if (response.status === 204) return null;
+  if (!response.ok) throw new Error(`Garmin file download failed: HTTP ${response.status}`);
+  return await response.arrayBuffer();
+}
+
+async function saveActivityFile(db, bucket, activityId, token) {
+  const id = String(activityId);
+  const existing = await db.prepare(
+    "SELECT object_key FROM activity_files WHERE activity_id=?"
+  ).bind(id).first();
+  if (existing) return false;
+  const endpoint = `/download-service/files/activity/${encodeURIComponent(id)}`;
+  const bytes = await garminGetBytes(endpoint, token);
+  if (!bytes || bytes.byteLength === 0) return false;
+  const objectKey = `activities/${id}.zip`;
+  await bucket.put(objectKey, bytes, {
+    httpMetadata: { contentType: "application/zip" },
+    customMetadata: { activityId: id, source: "Garmin Personal API" }
+  });
+  await db.prepare(`
+    INSERT INTO activity_files (activity_id, object_key, byte_size, source_endpoint, archived_at)
+    VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+    ON CONFLICT(activity_id) DO UPDATE SET
+      object_key=excluded.object_key, byte_size=excluded.byte_size,
+      source_endpoint=excluded.source_endpoint, archived_at=CURRENT_TIMESTAMP
+  `).bind(id, objectKey, bytes.byteLength, endpoint).run();
+  return true;
+}
+
 async function saveActivityDetail(db, activityId, detail, endpoint) {
   await db.prepare(`
     CREATE TABLE IF NOT EXISTS activity_details (
@@ -256,6 +289,15 @@ async function runSync(env, rangeOverride = null) {
         retrieved_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
     `).run();
+    await env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS activity_files (
+        activity_id TEXT PRIMARY KEY,
+        object_key TEXT NOT NULL,
+        byte_size INTEGER,
+        source_endpoint TEXT NOT NULL,
+        archived_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
+    `).run();
 
     const token = await getBearerToken(env.GARMIN_PERSONAL_API_KEY);
     const lookback = Math.min(Math.max(Number(env.SYNC_LOOKBACK_DAYS || 27), 3), 27);
@@ -287,6 +329,9 @@ async function runSync(env, rangeOverride = null) {
                 const detailPath = `/activity-service/activity/${encodeURIComponent(String(activityId))}`;
                 const detail = await garminGet(detailPath, token);
                 if (detail != null) await saveActivityDetail(env.DB, activityId, detail, detailPath);
+              }
+              if (env.RAW_BUCKET) {
+                await saveActivityFile(env.DB, env.RAW_BUCKET, activityId, token);
               }
             } catch (error) {
               datasetErrors.push({ dataset: "activity_details", activityId: String(activityId), error: String(error?.message || error).slice(0, 200) });
