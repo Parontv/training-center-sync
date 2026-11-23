@@ -129,7 +129,7 @@ async function runSync(env) {
     runId = insertRun.meta.last_row_id;
 
     const token = await getBearerToken(env.GARMIN_PERSONAL_API_KEY);
-    const lookback = Math.min(Math.max(Number(env.SYNC_LOOKBACK_DAYS || 28), 3), 28);
+    const lookback = Math.min(Math.max(Number(env.SYNC_LOOKBACK_DAYS || 27), 3), 27);
     const startDate = isoDateDaysAgo(lookback);
     const endDate = new Date().toISOString().slice(0, 10);
 
@@ -161,25 +161,31 @@ async function runSync(env) {
     ];
 
     let dailyCount = 0;
+    const datasetErrors = [];
     for (const [dataset, path] of datasets) {
-      const result = await garminGet(path, token);
-      const rows = rowsFrom(result);
-      if (rows.length) {
-        for (const row of rows) {
-          const date = row.calendarDate ?? row.date ?? row.startDate ?? endDate;
-          await saveDaily(env.DB, String(date).slice(0, 10), dataset, row);
+      try {
+        const result = await garminGet(path, token);
+        const rows = rowsFrom(result);
+        if (rows.length) {
+          for (const row of rows) {
+            const date = row.calendarDate ?? row.date ?? row.startDate ?? endDate;
+            await saveDaily(env.DB, String(date).slice(0, 10), dataset, row);
+            dailyCount++;
+          }
+        } else if (result != null) {
+          await saveDaily(env.DB, endDate, dataset, result);
           dailyCount++;
         }
-      } else if (result != null) {
-        await saveDaily(env.DB, endDate, dataset, result);
-        dailyCount++;
+      } catch (error) {
+        datasetErrors.push({ dataset, error: String(error?.message || error).slice(0, 300) });
       }
     }
+    const finalStatus = datasetErrors.length ? "partial" : "success";
 
     await env.DB.prepare(
-      "UPDATE sync_runs SET finished_at=?, status='success', activities_seen=?, daily_records_seen=? WHERE id=?"
-    ).bind(new Date().toISOString(), activityCount, dailyCount, runId).run();
-    return { ok: true, startDate, endDate, activitiesSeen: activityCount, dailyRecordsSeen: dailyCount };
+      "UPDATE sync_runs SET finished_at=?, status=?, activities_seen=?, daily_records_seen=?, message=? WHERE id=?"
+    ).bind(new Date().toISOString(), finalStatus, activityCount, dailyCount, datasetErrors.length ? JSON.stringify(datasetErrors) : null, runId).run();
+    return { ok: true, partial: datasetErrors.length > 0, startDate, endDate, activitiesSeen: activityCount, dailyRecordsSeen: dailyCount, datasetErrors };
   } catch (error) {
     const message = String(error?.message || error).slice(0, 500);
     if (runId) {
