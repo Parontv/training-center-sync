@@ -14,6 +14,14 @@ export default {
     if (url.pathname === "/run" && request.method === "GET") {
       return new Response(`<!doctype html><html lang="it"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Center Sync</title><body style="font:16px system-ui;max-width:560px;margin:40px auto;padding:16px;background:#111;color:#eee"><h2>Training Center Sync</h2><p>Inserisci il tuo SYNC_BEARER_TOKEN configurato nei Secrets Cloudflare. Non è la chiave Garmin.</p><input id="token" type="password" autocomplete="off" placeholder="SYNC_BEARER_TOKEN" style="box-sizing:border-box;width:100%;padding:12px;margin:8px 0;background:#222;color:#fff;border:1px solid #555;border-radius:8px"><button id="go" style="padding:12px 18px">Avvia sincronizzazione</button><pre id="out" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#222;padding:12px;border-radius:8px"></pre><script>document.getElementById('go').onclick=async()=>{const b=document.getElementById('go'),o=document.getElementById('out');b.disabled=true;o.textContent='Sincronizzazione in corso…';try{const r=await fetch('/sync',{method:'POST',headers:{Authorization:'Bearer '+document.getElementById('token').value}});o.textContent='HTTP '+r.status+'\\n'+JSON.stringify(await r.json(),null,2)}catch(e){o.textContent=String(e)}finally{b.disabled=false}};</script></body></html>`, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
     }
+    if (url.pathname === "/backfill" && request.method === "POST") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) {
+        return json({ error: "unauthorized" }, 401);
+      }
+      const result = await runBackfill(env);
+      return json(result, result.ok ? 200 : 502);
+    }
     if (url.pathname === "/sync" && request.method === "POST") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) {
@@ -157,7 +165,48 @@ async function saveDaily(db, date, dataset, value, endpoint = null) {
   }
 }
 
-async function runSync(env) {
+function addDays(iso, days) {
+  const d = new Date(`${iso}T00:00:00.000Z`);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+async function runBackfill(env) {
+  try {
+    await env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS sync_state (
+        state_key TEXT PRIMARY KEY,
+        state_value TEXT NOT NULL,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
+    `).run();
+    const today = new Date().toISOString().slice(0, 10);
+    const configuredStart = env.BACKFILL_START_DATE || "2015-01-01";
+    let state = await env.DB.prepare(
+      "SELECT state_value FROM sync_state WHERE state_key='backfill_next_date'"
+    ).first();
+    const startDate = state?.state_value || configuredStart;
+    if (startDate > today) return { ok: true, complete: true, nextDate: startDate };
+    const proposedEnd = addDays(startDate, 6);
+    const endDate = proposedEnd > today ? today : proposedEnd;
+    const result = await runSync(env, { startDate, endDate });
+    if (!result.ok || result.partial) {
+      return { ...result, backfill: true, cursorAdvanced: false, nextDate: startDate };
+    }
+    const nextDate = addDays(endDate, 1);
+    await env.DB.prepare(`
+      INSERT INTO sync_state (state_key, state_value, updated_at)
+      VALUES ('backfill_next_date', ?, CURRENT_TIMESTAMP)
+      ON CONFLICT(state_key) DO UPDATE SET
+        state_value=excluded.state_value, updated_at=CURRENT_TIMESTAMP
+    `).bind(nextDate).run();
+    return { ...result, backfill: true, cursorAdvanced: true, nextDate, complete: nextDate > today };
+  } catch (error) {
+    return { ok: false, backfill: true, error: String(error?.message || error).slice(0, 500) };
+  }
+}
+
+async function runSync(env, rangeOverride = null) {
   const startedAt = new Date().toISOString();
   let runId;
   try {
@@ -183,8 +232,8 @@ async function runSync(env) {
 
     const token = await getBearerToken(env.GARMIN_PERSONAL_API_KEY);
     const lookback = Math.min(Math.max(Number(env.SYNC_LOOKBACK_DAYS || 27), 3), 27);
-    const startDate = isoDateDaysAgo(lookback);
-    const endDate = new Date().toISOString().slice(0, 10);
+    const startDate = rangeOverride?.startDate || isoDateDaysAgo(lookback);
+    const endDate = rangeOverride?.endDate || new Date().toISOString().slice(0, 10);
 
     let activityCount = 0;
     let offset = 0;
