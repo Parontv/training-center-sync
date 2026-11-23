@@ -603,6 +603,7 @@ async function runSync(env, rangeOverride = null, tokenOverride = null) {
     const endDate = rangeOverride?.endDate || new Date().toISOString().slice(0, 10);
 
     let activityCount = 0;
+    let activitySearchDiagnostic = null;
     let dailyCount = 0;
     let activityDetailsProcessed = 0;
     const activityDetailsPerRun = 3;
@@ -614,9 +615,19 @@ async function runSync(env, rangeOverride = null, tokenOverride = null) {
         start: String(offset), limit: String(pageSize),
         startDate, endDate
       });
-      const page = rowsFrom(await garminGet(
+      const activityPayload = await garminGet(
         `/activitylist-service/activities/search/activities?${params}`, token
-      ));
+      );
+      const page = rowsFrom(activityPayload);
+      if (!activitySearchDiagnostic) {
+        activitySearchDiagnostic = {
+          responseType: Array.isArray(activityPayload) ? "array" : activityPayload === null ? "null" : typeof activityPayload,
+          responseKeys: activityPayload && typeof activityPayload === "object" && !Array.isArray(activityPayload) ? Object.keys(activityPayload).slice(0, 30) : [],
+          extractedRows: page.length,
+          firstRowKeys: page[0] && typeof page[0] === "object" ? Object.keys(page[0]).slice(0, 40) : [],
+          firstActivityId: page[0]?.activityId ?? page[0]?.activity_id ?? page[0]?.id ?? null
+        };
+      }
       for (const item of page) {
         if (await saveActivity(env.DB, item)) {
           activityCount++;
@@ -748,7 +759,7 @@ async function runSync(env, rangeOverride = null, tokenOverride = null) {
     await env.DB.prepare(
       "UPDATE sync_runs SET finished_at=?, status=?, activities_seen=?, daily_records_seen=?, message=? WHERE id=?"
     ).bind(new Date().toISOString(), finalStatus, activityCount, dailyCount, datasetErrors.length ? JSON.stringify(datasetErrors) : null, runId).run();
-    return { ok: true, partial: datasetErrors.length > 0, startDate, endDate, activitiesSeen: activityCount, activityDetailsProcessed, pendingActivityDetails, dailyRecordsSeen: dailyCount, datasetErrors };
+    return { ok: true, partial: datasetErrors.length > 0, startDate, endDate, activitiesSeen: activityCount, activitySearchDiagnostic, activityDetailsProcessed, pendingActivityDetails, dailyRecordsSeen: dailyCount, datasetErrors };
   } catch (error) {
     const message = String(error?.message || error).slice(0, 500);
     if (runId) {
