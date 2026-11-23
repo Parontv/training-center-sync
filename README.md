@@ -51,3 +51,8 @@ Official references:
 - Historical availability is limited to what Garmin Personal API actually returns for the account. The start date is a configurable search boundary, not a guarantee that Garmin has data back to that date.
 
 The normal daily cron remains a rolling-window sync. Backfill is manually advanced and must be run after deploying the updated Worker.
+
+## Activity details
+During activity synchronization, the Worker now fetches the Garmin activity detail endpoint for activities that do not yet have a detail row in D1. Full detail JSON is stored in `activity_details`, keyed by Garmin activity ID. Existing details are not repeatedly downloaded on every rolling sync. The activity summary and detail are separate records by design.
+
+Original FIT/TCX/ZIP downloads are not yet enabled: they require a configured Cloudflare R2 bucket binding and a separate storage migration. They must not be stored as large blobs in D1.
