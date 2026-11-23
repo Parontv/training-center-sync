@@ -72,3 +72,12 @@ The sync also archives daily heart-rate detail (`daily_heart_rate`), fitness age
 4. The next sync will archive original ZIP files for activities it processes, skipping activity IDs already present in `activity_files`.
 
 Do not put API keys or bearer tokens in `wrangler.toml`. The R2 binding is configuration, not a secret.
+
+## Expanded automatic Garmin coverage
+The Worker archives additional Personal API datasets, using only documented Garmin endpoints:
+- Daily heart-rate detail, daily HRV readings, detailed daily sleep, fitness age, SpO2/acclimation, and food logs (date-scoped; a date is requested only when no record for that dataset/date exists).
+- Activity workouts for each activity, fetched once per activity ID.
+- Profile settings, heart-rate zones, and activity type catalog (stored once initially).
+- Effective weight goals for each sync date range.
+Existing range datasets include daily summaries, steps, stress, sleep summaries, HRV summaries, Body Battery, weight measurements, hydration, VO2 Max, and wellness activity summaries.
+All responses are retained as raw JSON in D1. Empty Garmin responses remain absent, not zero-filled. Endpoint availability and historical depth depend on the Garmin account and Personal API permissions; a successful endpoint definition does not guarantee that every account has data for it.
