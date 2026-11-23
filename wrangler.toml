@@ -13,3 +13,7 @@ database_id = "844c6dfa-43f7-428c-8347-314e79c379c0"
 [vars]
 SYNC_LOOKBACK_DAYS = "27"
 BACKFILL_START_DATE = "2015-01-01"
+
+[[r2_buckets]]
+binding = "RAW_BUCKET"
+bucket_name = "training-center-raw"
