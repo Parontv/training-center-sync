@@ -272,9 +272,14 @@ async function runSync(env, rangeOverride = null) {
           const activityId = item.activityId ?? item.activity_id ?? item.id;
           if (activityId != null) {
             try {
-              const detailPath = `/activity-service/activity/${encodeURIComponent(String(activityId))}`;
-              const detail = await garminGet(detailPath, token);
-              if (detail != null) await saveActivityDetail(env.DB, activityId, detail, detailPath);
+              const existingDetail = await env.DB.prepare(
+                "SELECT activity_id FROM activity_details WHERE activity_id=?"
+              ).bind(String(activityId)).first();
+              if (!existingDetail) {
+                const detailPath = `/activity-service/activity/${encodeURIComponent(String(activityId))}`;
+                const detail = await garminGet(detailPath, token);
+                if (detail != null) await saveActivityDetail(env.DB, activityId, detail, detailPath);
+              }
             } catch (error) {
               datasetErrors.push({ dataset: "activity_details", activityId: String(activityId), error: String(error?.message || error).slice(0, 200) });
             }
