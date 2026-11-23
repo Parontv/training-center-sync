@@ -116,6 +116,25 @@ async function saveActivity(db, item) {
   return true;
 }
 
+async function saveActivityDetail(db, activityId, detail, endpoint) {
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS activity_details (
+      activity_id TEXT PRIMARY KEY,
+      source_endpoint TEXT NOT NULL,
+      raw_json TEXT NOT NULL,
+      retrieved_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )
+  `).run();
+  await db.prepare(`
+    INSERT INTO activity_details (activity_id, source_endpoint, raw_json, retrieved_at)
+    VALUES (?, ?, ?, CURRENT_TIMESTAMP)
+    ON CONFLICT(activity_id) DO UPDATE SET
+      source_endpoint=excluded.source_endpoint,
+      raw_json=excluded.raw_json,
+      retrieved_at=CURRENT_TIMESTAMP
+  `).bind(String(activityId), endpoint, JSON.stringify(detail)).run();
+}
+
 function normalizeGarminDate(value, fallbackDate) {
   if (value == null) return fallbackDate;
   if (typeof value === "number" || (typeof value === "string" && /^\d{12,}$/.test(value))) {
@@ -236,6 +255,7 @@ async function runSync(env, rangeOverride = null) {
     const endDate = rangeOverride?.endDate || new Date().toISOString().slice(0, 10);
 
     let activityCount = 0;
+    const datasetErrors = [];
     let offset = 0;
     const pageSize = 100;
     while (true) {
@@ -246,7 +266,21 @@ async function runSync(env, rangeOverride = null) {
       const page = rowsFrom(await garminGet(
         `/activitylist-service/activities/search/activities?${params}`, token
       ));
-      for (const item of page) if (await saveActivity(env.DB, item)) activityCount++;
+      for (const item of page) {
+        if (await saveActivity(env.DB, item)) {
+          activityCount++;
+          const activityId = item.activityId ?? item.activity_id ?? item.id;
+          if (activityId != null) {
+            try {
+              const detailPath = `/activity-service/activity/${encodeURIComponent(String(activityId))}`;
+              const detail = await garminGet(detailPath, token);
+              if (detail != null) await saveActivityDetail(env.DB, activityId, detail, detailPath);
+            } catch (error) {
+              datasetErrors.push({ dataset: "activity_details", activityId: String(activityId), error: String(error?.message || error).slice(0, 200) });
+            }
+          }
+        }
+      }
       if (page.length < pageSize) break;
       offset += pageSize;
       if (offset >= 2000) break;
@@ -266,7 +300,6 @@ async function runSync(env, rangeOverride = null) {
     ];
 
     let dailyCount = 0;
-    const datasetErrors = [];
     for (const [dataset, path] of datasets) {
       try {
         const result = await garminGet(path, token);
