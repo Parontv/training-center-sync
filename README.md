@@ -23,14 +23,24 @@ Official references:
 - https://developer.garmin.com/gc-developer-program/personal/swagger-docs/
 - https://github.com/garmin/connect-personal-api-python
 
-## Cloudflare setup (to be completed)
-1. Create a D1 database named `storico_garmin` (ID is stored in `wrangler.toml`).
-2. Apply `schema.sql` to the new database before the first sync. The Worker also bootstraps its core tables defensively.
-3. Create or deploy the Worker with Wrangler using this repository.
-4. Bind the D1 database as `DB` (do not rename this binding; the Worker reads `env.DB`).
-5. Add Worker Secret `GARMIN_PERSONAL_API_KEY` (never commit it).
-6. Add a random Worker Secret `SYNC_BEARER_TOKEN` to protect the manual sync endpoint.
-7. Configure the Cron Trigger from `wrangler.toml`.
+## Cloudflare setup
+The production D1 target is `storico_garmin`; its ID and the Worker binding `DB` are configured in `wrangler.toml`. The new archive must remain separate from the previous database.
+
+### Automatic deployment
+The GitHub Actions workflow `.github/workflows/deploy.yml` applies additive D1 migrations and deploys the Worker whenever relevant files are pushed to `main`. Configure these GitHub Actions repository secrets once:
+- `CLOUDFLARE_API_TOKEN`: Cloudflare API token with Workers Scripts:Edit and D1:Edit permissions.
+- `CLOUDFLARE_ACCOUNT_ID`: Cloudflare account ID.
+
+The workflow applies migrations only; it does not delete or reset D1 data.
+
+### Garmin secrets
+In the Cloudflare Worker settings, configure:
+- `GARMIN_PERSONAL_API_KEY`: Garmin Personal API key.
+- `SYNC_BEARER_TOKEN`: a long random secret used to protect manual sync, status and export endpoints.
+
+Never commit these secrets or paste them into GitHub source files or ChatGPT. The Worker binding must remain named `DB`, because the code reads `env.DB`.
+
+After deployment, verify `GET /health` reports `storage: true`. Then run the first authenticated `POST /sync` or allow the 15-minute Cron Trigger to start the historical backfill from `BACKFILL_START_DATE`. The database starts empty; the first successful Garmin sync populates it. Missing optional Garmin records are skipped rather than stored as zeros.
 
 ## Endpoints
 - `GET /health`: non-sensitive service status.
