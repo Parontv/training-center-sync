@@ -12,7 +12,8 @@ export default {
       return json({ ok: true, service: "training-center-sync", storage: Boolean(env.DB) });
     }
     if (url.pathname === "/run" && request.method === "GET") {
-      return new Response(`<!doctype html><html lang="it"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Center Sync</title><body style="font:16px system-ui;max-width:560px;margin:40px auto;padding:16px;background:#111;color:#eee"><h2>Training Center Sync</h2><p>Inserisci il tuo SYNC_BEARER_TOKEN configurato nei Secrets Cloudflare. Non è la chiave Garmin.</p><input id="token" type="password" autocomplete="off" placeholder="SYNC_BEARER_TOKEN" style="box-sizing:border-box;width:100%;padding:12px;margin:8px 0;background:#222;color:#fff;border:1px solid #555;border-radius:8px"><label style="display:block;margin:4px 0 12px;color:#ccc"><input id="remember" type="checkbox" checked> Ricorda il token su questo dispositivo</label><div id="feedback" role="status" style="padding:10px;margin:8px 0;background:#263238;border-radius:8px;color:#fff">Pagina caricata. Inserisci il token e scegli un’operazione.</div><button id="go" style="padding:12px 18px">Sincronizza ultimi giorni</button> <button id="backfill" style="padding:12px 18px;margin-top:8px">Importa storico (7 giorni)</button> <button id="status" style="padding:12px 18px;margin-top:8px">Stato agente</button> <button id="export" style="padding:12px 18px;margin-top:8px">Esporta tutti i dati D1</button><pre id="out" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#222;padding:12px;border-radius:8px"></pre><script>
+      return new Response(`<!doctype html><html lang="it"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Center Sync</title><body style="font:16px system-ui;max-width:560px;margin:40px auto;padding:16px;background:#111;color:#eee"><h2>Training Center Sync</h2><p>Inserisci il tuo SYNC_BEARER_TOKEN configurato nei Secrets Cloudflare. Non è la chiave Garmin.</p><input id="token" type="password" autocomplete="off" placeholder="SYNC_BEARER_TOKEN" style="box-sizing:border-box;width:100%;padding:12px;margin:8px 0;background:#222;color:#fff;border:1px solid #555;border-radius:8px"><label style="display:block;margin:4px 0 12px;color:#ccc"><input id="remember" type="checkbox" checked> Ricorda il token su questo dispositivo</label><div id="feedback" role="status" style="padding:10px;margin:8px 0;background:#263238;border-radius:8px;color:#fff">Pagina caricata. Inserisci il token e scegli un’operazione.</div><button id="go" style="padding:12px 18px">Sincronizza ultimi giorni</button> <button id="backfill" style="padding:12px 18px;margin-top:8px">Importa storico (7 giorni)</button> <button id="status" style="padding:12px 18px;margin-top:8px">Stato agente</button> <button id="export" style="padding:12px 18px;margin-top:8px">Esporta tutti i dati D1</button> <button id="xlsx" style="padding:12px 18px;margin-top:8px">Genera Excel aggiornato</button><pre id="out" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#222;padding:12px;border-radius:8px"></pre><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
 (function () {
   const $ = id => document.getElementById(id);
   const token = $('token'), remember = $('remember'), feedback = $('feedback'), output = $('out');
@@ -55,6 +56,43 @@ export default {
   $('go').addEventListener('click', () => request('/sync', 'POST'));
   $('backfill').addEventListener('click', () => request('/backfill', 'POST'));
   $('status').addEventListener('click', () => request('/status', 'GET'));
+  $('xlsx').addEventListener('click', async () => {
+    const value = getToken(); if (!value) return;
+    const button = $('xlsx'); button.disabled = true;
+    const datasets = [
+      ['garmin_records', 'Garmin records'],
+      ['activities', 'Attivita'],
+      ['activity_details', 'Dettagli attivita'],
+      ['daily_records', 'Daily records']
+    ];
+    try {
+      if (!window.XLSX) throw new Error('Libreria Excel non caricata. Controlla la connessione e ricarica la pagina.');
+      const wb = XLSX.utils.book_new();
+      const summary = [['Archivio Training Center'], ['Generato il', new Date().toISOString()], ['Fonte', 'Cloudflare D1'], ['Nota', 'Dati originali esportati senza trasformazioni. raw_json conservato come testo.']];
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(summary), 'LEGGIMI');
+      for (const [dataset, sheetName] of datasets) {
+        show('Lettura D1: ' + sheetName + '…');
+        let offset = 0, rows = [], pages = 0;
+        while (true) {
+          const response = await fetch('/export?dataset=' + encodeURIComponent(dataset) + '&limit=500&offset=' + offset, { headers: { Authorization: 'Bearer ' + value }, cache: 'no-store' });
+          const body = await response.json();
+          if (!response.ok || !body.ok) throw new Error(dataset + ': HTTP ' + response.status + ' ' + JSON.stringify(body));
+          if (!Array.isArray(body.rows)) throw new Error(dataset + ': risposta non valida');
+          rows = rows.concat(body.rows); pages++;
+          if (body.nextOffset === null) break;
+          offset = body.nextOffset;
+          if (pages > 100000) throw new Error('Numero pagine anomalo');
+        }
+        const ws = rows.length ? XLSX.utils.json_to_sheet(rows) : XLSX.utils.aoa_to_sheet([['Nessun record']]);
+        ws['!cols'] = rows.length ? Object.keys(rows[0]).map(k => ({ wch: Math.min(42, Math.max(14, k.length + 2)) })) : [{wch:20}];
+        XLSX.utils.book_append_sheet(wb, ws, sheetName);
+        show('Caricati ' + rows.length + ' record: ' + sheetName);
+      }
+      XLSX.writeFile(wb, 'Archivio_Dati_Allenamento_Garmin_Storico.xlsx', { compression: true });
+      show('Excel generato e inviato al download. Salvalo sul telefono. Dati provenienti direttamente da D1.');
+    } catch (error) { show('Excel non generato: ' + String(error)); }
+    finally { button.disabled = false; }
+  });
   $('export').addEventListener('click', async () => {
     const value = getToken(); if (!value) return;
     const button = $('export'); button.disabled = true;
