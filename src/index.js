@@ -318,13 +318,15 @@ async function getBearerToken(apiKey) {
   return token;
 }
 
-async function garminGet(path, token) {
+async function garminGet(path, token, options = {}) {
   const response = await fetch(GARMIN_BASE + path, {
     headers: { Authorization: `Bearer ${token}`, Accept: "*/*" }
   });
-  // Garmin may return 404 when an optional dataset/date has no record.
-  // Treat it like an empty response; auth/server errors remain fatal.
-  if (response.status === 204 || response.status === 404) return null;
+  if (response.status === 204) return null;
+  // A 404 is an empty result only for explicitly optional Garmin datasets.
+  // The main activity-search endpoint must fail the block instead of silently
+  // advancing the historical cursor when its route is unavailable.
+  if (response.status === 404 && options.allowNotFound === true) return null;
   if (!response.ok) throw new Error(`Garmin GET failed: HTTP ${response.status} for ${path.split("?")[0]}`);
   const text = await response.text();
   if (!text) return null;
@@ -640,7 +642,7 @@ async function runSync(env, rangeOverride = null, tokenOverride = null) {
               if (!existingDetail) {
                 activityDetailsProcessed++;
                 const detailPath = `/activity-service/activity/${encodeURIComponent(String(activityId))}`;
-                const detail = await garminGet(detailPath, token);
+                const detail = await garminGet(detailPath, token, { allowNotFound: true });
                 if (hasPayload(detail)) await saveActivityDetail(env.DB, activityId, detail, detailPath);
               }
               const existingWorkouts = await env.DB.prepare(
@@ -649,7 +651,7 @@ async function runSync(env, rangeOverride = null, tokenOverride = null) {
               if (!existingWorkouts) {
                 if (existingDetail) activityDetailsProcessed++;
                 const workoutsPath = `/activity-service/activity/${encodeURIComponent(String(activityId))}/workouts`;
-                const workouts = await garminGet(workoutsPath, token);
+                const workouts = await garminGet(workoutsPath, token, { allowNotFound: true });
                 if (hasPayload(workouts)) {
                   const activityDate = normalizeGarminDate(item.startTimeLocal ?? item.startTimeGMT, endDate);
                   await saveDaily(env.DB, activityDate, "activity_workouts", { activityId: String(activityId), workouts }, workoutsPath);
@@ -692,7 +694,7 @@ async function runSync(env, rangeOverride = null, tokenOverride = null) {
           "SELECT 1 AS found FROM garmin_records WHERE dataset=? LIMIT 1"
         ).bind(dataset).first();
         if (!existing) {
-          const result = await garminGet(path, token);
+          const result = await garminGet(path, token, { allowNotFound: true });
           if (hasPayload(result)) {
             await saveDaily(env.DB, endDate, dataset, result, path);
             dailyCount++;
@@ -705,7 +707,7 @@ async function runSync(env, rangeOverride = null, tokenOverride = null) {
 
     for (const [dataset, path] of datasets) {
       try {
-        const result = await garminGet(path, token);
+        const result = await garminGet(path, token, { allowNotFound: true });
         const rows = rowsFrom(result);
         if (rows.length) {
           for (const row of rows) {
@@ -739,7 +741,7 @@ async function runSync(env, rangeOverride = null, tokenOverride = null) {
           ).bind(dataset, date).first();
           if (existing) continue;
           const path = pathForDate(date);
-          const result = await garminGet(path, token);
+          const result = await garminGet(path, token, { allowNotFound: true });
           if (hasPayload(result)) {
             await saveDaily(env.DB, date, dataset, result, path);
             dailyCount++;
