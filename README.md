@@ -38,19 +38,19 @@ Official references:
 
 ## Important
 - First deployment is not considered successful until a real authenticated Garmin request succeeds.
-- The sync uses a rolling lookback window and upserts records; it does not delete historical records.
+- The sync uses a three-day rolling lookback window and upserts records; it does not delete historical records.
 - No Excel file is modified automatically in this first stage.
 - Do not paste API keys, passwords, bearer tokens, or Cloudflare tokens into GitHub issues, commits, or ChatGPT.
 
 ## Historical backfill
-- `POST /backfill` runs one bounded seven-day historical window.
+- `POST /backfill` runs one bounded three-day historical window.
 - The cursor is stored in D1 table `sync_state` and advances only when every dataset in the window succeeds.
 - The initial date defaults to `2015-01-01`; it can be overridden with Worker variable `BACKFILL_START_DATE`.
 - Repeat the authenticated POST request to continue from the saved cursor. The endpoint is intentionally separate from the daily cron so historical imports do not make the scheduled sync exceed runtime limits.
 - A failed or partial window does not advance the cursor; rerunning it is safe because records are upserted by dataset + record key.
 - Historical availability is limited to what Garmin Personal API actually returns for the account. The start date is a configurable search boundary, not a guarantee that Garmin has data back to that date.
 
-The daily cron first refreshes the recent rolling window, then automatically advances one seven-day historical backfill window. This continues until the saved cursor reaches the current date. The manual `/backfill` endpoint remains available for controlled one-step runs.
+The daily cron refreshes only the most recent three days, then advances one three-day historical backfill window when the recent sync is complete. Each Worker invocation limits activity-detail/workout downloads to three activities, and the historical window is three days to stay within Cloudflare subrequest limits. The manual `/backfill` endpoint remains available for controlled one-step runs.
 
 ## Activity details
 During activity synchronization, the Worker now fetches the Garmin activity detail endpoint for activities that do not yet have a detail row in D1. Full detail JSON is stored in `activity_details`, keyed by Garmin activity ID. Existing details are not repeatedly downloaded on every rolling sync. The activity summary, full detail and available workout structure are stored separately in D1. Original FIT/ZIP files are intentionally not downloaded because the Personal API JSON data is sufficient for the current project scope.
