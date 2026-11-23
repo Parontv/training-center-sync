@@ -108,13 +108,41 @@ async function saveActivity(db, item) {
   return true;
 }
 
-async function saveDaily(db, date, dataset, value) {
+function recordKey(dataset, row, fallbackDate) {
+  if (row && typeof row === "object" && !Array.isArray(row)) {
+    const direct = row.activityId ?? row.activity_id ?? row.id ?? row.uuid?.uuid ?? row.uuid;
+    if (direct != null) return String(direct);
+    const time = row.timestamp ?? row.createTimestamp ?? row.persistedTimestampGMT ??
+      row.startTimeGMT ?? row.startTimeLocal ?? row.calendarDate ?? row.date;
+    const device = row.deviceId ?? row.deviceID ?? "";
+    if (time != null) return `${String(time)}:${String(device)}`;
+  }
+  return `${fallbackDate}:${JSON.stringify(row)}`;
+}
+
+async function saveDaily(db, date, dataset, value, endpoint = null) {
+  const raw = JSON.stringify(value);
   await db.prepare(`
     INSERT INTO daily_records (record_date, dataset, raw_json, updated_at)
     VALUES (?, ?, ?, CURRENT_TIMESTAMP)
     ON CONFLICT(record_date, dataset) DO UPDATE SET
       raw_json=excluded.raw_json, updated_at=CURRENT_TIMESTAMP
-  `).bind(date, dataset, JSON.stringify(value)).run();
+  `).bind(date, dataset, raw).run();
+
+  const rows = rowsFrom(value);
+  const items = rows.length ? rows : (value == null ? [] : [value]);
+  for (const item of items) {
+    const key = recordKey(dataset, item, date);
+    await db.prepare(`
+      INSERT INTO garmin_records (dataset, record_key, record_date, source_endpoint, raw_json, retrieved_at)
+      VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+      ON CONFLICT(dataset, record_key) DO UPDATE SET
+        record_date=excluded.record_date,
+        source_endpoint=excluded.source_endpoint,
+        raw_json=excluded.raw_json,
+        retrieved_at=CURRENT_TIMESTAMP
+    `).bind(dataset, key, date, endpoint, JSON.stringify(item)).run();
+  }
 }
 
 async function runSync(env) {
@@ -127,6 +155,19 @@ async function runSync(env) {
       "INSERT INTO sync_runs (started_at, status) VALUES (?, 'running')"
     ).bind(startedAt).run();
     runId = insertRun.meta.last_row_id;
+
+    await env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS garmin_records (
+        dataset TEXT NOT NULL,
+        record_key TEXT NOT NULL,
+        record_date TEXT,
+        source_endpoint TEXT,
+        raw_json TEXT NOT NULL,
+        retrieved_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (dataset, record_key)
+      )
+    `).run();
+    await env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_garmin_records_date ON garmin_records(record_date, dataset)").run();
 
     const token = await getBearerToken(env.GARMIN_PERSONAL_API_KEY);
     const lookback = Math.min(Math.max(Number(env.SYNC_LOOKBACK_DAYS || 27), 3), 27);
@@ -157,7 +198,10 @@ async function runSync(env) {
       ["sleep", `/sleep-service/sleep/dailySleepSummariesByDate?startDate=${startDate}&endDate=${endDate}`],
       ["hrv", `/hrv-service/hrv/daily/${startDate}/${endDate}`],
       ["body_battery", `/wellness-service/wellness/bodyBattery/reports/daily?startDate=${startDate}&endDate=${endDate}`],
-      ["weight", `/weight-service/weight/range/${startDate}/${endDate}?includeAll=true`]
+      ["weight", `/weight-service/weight/range/${startDate}/${endDate}?includeAll=true`],
+      ["hydration", `/usersummary-service/stats/hydration/daily/${startDate}/${endDate}`],
+      ["vo2_max", `/metrics-service/metrics/maxmet/daily/${startDate}/${endDate}`],
+      ["wellness_activity_summaries", `/wellnessactivity-service/activity/summary/range/${startDate}/${endDate}`]
     ];
 
     let dailyCount = 0;
@@ -169,11 +213,11 @@ async function runSync(env) {
         if (rows.length) {
           for (const row of rows) {
             const date = row.calendarDate ?? row.date ?? row.startDate ?? endDate;
-            await saveDaily(env.DB, String(date).slice(0, 10), dataset, row);
+            await saveDaily(env.DB, String(date).slice(0, 10), dataset, row, path);
             dailyCount++;
           }
         } else if (result != null) {
-          await saveDaily(env.DB, endDate, dataset, result);
+          await saveDaily(env.DB, endDate, dataset, result, path);
           dailyCount++;
         }
       } catch (error) {
