@@ -12,7 +12,81 @@ export default {
       return json({ ok: true, service: "training-center-sync", storage: Boolean(env.DB) });
     }
     if (url.pathname === "/run" && request.method === "GET") {
-      return new Response(`<!doctype html><html lang="it"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Center Sync</title><body style="font:16px system-ui;max-width:560px;margin:40px auto;padding:16px;background:#111;color:#eee"><h2>Training Center Sync</h2><p>Inserisci il tuo SYNC_BEARER_TOKEN configurato nei Secrets Cloudflare. Non è la chiave Garmin.</p><input id="token" type="password" autocomplete="off" placeholder="SYNC_BEARER_TOKEN" style="box-sizing:border-box;width:100%;padding:12px;margin:8px 0;background:#222;color:#fff;border:1px solid #555;border-radius:8px"><label style="display:block;margin:4px 0 12px;color:#ccc"><input id="remember" type="checkbox" checked> Ricorda il token su questo dispositivo</label><div id="feedback" role="status" style="padding:10px;margin:8px 0;background:#263238;border-radius:8px;color:#fff">Pagina caricata. Inserisci il token e scegli un’operazione.</div><button id="go" style="padding:12px 18px">Sincronizza ultimi giorni</button> <button id="backfill" style="padding:12px 18px;margin-top:8px">Importa storico (7 giorni)</button> <button id="status" style="padding:12px 18px;margin-top:8px">Stato agente</button> <button id="export" style="padding:12px 18px;margin-top:8px">Esporta tutti i dati D1</button><pre id="out" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#222;padding:12px;border-radius:8px"></pre><script>const tokenInput=document.getElementById('token'),remember=document.getElementById('remember'),feedback=document.getElementById('feedback');try{const saved=localStorage.getItem('training_center_sync_token');if(saved){tokenInput.value=saved;feedback.textContent='Token recuperato da questo dispositivo. Pronto.'}}catch(e){feedback.textContent='Memoria locale non disponibile: il token andrà reinserito.'}tokenInput.addEventListener('input',()=>{try{if(remember.checked){localStorage.setItem('training_center_sync_token',tokenInput.value);feedback.textContent='Token salvato su questo dispositivo.'}else{localStorage.removeItem('training_center_sync_token');feedback.textContent='Token non salvato.'}}catch(e){feedback.textContent='Impossibile salvare il token in questo browser.'}});remember.addEventListener('change',()=>{try{if(remember.checked&&tokenInput.value){localStorage.setItem('training_center_sync_token',tokenInput.value);feedback.textContent='Memorizzazione attivata.'}else{localStorage.removeItem('training_center_sync_token');feedback.textContent='Token rimosso dalla memoria locale.'}}catch(e){feedback.textContent='Impossibile modificare la memoria locale.'}});document.getElementById('go').onclick=async()=>{const b=document.getElementById('go'),o=document.getElementById('out');b.disabled=true;o.textContent='Sincronizzazione in corso…';try{const r=await fetch('/sync',{method:'POST',headers:{Authorization:'Bearer '+document.getElementById('token').value}});o.textContent='HTTP '+r.status+'\\n'+JSON.stringify(await r.json(),null,2)}catch(e){o.textContent=String(e)}finally{b.disabled=false}};document.getElementById('backfill').onclick=async()=>{const b=document.getElementById('backfill'),o=document.getElementById('out');b.disabled=true;o.textContent='Importazione storico in corso…';try{const r=await fetch('/backfill',{method:'POST',headers:{Authorization:'Bearer '+document.getElementById('token').value}});o.textContent='HTTP '+r.status+'\\n'+JSON.stringify(await r.json(),null,2)}catch(e){o.textContent=String(e)}finally{b.disabled=false}};document.getElementById('status').onclick=async()=>{const b=document.getElementById('status'),o=document.getElementById('out');b.disabled=true;o.textContent='Lettura stato agente…';try{const r=await fetch('/status',{headers:{Authorization:'Bearer '+document.getElementById('token').value}});o.textContent='HTTP '+r.status+'\\n'+JSON.stringify(await r.json(),null,2)}catch(e){o.textContent=String(e)}finally{b.disabled=false}};document.getElementById('export').onclick=async()=>{const b=document.getElementById('export'),o=document.getElementById('out'),f=document.getElementById('feedback'),token=document.getElementById('token').value.trim();f.textContent='Pulsante premuto. Avvio controllo token…';o.textContent='Preparazione esportazione…';f.scrollIntoView({block:'nearest'});if(!token){f.textContent='Manca il SYNC_BEARER_TOKEN: inseriscilo nel campo in alto.';o.textContent='Esportazione non avviata.';document.getElementById('token').focus();return}b.disabled=true;f.textContent='Connessione a D1 in corso…';const datasets=['garmin_records','activities','activity_details','daily_records'];const archive={format:'training-center-d1-export-v1',exportedAt:new Date().toISOString(),source:'training-center-sync /export',datasets:{}};try{for(const dataset of datasets){let offset=0,rows=[],pages=0;while(true){f.textContent='Esportazione '+dataset+'… righe '+rows.length;o.textContent=f.textContent;const response=await fetch('/export?dataset='+encodeURIComponent(dataset)+'&limit=500&offset='+offset,{headers:{Authorization:'Bearer '+token},cache:'no-store'});const payload=await response.json();if(!response.ok||!payload.ok)throw new Error(dataset+': HTTP '+response.status+' '+JSON.stringify(payload));if(!Array.isArray(payload.rows))throw new Error(dataset+': risposta senza righe');rows=rows.concat(payload.rows);pages++;if(payload.nextOffset===null)break;offset=payload.nextOffset;if(pages>100000)throw new Error('Interrotto: numero pagine anomalo')}archive.datasets[dataset]={count:rows.length,pages,rows}}const blob=new Blob([JSON.stringify(archive)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='training-center-d1-export-'+new Date().toISOString().replace(/[:.]/g,'-')+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);o.textContent='Esportazione completata.\n'+datasets.map(d=>d+': '+archive.datasets[d].count+' righe').join('\n')+'\nFile JSON scaricato. Non contiene il token.'}catch(e){f.textContent='ERRORE durante l’esportazione: '+String(e);o.textContent=f.textContent}finally{b.disabled=false}};</script></body></html>`, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
+      return new Response(`<!doctype html><html lang="it"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Center Sync</title><body style="font:16px system-ui;max-width:560px;margin:40px auto;padding:16px;background:#111;color:#eee"><h2>Training Center Sync</h2><p>Inserisci il tuo SYNC_BEARER_TOKEN configurato nei Secrets Cloudflare. Non è la chiave Garmin.</p><input id="token" type="password" autocomplete="off" placeholder="SYNC_BEARER_TOKEN" style="box-sizing:border-box;width:100%;padding:12px;margin:8px 0;background:#222;color:#fff;border:1px solid #555;border-radius:8px"><label style="display:block;margin:4px 0 12px;color:#ccc"><input id="remember" type="checkbox" checked> Ricorda il token su questo dispositivo</label><div id="feedback" role="status" style="padding:10px;margin:8px 0;background:#263238;border-radius:8px;color:#fff">Pagina caricata. Inserisci il token e scegli un’operazione.</div><button id="go" style="padding:12px 18px">Sincronizza ultimi giorni</button> <button id="backfill" style="padding:12px 18px;margin-top:8px">Importa storico (7 giorni)</button> <button id="status" style="padding:12px 18px;margin-top:8px">Stato agente</button> <button id="export" style="padding:12px 18px;margin-top:8px">Esporta tutti i dati D1</button><pre id="out" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#222;padding:12px;border-radius:8px"></pre><script>
+(function () {
+  const $ = id => document.getElementById(id);
+  const token = $('token'), remember = $('remember'), feedback = $('feedback'), output = $('out');
+  function show(message) { feedback.textContent = message; output.textContent = message; }
+  function getToken() {
+    const value = token.value.trim();
+    if (!value) { show('Inserisci il SYNC_BEARER_TOKEN.'); token.focus(); return null; }
+    return value;
+  }
+  try {
+    const saved = localStorage.getItem('training_center_sync_token');
+    if (saved) { token.value = saved; show('Token recuperato. Pagina pronta.'); }
+  } catch (e) { show('Memoria locale non disponibile. Il token va inserito manualmente.'); }
+  token.addEventListener('change', saveToken);
+  token.addEventListener('blur', saveToken);
+  remember.addEventListener('change', saveToken);
+  function saveToken() {
+    try {
+      if (remember.checked && token.value.trim()) {
+        localStorage.setItem('training_center_sync_token', token.value.trim());
+        feedback.textContent = 'Token salvato su questo dispositivo.';
+      } else {
+        localStorage.removeItem('training_center_sync_token');
+        feedback.textContent = 'Token non memorizzato.';
+      }
+    } catch (e) { feedback.textContent = 'Impossibile salvare il token in questo browser.'; }
+  }
+  async function request(path, method) {
+    const value = getToken(); if (!value) return;
+    const button = path === '/sync' ? $('go') : path === '/backfill' ? $('backfill') : $('status');
+    button.disabled = true; show('Operazione in corso…');
+    try {
+      const response = await fetch(path, { method: method || 'GET', headers: { Authorization: 'Bearer ' + value }, cache: 'no-store' });
+      const body = await response.text();
+      let data; try { data = JSON.parse(body); } catch (_) { data = body; }
+      show('HTTP ' + response.status + '\\n' + (typeof data === 'string' ? data : JSON.stringify(data, null, 2)));
+    } catch (error) { show('Errore di connessione: ' + String(error)); }
+    finally { button.disabled = false; }
+  }
+  $('go').addEventListener('click', () => request('/sync', 'POST'));
+  $('backfill').addEventListener('click', () => request('/backfill', 'POST'));
+  $('status').addEventListener('click', () => request('/status', 'GET'));
+  $('export').addEventListener('click', async () => {
+    const value = getToken(); if (!value) return;
+    const button = $('export'); button.disabled = true;
+    const datasets = ['garmin_records', 'activities', 'activity_details', 'daily_records'];
+    const archive = { format: 'training-center-d1-export-v1', exportedAt: new Date().toISOString(), source: 'training-center-sync /export', datasets: {} };
+    try {
+      for (const dataset of datasets) {
+        show('Esportazione ' + dataset + '…');
+        let offset = 0, rows = [], pages = 0;
+        while (true) {
+          const response = await fetch('/export?dataset=' + encodeURIComponent(dataset) + '&limit=500&offset=' + offset, { headers: { Authorization: 'Bearer ' + value }, cache: 'no-store' });
+          const body = await response.json();
+          if (!response.ok || !body.ok) throw new Error(dataset + ': HTTP ' + response.status + ' ' + JSON.stringify(body));
+          if (!Array.isArray(body.rows)) throw new Error(dataset + ': risposta non valida');
+          rows = rows.concat(body.rows); pages++;
+          if (body.nextOffset === null) break;
+          offset = body.nextOffset;
+          if (pages > 100000) throw new Error('Numero pagine anomalo');
+        }
+        archive.datasets[dataset] = { count: rows.length, pages: pages, rows: rows };
+      }
+      const blob = new Blob([JSON.stringify(archive)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob), link = document.createElement('a');
+      link.href = url; link.download = 'training-center-d1-export-' + new Date().toISOString().replace(/[:.]/g, '-') + '.json';
+      document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url);
+      show('Esportazione completata. ' + datasets.map(d => d + ': ' + archive.datasets[d].count).join(' | ') + ' righe. File scaricato.');
+    } catch (error) { show('Esportazione non riuscita: ' + String(error)); }
+    finally { button.disabled = false; }
+  });
+  window.addEventListener('error', event => show('Errore nella pagina: ' + event.message));
+})();
+</script></body></html>`, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
     }
     if (url.pathname === "/status" && request.method === "GET") {
       const expected = env.SYNC_BEARER_TOKEN;
