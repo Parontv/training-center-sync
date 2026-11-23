@@ -1,0 +1,43 @@
+# Training Center Sync
+
+Private, personal Garmin Connect data archive for the Training Center project.
+
+## Goals
+- Pull the owner's Garmin Connect Personal API data on a Cloudflare Cron Trigger.
+- Recover a rolling historical window so missed days are not lost.
+- Store raw JSON and normalized activity/day records in Cloudflare D1.
+- Deduplicate activities by Garmin activity ID and daily records by date + dataset.
+- Keep credentials in Cloudflare Worker Secrets only.
+- Never write personal data or credentials into Git.
+
+## Architecture
+Garmin Connect Personal API -> Cloudflare Worker (scheduled) -> Cloudflare D1.
+The Excel Master remains the authoritative human-readable archive and is not modified by this service.
+
+## Garmin API
+This project uses Garmin's official Personal API, read-only. Create a Personal API key in Garmin Connect Web under Profile & Account -> Settings -> Personal API Key. The key is shown only once. The Worker exchanges it for a bearer token when it runs; Garmin bearer tokens last up to 24 hours.
+
+Official references:
+- https://developer.garmin.com/gc-developer-program/personal/personal-api/
+- https://developer.garmin.com/gc-developer-program/personal/personal-faq/
+- https://developer.garmin.com/gc-developer-program/personal/swagger-docs/
+- https://github.com/garmin/connect-personal-api-python
+
+## Cloudflare setup (to be completed)
+1. Create a D1 database named `training-center-db`.
+2. Apply `schema.sql`.
+3. Create a Worker from this repository or deploy with Wrangler.
+4. Bind the D1 database as `DB`.
+5. Add Worker Secret `GARMIN_PERSONAL_API_KEY` (never commit it).
+6. Add a random Worker Secret `SYNC_BEARER_TOKEN` to protect the manual sync endpoint.
+7. Configure the Cron Trigger from `wrangler.toml`.
+
+## Endpoints
+- `GET /health`: non-sensitive service status.
+- `POST /sync`: manual sync; requires `Authorization: Bearer <SYNC_BEARER_TOKEN>`.
+
+## Important
+- First deployment is not considered successful until a real authenticated Garmin request succeeds.
+- The sync uses a rolling lookback window and upserts records; it does not delete historical records.
+- No Excel file is modified automatically in this first stage.
+- Do not paste API keys, passwords, bearer tokens, or Cloudflare tokens into GitHub issues, commits, or ChatGPT.
