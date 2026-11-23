@@ -66,3 +66,10 @@ The Worker archives additional Personal API datasets, using only documented Garm
 - Effective weight goals for each sync date range.
 Existing range datasets include daily summaries, steps, stress, sleep summaries, HRV summaries, Body Battery, weight measurements, hydration, VO2 Max, and wellness activity summaries.
 All responses are retained as raw JSON in D1. Empty Garmin responses remain absent, not zero-filled. Endpoint availability and historical depth depend on the Garmin account and Personal API permissions; a successful endpoint definition does not guarantee that every account has data for it.
+
+## Authenticated data export
+- `GET /export?dataset=garmin_records&limit=250&offset=0` returns a paginated JSON page of the raw Garmin archive.
+- Supported datasets: `garmin_records`, `activities`, `activity_details`, and `daily_records`.
+- Maximum page size is 500 rows. Follow `nextOffset` until it is `null`.
+- Every export request requires `Authorization: Bearer <SYNC_BEARER_TOKEN>`. Never publish the token or expose this endpoint without authentication.
+- The export endpoint is the bridge for generating the separate Excel Master from D1. It does not modify an existing workbook.
