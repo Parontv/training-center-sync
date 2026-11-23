@@ -335,7 +335,7 @@ function hasPayload(value) {
   if (value == null) return false;
   if (Array.isArray(value)) return value.length > 0;
   if (typeof value === "object") {
-    const collectionKeys = ["activities", "dailySummaries", "summaries", "data", "items"];
+    const collectionKeys = ["activities", "activityList", "activitySummaries", "activitySummariesDTO", "results", "dailySummaries", "summaries", "data", "items"];
     const collections = collectionKeys.filter(key => Array.isArray(value[key]));
     if (collections.length) return collections.some(key => value[key].length > 0);
     return Object.keys(value).length > 0;
@@ -346,7 +346,7 @@ function hasPayload(value) {
 function rowsFrom(value) {
   if (Array.isArray(value)) return value;
   if (value && typeof value === "object") {
-    for (const key of ["activities", "dailySummaries", "summaries", "data", "items"]) {
+    for (const key of ["activities", "activityList", "activitySummaries", "activitySummariesDTO", "results", "dailySummaries", "summaries", "data", "items"]) {
       if (Array.isArray(value[key])) return value[key];
     }
     return [value];
