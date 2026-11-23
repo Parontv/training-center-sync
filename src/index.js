@@ -407,7 +407,7 @@ async function runScheduledSync(env) {
       )
     `).run();
 
-    const token = tokenOverride || await getBearerToken(env.GARMIN_PERSONAL_API_KEY);
+    const token = await getBearerToken(env.GARMIN_PERSONAL_API_KEY);
     const recent = await runSync(env, null, token);
     if (!recent.ok) return { ok: false, mode: "scheduled_sync", recent, backfill: null };
 
