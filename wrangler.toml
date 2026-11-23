@@ -11,4 +11,4 @@ database_name = "training_center"
 database_id = "844c6dfa-43f7-428c-8347-314e79c379c0"
 
 [vars]
-SYNC_LOOKBACK_DAYS = "28"
+SYNC_LOOKBACK_DAYS = "27"
