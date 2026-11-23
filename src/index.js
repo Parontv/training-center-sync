@@ -179,11 +179,15 @@ export default {
       ).first();
       await ensureSyncLockSchema(env.DB);
       const counts = {};
+      const countErrors = {};
       for (const table of ["activities", "activity_details", "daily_records", "garmin_records", "sync_runs"]) {
         try {
           const row = await env.DB.prepare("SELECT COUNT(*) AS count FROM " + table).first();
           counts[table] = Number(row?.count || 0);
-        } catch { counts[table] = 0; }
+        } catch (error) {
+          counts[table] = null;
+          countErrors[table] = String(error?.message || error).slice(0, 250);
+        }
       }
       const lock = await env.DB.prepare(
         "SELECT lease_until FROM sync_locks WHERE lock_key='garmin_sync'"
@@ -191,6 +195,8 @@ export default {
       return json({
         ok: true,
         counts,
+        countErrors,
+        database: { bindingPresent: Boolean(env.DB), countQueriesSuccessful: Object.keys(countErrors).length === 0 },
         agent: { cronConfiguredInRepository: "*/15 * * * *", lockUntil: lock?.lease_until || null },
         mode: nextDate > today ? "historical_backfill_complete" : "historical_backfill",
         backfill: {
