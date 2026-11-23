@@ -41,3 +41,13 @@ Official references:
 - The sync uses a rolling lookback window and upserts records; it does not delete historical records.
 - No Excel file is modified automatically in this first stage.
 - Do not paste API keys, passwords, bearer tokens, or Cloudflare tokens into GitHub issues, commits, or ChatGPT.
+
+## Historical backfill
+- `POST /backfill` runs one bounded seven-day historical window.
+- The cursor is stored in D1 table `sync_state` and advances only when every dataset in the window succeeds.
+- The initial date defaults to `2015-01-01`; it can be overridden with Worker variable `BACKFILL_START_DATE`.
+- Repeat the authenticated POST request to continue from the saved cursor. The endpoint is intentionally separate from the daily cron so historical imports do not make the scheduled sync exceed runtime limits.
+- A failed or partial window does not advance the cursor; rerunning it is safe because records are upserted by dataset + record key.
+- Historical availability is limited to what Garmin Personal API actually returns for the account. The start date is a configurable search boundary, not a guarantee that Garmin has data back to that date.
+
+The normal daily cron remains a rolling-window sync. Backfill is manually advanced and must be run after deploying the updated Worker.
