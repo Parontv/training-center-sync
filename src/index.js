@@ -14,6 +14,36 @@ export default {
     if (url.pathname === "/run" && request.method === "GET") {
       return new Response(`<!doctype html><html lang="it"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Center Sync</title><body style="font:16px system-ui;max-width:560px;margin:40px auto;padding:16px;background:#111;color:#eee"><h2>Training Center Sync</h2><p>Inserisci il tuo SYNC_BEARER_TOKEN configurato nei Secrets Cloudflare. Non è la chiave Garmin.</p><input id="token" type="password" autocomplete="off" placeholder="SYNC_BEARER_TOKEN" style="box-sizing:border-box;width:100%;padding:12px;margin:8px 0;background:#222;color:#fff;border:1px solid #555;border-radius:8px"><button id="go" style="padding:12px 18px">Sincronizza ultimi giorni</button> <button id="backfill" style="padding:12px 18px;margin-top:8px">Importa storico (7 giorni)</button><pre id="out" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#222;padding:12px;border-radius:8px"></pre><script>document.getElementById('go').onclick=async()=>{const b=document.getElementById('go'),o=document.getElementById('out');b.disabled=true;o.textContent='Sincronizzazione in corso…';try{const r=await fetch('/sync',{method:'POST',headers:{Authorization:'Bearer '+document.getElementById('token').value}});o.textContent='HTTP '+r.status+'\\n'+JSON.stringify(await r.json(),null,2)}catch(e){o.textContent=String(e)}finally{b.disabled=false}};document.getElementById('backfill').onclick=async()=>{const b=document.getElementById('backfill'),o=document.getElementById('out');b.disabled=true;o.textContent='Importazione storico in corso…';try{const r=await fetch('/backfill',{method:'POST',headers:{Authorization:'Bearer '+document.getElementById('token').value}});o.textContent='HTTP '+r.status+'\\n'+JSON.stringify(await r.json(),null,2)}catch(e){o.textContent=String(e)}finally{b.disabled=false}};</script></body></html>`, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
     }
+    if (url.pathname === "/export" && request.method === "GET") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) {
+        return json({ error: "unauthorized" }, 401);
+      }
+      const dataset = url.searchParams.get("dataset") || "garmin_records";
+      const allowed = {
+        garmin_records: "SELECT dataset, record_key, record_date, source_endpoint, raw_json, retrieved_at FROM garmin_records ORDER BY record_date, dataset, record_key LIMIT ? OFFSET ?",
+        activities: "SELECT activity_id, start_time_local, activity_type, activity_name, distance_m, duration_s, calories, average_hr, max_hr, raw_json, first_seen_at, last_seen_at FROM activities ORDER BY start_time_local, activity_id LIMIT ? OFFSET ?",
+        activity_details: "SELECT activity_id, source_endpoint, raw_json, retrieved_at FROM activity_details ORDER BY activity_id LIMIT ? OFFSET ?",
+        daily_records: "SELECT record_date, dataset, raw_json, updated_at FROM daily_records ORDER BY record_date, dataset LIMIT ? OFFSET ?"
+      };
+      if (!Object.prototype.hasOwnProperty.call(allowed, dataset)) {
+        return json({ error: "unsupported_dataset", allowed: Object.keys(allowed) }, 400);
+      }
+      const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 250), 1), 500);
+      const offset = Math.max(Number(url.searchParams.get("offset") || 0), 0);
+      if (!Number.isSafeInteger(limit) || !Number.isSafeInteger(offset)) {
+        return json({ error: "invalid_pagination" }, 400);
+      }
+      const result = await env.DB.prepare(allowed[dataset]).bind(limit + 1, offset).all();
+      const rows = result.results || [];
+      const hasMore = rows.length > limit;
+      const page = hasMore ? rows.slice(0, limit) : rows;
+      return json({
+        ok: true, dataset, count: page.length, limit, offset,
+        nextOffset: hasMore ? offset + limit : null,
+        rows: page
+      });
+    }
     if (url.pathname === "/backfill" && request.method === "POST") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) {
