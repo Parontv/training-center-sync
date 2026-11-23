@@ -252,7 +252,9 @@ async function garminGet(path, token) {
   const response = await fetch(GARMIN_BASE + path, {
     headers: { Authorization: `Bearer ${token}`, Accept: "*/*" }
   });
-  if (response.status === 204) return null;
+  // Garmin may return 404 when an optional dataset/date has no record.
+  // Treat it like an empty response; auth/server errors remain fatal.
+  if (response.status === 204 || response.status === 404) return null;
   if (!response.ok) throw new Error(`Garmin GET failed: HTTP ${response.status} for ${path.split("?")[0]}`);
   const text = await response.text();
   if (!text) return null;
@@ -542,7 +544,7 @@ async function runSync(env, rangeOverride = null) {
                 activityDetailsProcessed++;
                 const detailPath = `/activity-service/activity/${encodeURIComponent(String(activityId))}`;
                 const detail = await garminGet(detailPath, token);
-                await saveActivityDetail(env.DB, activityId, detail, detailPath);
+                if (detail != null) await saveActivityDetail(env.DB, activityId, detail, detailPath);
               }
               const existingWorkouts = await env.DB.prepare(
                 "SELECT 1 AS found FROM garmin_records WHERE dataset='activity_workouts' AND record_key=? LIMIT 1"
@@ -551,9 +553,11 @@ async function runSync(env, rangeOverride = null) {
                 if (existingDetail) activityDetailsProcessed++;
                 const workoutsPath = `/activity-service/activity/${encodeURIComponent(String(activityId))}/workouts`;
                 const workouts = await garminGet(workoutsPath, token);
-                const activityDate = normalizeGarminDate(item.startTimeLocal ?? item.startTimeGMT, endDate);
-                await saveDaily(env.DB, activityDate, "activity_workouts", { activityId: String(activityId), workouts }, workoutsPath);
-                dailyCount++;
+                if (workouts != null) {
+                  const activityDate = normalizeGarminDate(item.startTimeLocal ?? item.startTimeGMT, endDate);
+                  await saveDaily(env.DB, activityDate, "activity_workouts", { activityId: String(activityId), workouts }, workoutsPath);
+                  dailyCount++;
+                }
               }
             } catch (error) {
               datasetErrors.push({ dataset: "activity_details", activityId: String(activityId), error: String(error?.message || error).slice(0, 200) });
@@ -651,7 +655,8 @@ async function runSync(env, rangeOverride = null) {
 
     const pendingDetails = await env.DB.prepare("SELECT COUNT(*) AS count FROM activities a LEFT JOIN activity_details d ON d.activity_id = a.activity_id LEFT JOIN garmin_records w ON w.dataset = 'activity_workouts' AND w.record_key = a.activity_id WHERE (d.activity_id IS NULL OR w.record_key IS NULL) AND a.start_time_local >= ? AND a.start_time_local < ?").bind(startDate, addDays(endDate, 1)).first();
     const pendingActivityDetails = Number(pendingDetails?.count || 0);
-    if (pendingActivityDetails > 0) datasetErrors.push({ dataset: "activity_details_queue", pending: pendingActivityDetails, processedThisRun: activityDetailsProcessed, message: "Remaining activity details/workouts will be processed in subsequent sync runs" });
+    // Pending detail/workout rows are a resumable queue, not a failed sync.
+    // Missing optional Garmin payloads must not hold the historical cursor forever.
     const finalStatus = datasetErrors.length ? "partial" : "success";
 
     await env.DB.prepare(
