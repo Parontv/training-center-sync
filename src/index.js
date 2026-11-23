@@ -137,6 +137,7 @@ export default {
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) {
         return json({ error: "unauthorized" }, 401);
       }
+      await ensureCoreSchema(env.DB);
       await env.DB.prepare(`
         CREATE TABLE IF NOT EXISTS sync_state (
           state_key TEXT PRIMARY KEY,
