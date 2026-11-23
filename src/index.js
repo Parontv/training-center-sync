@@ -9,7 +9,13 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname === "/health" && request.method === "GET") {
-      return json({ ok: true, service: "training-center-sync", storage: Boolean(env.DB) });
+      if (!env.DB) return json({ ok: false, service: "training-center-sync", storage: false, error: "D1 binding DB is missing" }, 503);
+      try {
+        await env.DB.prepare("SELECT 1 AS connected").first();
+        return json({ ok: true, service: "training-center-sync", storage: true, database: "reachable" });
+      } catch (error) {
+        return json({ ok: false, service: "training-center-sync", storage: false, error: String(error?.message || error).slice(0, 300) }, 503);
+      }
     }
     if (url.pathname === "/run" && request.method === "GET") {
       return new Response(`<!doctype html><html lang="it"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Center Sync</title><body style="font:16px system-ui;max-width:560px;margin:40px auto;padding:16px;background:#111;color:#eee"><h2>Training Center Sync</h2><p>Inserisci il tuo SYNC_BEARER_TOKEN configurato nei Secrets Cloudflare. Non è la chiave Garmin.</p><input id="token" type="password" autocomplete="off" placeholder="SYNC_BEARER_TOKEN" style="box-sizing:border-box;width:100%;padding:12px;margin:8px 0;background:#222;color:#fff;border:1px solid #555;border-radius:8px"><label style="display:block;margin:4px 0 12px;color:#ccc"><input id="remember" type="checkbox" checked> Ricorda il token su questo dispositivo</label><div id="feedback" role="status" style="padding:10px;margin:8px 0;background:#263238;border-radius:8px;color:#fff">Pagina caricata. Inserisci il token e scegli un’operazione.</div><button id="go" style="padding:12px 18px">Sincronizza ultimi giorni</button> <button id="backfill" style="padding:12px 18px;margin-top:8px">Importa storico (7 giorni)</button> <button id="status" style="padding:12px 18px;margin-top:8px">Stato agente</button> <button id="export" style="padding:12px 18px;margin-top:8px">Esporta tutti i dati D1</button> <button id="xlsx" style="padding:12px 18px;margin-top:8px">Genera Excel aggiornato</button><pre id="out" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#222;padding:12px;border-radius:8px"></pre><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -435,12 +441,47 @@ async function runBackfill(env) {
   }
 }
 
+async function ensureCoreSchema(db) {
+  await db.prepare(`CREATE TABLE IF NOT EXISTS activities (
+    activity_id TEXT PRIMARY KEY,
+    start_time_local TEXT,
+    activity_type TEXT,
+    activity_name TEXT,
+    distance_m REAL,
+    duration_s REAL,
+    calories REAL,
+    average_hr REAL,
+    max_hr REAL,
+    raw_json TEXT NOT NULL,
+    first_seen_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_seen_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  )`).run();
+  await db.prepare("CREATE INDEX IF NOT EXISTS idx_activities_start_time ON activities(start_time_local)").run();
+  await db.prepare(`CREATE TABLE IF NOT EXISTS daily_records (
+    record_date TEXT NOT NULL,
+    dataset TEXT NOT NULL,
+    raw_json TEXT NOT NULL,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (record_date, dataset)
+  )`).run();
+  await db.prepare(`CREATE TABLE IF NOT EXISTS sync_runs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    started_at TEXT NOT NULL,
+    finished_at TEXT,
+    status TEXT NOT NULL,
+    activities_seen INTEGER NOT NULL DEFAULT 0,
+    daily_records_seen INTEGER NOT NULL DEFAULT 0,
+    message TEXT
+  )`).run();
+}
+
 async function runSync(env, rangeOverride = null) {
   const startedAt = new Date().toISOString();
   let runId;
   try {
     if (!env.DB) throw new Error("D1 binding DB is missing");
     if (!env.GARMIN_PERSONAL_API_KEY) throw new Error("Worker Secret GARMIN_PERSONAL_API_KEY is missing");
+    await ensureCoreSchema(env.DB);
     const insertRun = await env.DB.prepare(
       "INSERT INTO sync_runs (started_at, status) VALUES (?, 'running')"
     ).bind(startedAt).run();
