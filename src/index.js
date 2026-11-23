@@ -110,13 +110,13 @@ async function saveActivity(db, item) {
 
 function normalizeGarminDate(value, fallbackDate) {
   if (value == null) return fallbackDate;
-  if (typeof value === "number" || (typeof value === "string" && /^\\d{12,}$/.test(value))) {
+  if (typeof value === "number" || (typeof value === "string" && /^\d{12,}$/.test(value))) {
     const n = Number(value);
     const d = new Date(n);
     return Number.isNaN(d.getTime()) ? fallbackDate : d.toISOString().slice(0, 10);
   }
   const text = String(value);
-  if (/^\\d{4}-\\d{2}-\\d{2}/.test(text)) return text.slice(0, 10);
+  if (/^\d{4}-\d{2}-\d{2}/.test(text)) return text.slice(0, 10);
   return fallbackDate;
 }
 
