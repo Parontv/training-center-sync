@@ -42,13 +42,13 @@ After deployment, verify `GET /health` reports `storage: true`. Then run the fir
 
 ## Endpoints
 - `GET /health`: non-sensitive service status.
-- `/run`: dark operator page with manual sync/backfill controls and automatic status refresh every 30 seconds.
+- `/run`: dark operator page with historical backfill controls and automatic status refresh every 30 seconds.
 - `GET /status`: authenticated backfill cursor, progress percentage, mode, and latest sync run; requires `Authorization: Bearer <SYNC_BEARER_TOKEN>`.
 - `POST /sync`: manual sync; requires `Authorization: Bearer <SYNC_BEARER_TOKEN>`.
 
 ## Important
 - First deployment is not considered successful until a real authenticated Garmin request succeeds.
-- The sync uses a three-day rolling lookback window and upserts records; it does not delete historical records.
+- Manual `/sync` supports a three-day lookback when explicitly invoked; the scheduled agent does not call it. The scheduled agent only imports historical blocks. All writes use upserts and do not delete historical records.
 - No Excel file is modified automatically in this first stage.
 - Do not paste API keys, passwords, bearer tokens, or Cloudflare tokens into GitHub issues, commits, or ChatGPT.
 
@@ -60,7 +60,7 @@ After deployment, verify `GET /health` reports `storage: true`. Then run the fir
 - A failed or partial window does not advance the cursor; the next scheduled run retries it. Records are upserted by dataset + record key.
 - Historical availability is limited to what Garmin Personal API actually returns for the account. The start date is a configurable search boundary, not a guarantee that Garmin has data back to that date.
 
-The Cron Trigger is configured for every 15 minutes. Each invocation performs a rolling sync for the latest three days and, while historical import is incomplete, also processes one bounded three-day backfill window starting from the saved cursor. A D1 lease lock prevents scheduled and manual runs from overlapping; a run already in progress causes a second request to return a busy status instead of duplicating work. One Garmin bearer token is reused for both operations in that invocation. Activity-detail/workout downloads are limited to three activities per sync run. Failed or partial historical windows do not advance the cursor and are retried on a later scheduled run. The manual `/backfill` endpoint remains available for one-step diagnostics.
+The Cron Trigger is configured for every 15 minutes and is dedicated exclusively to historical backfill: each invocation processes one bounded three-day window starting from the saved cursor. It does not run a rolling/current-data sync. Daily/current-data refresh remains the responsibility of the separate existing Garmin integration. A D1 lease lock prevents scheduled and manual runs from overlapping; a run already in progress causes a second request to return a busy status instead of duplicating work. One Garmin bearer token is reused for both operations in that invocation. Activity-detail/workout downloads are limited to three activities per sync run. Failed or partial historical windows do not advance the cursor and are retried on a later scheduled run. The manual `/backfill` endpoint remains available for one-step diagnostics.
 
 ## Activity details
 During activity synchronization, the Worker now fetches the Garmin activity detail endpoint for activities that do not yet have a detail row in D1. Full detail JSON is stored in `activity_details`, keyed by Garmin activity ID. Existing details are not repeatedly downloaded on every rolling sync. The activity summary, full detail and available workout structure are stored separately in D1. Original FIT/ZIP files are intentionally not downloaded because the Personal API JSON data is sufficient for the current project scope.
