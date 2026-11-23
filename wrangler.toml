@@ -8,7 +8,7 @@ crons = ["25 3 * * *"]
 [[d1_databases]]
 binding = "DB"
 database_name = "training_center"
-database_id = "REPLACE_WITH_CLOUDFLARE_D1_DATABASE_ID"
+database_id = "844c6dfa-43f7-428c-8347-314e79c379c0"
 
 [vars]
 SYNC_LOOKBACK_DAYS = "30"
