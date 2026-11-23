@@ -3,7 +3,7 @@ const TOKEN_PATH = "/personalapitoken-service/personal-api/personal-api-key/toke
 
 export default {
   async scheduled(_event, env, ctx) {
-    ctx.waitUntil(runSync(env));
+    ctx.waitUntil(runScheduledSync(env));
   },
 
   async fetch(request, env, ctx) {
@@ -188,6 +188,15 @@ function addDays(iso, days) {
   const d = new Date(`${iso}T00:00:00.000Z`);
   d.setUTCDate(d.getUTCDate() + days);
   return d.toISOString().slice(0, 10);
+}
+
+async function runScheduledSync(env) {
+  // Keep the recent window current, then advance historical import by one
+  // bounded seven-day chunk per daily cron until the cursor reaches today.
+  const recent = await runSync(env);
+  if (!recent.ok || recent.partial) return { recent, backfill: null };
+  const backfill = await runBackfill(env);
+  return { recent, backfill };
 }
 
 async function runBackfill(env) {
