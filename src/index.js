@@ -62,6 +62,27 @@ export default {
   $('go').addEventListener('click', () => request('/sync', 'POST'));
   $('backfill').addEventListener('click', () => request('/backfill', 'POST'));
   $('status').addEventListener('click', () => request('/status', 'GET'));
+  async function refreshStatus() {
+    const value = token.value.trim();
+    if (!value) return;
+    try {
+      const response = await fetch('/status', { headers: { Authorization: 'Bearer ' + value }, cache: 'no-store' });
+      const body = await response.json();
+      if (response.ok && body.ok) {
+        feedback.textContent = 'Monitor automatico · ' + new Date().toLocaleTimeString() +
+          ' · prossimo giorno storico: ' + (body.backfill?.nextDate || 'n/d') +
+          ' · attività: ' + (body.counts?.activities ?? 'n/d') +
+          ' · record Garmin: ' + (body.counts?.garmin_records ?? 'n/d');
+        output.textContent = JSON.stringify(body, null, 2);
+      } else {
+        feedback.textContent = 'Monitor: HTTP ' + response.status;
+      }
+    } catch (error) {
+      feedback.textContent = 'Monitor non raggiungibile: ' + String(error);
+    }
+  }
+  refreshStatus();
+  setInterval(refreshStatus, 30000);
   $('xlsx').addEventListener('click', async () => {
     const value = getToken(); if (!value) return;
     const button = $('xlsx'); button.disabled = true;
