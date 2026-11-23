@@ -367,12 +367,14 @@ async function runSync(env, rangeOverride = null) {
       ["weight", `/weight-service/weight/range/${startDate}/${endDate}?includeAll=true`],
       ["hydration", `/usersummary-service/stats/hydration/daily/${startDate}/${endDate}`],
       ["vo2_max", `/metrics-service/metrics/maxmet/daily/${startDate}/${endDate}`],
-      ["wellness_activity_summaries", `/wellnessactivity-service/activity/summary/range/${startDate}/${endDate}`]
+      ["wellness_activity_summaries", `/wellnessactivity-service/activity/summary/range/${startDate}/${endDate}`],
+      ["effective_weight_goals", `/goal-service/goal/user/effective/weightgoal/${startDate}/${endDate}`]
     ];
 
     const singletonDatasets = [
       ["profile_settings", "/userprofile-service/userprofile/settings"],
-      ["heart_rate_zones", "/biometric-service/heartRateZones/v2"]
+      ["heart_rate_zones", "/biometric-service/heartRateZones/v2"],
+      ["activity_types", "/activity-service/activity/activityTypes/simple"]
     ];
     for (const [dataset, path] of singletonDatasets) {
       try {
