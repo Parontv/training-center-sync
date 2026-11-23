@@ -7,8 +7,8 @@ crons = ["*/15 * * * *"]
 
 [[d1_databases]]
 binding = "DB"
-database_name = "training_center"
-database_id = "844c6dfa-43f7-428c-8347-314e79c379c0"
+database_name = "storico_garmin"
+database_id = "51fba949-8cdd-48aa-8e1b-35be948cfd25"
 
 [vars]
 SYNC_LOOKBACK_DAYS = "3"
