@@ -34,3 +34,19 @@ CREATE TABLE IF NOT EXISTS sync_runs (
   daily_records_seen INTEGER NOT NULL DEFAULT 0,
   message TEXT
 );
+
+ 
+-- Append-safe raw Garmin record archive. The Worker also creates this table
+-- defensively at runtime, so existing D1 databases can migrate on next sync.
+CREATE TABLE IF NOT EXISTS garmin_records (
+  dataset TEXT NOT NULL,
+  record_key TEXT NOT NULL,
+  record_date TEXT,
+  source_endpoint TEXT,
+  raw_json TEXT NOT NULL,
+  retrieved_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (dataset, record_key)
+);
+
+CREATE INDEX IF NOT EXISTS idx_garmin_records_date
+  ON garmin_records(record_date, dataset);
