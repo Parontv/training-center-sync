@@ -14,6 +14,46 @@ export default {
     if (url.pathname === "/run" && request.method === "GET") {
       return new Response(`<!doctype html><html lang="it"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Center Sync</title><body style="font:16px system-ui;max-width:560px;margin:40px auto;padding:16px;background:#111;color:#eee"><h2>Training Center Sync</h2><p>Inserisci il tuo SYNC_BEARER_TOKEN configurato nei Secrets Cloudflare. Non è la chiave Garmin.</p><input id="token" type="password" autocomplete="off" placeholder="SYNC_BEARER_TOKEN" style="box-sizing:border-box;width:100%;padding:12px;margin:8px 0;background:#222;color:#fff;border:1px solid #555;border-radius:8px"><button id="go" style="padding:12px 18px">Sincronizza ultimi giorni</button> <button id="backfill" style="padding:12px 18px;margin-top:8px">Importa storico (7 giorni)</button><pre id="out" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#222;padding:12px;border-radius:8px"></pre><script>document.getElementById('go').onclick=async()=>{const b=document.getElementById('go'),o=document.getElementById('out');b.disabled=true;o.textContent='Sincronizzazione in corso…';try{const r=await fetch('/sync',{method:'POST',headers:{Authorization:'Bearer '+document.getElementById('token').value}});o.textContent='HTTP '+r.status+'\\n'+JSON.stringify(await r.json(),null,2)}catch(e){o.textContent=String(e)}finally{b.disabled=false}};document.getElementById('backfill').onclick=async()=>{const b=document.getElementById('backfill'),o=document.getElementById('out');b.disabled=true;o.textContent='Importazione storico in corso…';try{const r=await fetch('/backfill',{method:'POST',headers:{Authorization:'Bearer '+document.getElementById('token').value}});o.textContent='HTTP '+r.status+'\\n'+JSON.stringify(await r.json(),null,2)}catch(e){o.textContent=String(e)}finally{b.disabled=false}};</script></body></html>`, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
     }
+    if (url.pathname === "/status" && request.method === "GET") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) {
+        return json({ error: "unauthorized" }, 401);
+      }
+      await env.DB.prepare(`
+        CREATE TABLE IF NOT EXISTS sync_state (
+          state_key TEXT PRIMARY KEY,
+          state_value TEXT NOT NULL,
+          updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+      `).run();
+      const today = new Date().toISOString().slice(0, 10);
+      const configuredStart = env.BACKFILL_START_DATE || "2015-01-01";
+      const state = await env.DB.prepare(
+        "SELECT state_value, updated_at FROM sync_state WHERE state_key='backfill_next_date'"
+      ).first();
+      const nextDate = state?.state_value || configuredStart;
+      const dayMs = 86400000;
+      const totalDays = Math.max(0, Math.floor((Date.parse(today + "T00:00:00Z") - Date.parse(configuredStart + "T00:00:00Z")) / dayMs) + 1);
+      const completedDays = Math.max(0, Math.min(totalDays, Math.floor((Date.parse(nextDate + "T00:00:00Z") - Date.parse(configuredStart + "T00:00:00Z")) / dayMs)));
+      const latest = await env.DB.prepare(
+        "SELECT started_at, finished_at, status, activities_seen, daily_records_seen, message FROM sync_runs ORDER BY id DESC LIMIT 1"
+      ).first();
+      return json({
+        ok: true,
+        mode: nextDate > today ? "daily_sync" : "historical_backfill",
+        backfill: {
+          startDate: configuredStart,
+          nextDate,
+          today,
+          complete: nextDate > today,
+          completedDays,
+          totalDays,
+          percent: totalDays ? Math.round((completedDays / totalDays) * 1000) / 10 : 100,
+          cursorUpdatedAt: state?.updated_at || null
+        },
+        latestRun: latest || null
+      });
+    }
     if (url.pathname === "/export" && request.method === "GET") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) {
