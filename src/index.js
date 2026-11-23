@@ -108,6 +108,18 @@ async function saveActivity(db, item) {
   return true;
 }
 
+function normalizeGarminDate(value, fallbackDate) {
+  if (value == null) return fallbackDate;
+  if (typeof value === "number" || (typeof value === "string" && /^\\d{12,}$/.test(value))) {
+    const n = Number(value);
+    const d = new Date(n);
+    return Number.isNaN(d.getTime()) ? fallbackDate : d.toISOString().slice(0, 10);
+  }
+  const text = String(value);
+  if (/^\\d{4}-\\d{2}-\\d{2}/.test(text)) return text.slice(0, 10);
+  return fallbackDate;
+}
+
 function recordKey(dataset, row, fallbackDate) {
   if (row && typeof row === "object" && !Array.isArray(row)) {
     const direct = row.activityId ?? row.activity_id ?? row.id ?? row.uuid?.uuid ?? row.uuid;
@@ -212,8 +224,8 @@ async function runSync(env) {
         const rows = rowsFrom(result);
         if (rows.length) {
           for (const row of rows) {
-            const date = row.calendarDate ?? row.date ?? row.startDate ?? endDate;
-            await saveDaily(env.DB, String(date).slice(0, 10), dataset, row, path);
+            const date = normalizeGarminDate(row.calendarDate ?? row.date ?? row.startDate, endDate);
+            await saveDaily(env.DB, date, dataset, row, path);
             dailyCount++;
           }
         } else if (result != null) {
