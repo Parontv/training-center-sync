@@ -126,7 +126,7 @@ async function runSync(env) {
     runId = insertRun.meta.last_row_id;
 
     const token = await getBearerToken(env.GARMIN_PERSONAL_API_KEY);
-    const lookback = Math.min(Math.max(Number(env.SYNC_LOOKBACK_DAYS || 30), 3), 90);
+    const lookback = Math.min(Math.max(Number(env.SYNC_LOOKBACK_DAYS || 28), 3), 28);
     const startDate = isoDateDaysAgo(lookback);
     const endDate = new Date().toISOString().slice(0, 10);
 
