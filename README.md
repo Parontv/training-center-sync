@@ -27,11 +27,9 @@ Official references:
 The production D1 target is `storico_garmin`; its ID and the Worker binding `DB` are configured in `wrangler.toml`. The new archive must remain separate from the previous database.
 
 ### Automatic deployment
-The GitHub Actions workflow `.github/workflows/deploy.yml` applies additive D1 migrations and deploys the Worker whenever relevant files are pushed to `main`. Configure these GitHub Actions repository secrets once:
-- `CLOUDFLARE_API_TOKEN`: Cloudflare API token with Workers Scripts:Edit and D1:Edit permissions.
-- `CLOUDFLARE_ACCOUNT_ID`: Cloudflare account ID.
+Use Cloudflare Workers Builds (Git integration) to connect this repository to the Worker. Cloudflare then builds and deploys each push to `main` without a separate Cloudflare API token stored in GitHub Actions. The Worker name must match `training-center-sync` in `wrangler.toml`. The D1 binding is configured as `DB` and points to `storico_garmin`.
 
-The workflow applies migrations only; it does not delete or reset D1 data.
+The previous token-based GitHub Actions deployment workflow has been removed. D1 migrations are additive and must never reset or delete existing archive rows.
 
 ### Garmin secrets
 In the Cloudflare Worker settings, configure:
@@ -40,7 +38,7 @@ In the Cloudflare Worker settings, configure:
 
 Never commit these secrets or paste them into GitHub source files or ChatGPT. The Worker binding must remain named `DB`, because the code reads `env.DB`.
 
-After deployment, verify `GET /health` reports `storage: true`. Then run the first authenticated `POST /sync` or allow the 15-minute Cron Trigger to start the historical backfill from `BACKFILL_START_DATE`. The database starts empty; the first successful Garmin sync populates it. Missing optional Garmin records are skipped rather than stored as zeros.
+After deployment, verify `GET /health` reports `storage: true`. Then run the first authenticated `POST /sync` or allow the 15-minute Cron Trigger to start the historical backfill from `BACKFILL_START_DATE`. The existing D1 archive is preserved; the first successful Garmin sync adds or updates records without deleting existing rows. Empty or missing optional Garmin responses are skipped rather than stored as zeros.
 
 ## Endpoints
 - `GET /health`: non-sensitive service status.
@@ -61,7 +59,7 @@ After deployment, verify `GET /health` reports `storage: true`. Then run the fir
 - A failed or partial window does not advance the cursor; the next scheduled run retries it. Records are upserted by dataset + record key.
 - Historical availability is limited to what Garmin Personal API actually returns for the account. The start date is a configurable search boundary, not a guarantee that Garmin has data back to that date.
 
-The Cron Trigger runs every 15 minutes. While the historical cursor is behind the current date, each invocation processes one bounded three-day window and does not waste requests repeating the recent sync. Once the cursor passes today, the agent automatically switches to the normal rolling three-day sync. Each invocation limits activity-detail/workout downloads to three activities. A partial/failed window does not advance the cursor and is retried on a later scheduled run. The manual `/backfill` endpoint remains available for one-step diagnostics.
+The Cron Trigger runs every 15 minutes. Each invocation performs a rolling sync for the latest three days and, while historical import is incomplete, also processes one bounded three-day backfill window starting from the saved cursor. One Garmin bearer token is reused for both operations in that invocation. Activity-detail/workout downloads are limited to three activities per sync run. Failed or partial historical windows do not advance the cursor and are retried on a later scheduled run. The manual `/backfill` endpoint remains available for one-step diagnostics.
 
 ## Activity details
 During activity synchronization, the Worker now fetches the Garmin activity detail endpoint for activities that do not yet have a detail row in D1. Full detail JSON is stored in `activity_details`, keyed by Garmin activity ID. Existing details are not repeatedly downloaded on every rolling sync. The activity summary, full detail and available workout structure are stored separately in D1. Original FIT/ZIP files are intentionally not downloaded because the Personal API JSON data is sufficient for the current project scope.
