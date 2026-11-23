@@ -55,7 +55,20 @@ The normal daily cron remains a rolling-window sync. Backfill is manually advanc
 ## Activity details
 During activity synchronization, the Worker now fetches the Garmin activity detail endpoint for activities that do not yet have a detail row in D1. Full detail JSON is stored in `activity_details`, keyed by Garmin activity ID. Existing details are not repeatedly downloaded on every rolling sync. The activity summary and detail are separate records by design.
 
-Original FIT/TCX/ZIP downloads are not yet enabled: they require a configured Cloudflare R2 bucket binding and a separate storage migration. They must not be stored as large blobs in D1.
+Original Garmin activity ZIP downloads are implemented as an optional feature. They activate only when the Worker has an R2 binding named `RAW_BUCKET`; without that binding, the sync continues to archive activity summaries and details in D1 and skips binary downloads. ZIP bytes are stored in R2 under `activities/{activityId}.zip`, while `activity_files` stores metadata in D1.
 
 ### Additional date-scoped health datasets
 The sync also archives daily heart-rate detail (`daily_heart_rate`), fitness age (`fitness_age`), and SpO2/acclimation (`spo2_acclimation`) using Garmin Personal API endpoints documented by Garmin's reference client. These endpoints are date-scoped, so the Worker checks D1 first and requests only dates not already present for that dataset. Missing responses are left missing; they are not converted to zero values.
+
+### Enable original activity file archival (Cloudflare R2)
+1. Create an R2 bucket in the same Cloudflare account.
+2. Add this binding to the Worker configuration, replacing the bucket name with the exact bucket you created:
+   ```toml
+   [[r2_buckets]]
+   binding = "RAW_BUCKET"
+   bucket_name = "YOUR_ACTUAL_R2_BUCKET_NAME"
+   ```
+3. Deploy the Worker and apply migration `0005_activity_files.sql` to D1 (or run the updated `schema.sql` for a new database).
+4. The next sync will archive original ZIP files for activities it processes, skipping activity IDs already present in `activity_files`.
+
+Do not put API keys or bearer tokens in `wrangler.toml`. The R2 binding is configuration, not a secret.
