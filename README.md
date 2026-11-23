@@ -50,7 +50,7 @@ Official references:
 - A failed or partial window does not advance the cursor; rerunning it is safe because records are upserted by dataset + record key.
 - Historical availability is limited to what Garmin Personal API actually returns for the account. The start date is a configurable search boundary, not a guarantee that Garmin has data back to that date.
 
-The normal daily cron remains a rolling-window sync. Backfill is manually advanced and must be run after deploying the updated Worker.
+The daily cron first refreshes the recent rolling window, then automatically advances one seven-day historical backfill window. This continues until the saved cursor reaches the current date. The manual `/backfill` endpoint remains available for controlled one-step runs.
 
 ## Activity details
 During activity synchronization, the Worker now fetches the Garmin activity detail endpoint for activities that do not yet have a detail row in D1. Full detail JSON is stored in `activity_details`, keyed by Garmin activity ID. Existing details are not repeatedly downloaded on every rolling sync. The activity summary, full detail and available workout structure are stored separately in D1. Original FIT/ZIP files are intentionally not downloaded because the Personal API JSON data is sufficient for the current project scope.
