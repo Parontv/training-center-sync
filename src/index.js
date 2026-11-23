@@ -261,6 +261,18 @@ async function garminGet(path, token) {
   try { return JSON.parse(text); } catch { return text; }
 }
 
+function hasPayload(value) {
+  if (value == null) return false;
+  if (Array.isArray(value)) return value.length > 0;
+  if (typeof value === "object") {
+    const collectionKeys = ["activities", "dailySummaries", "summaries", "data", "items"];
+    const collections = collectionKeys.filter(key => Array.isArray(value[key]));
+    if (collections.length) return collections.some(key => value[key].length > 0);
+    return Object.keys(value).length > 0;
+  }
+  return true;
+}
+
 function rowsFrom(value) {
   if (Array.isArray(value)) return value;
   if (value && typeof value === "object") {
@@ -382,34 +394,31 @@ function addDays(iso, days) {
 }
 
 async function runScheduledSync(env) {
-  // During the initial archive, spend each scheduled invocation on exactly
-  // one bounded historical window. Do not repeatedly spend requests refreshing
-  // recent data while the cursor is still years behind.
-  await env.DB.prepare(`
-    CREATE TABLE IF NOT EXISTS sync_state (
-      state_key TEXT PRIMARY KEY,
-      state_value TEXT NOT NULL,
-      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-    )
-  `).run();
+  // Keep new Garmin data fresh while the historical archive advances.
+  // Reuse one 24-hour bearer token for both bounded sync operations.
+  try {
+    if (!env.DB) throw new Error("D1 binding DB is missing");
+    if (!env.GARMIN_PERSONAL_API_KEY) throw new Error("Worker Secret GARMIN_PERSONAL_API_KEY is missing");
+    await env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS sync_state (
+        state_key TEXT PRIMARY KEY,
+        state_value TEXT NOT NULL,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
+    `).run();
 
-  const today = new Date().toISOString().slice(0, 10);
-  const state = await env.DB.prepare(
-    "SELECT state_value FROM sync_state WHERE state_key='backfill_next_date'"
-  ).first();
-  const nextDate = state?.state_value || env.BACKFILL_START_DATE || "2015-01-01";
+    const token = tokenOverride || await getBearerToken(env.GARMIN_PERSONAL_API_KEY);
+    const recent = await runSync(env, null, token);
+    if (!recent.ok) return { ok: false, mode: "scheduled_sync", recent, backfill: null };
 
-  if (nextDate <= today) {
-    const backfill = await runBackfill(env);
-    return { mode: "historical_backfill", recent: null, backfill };
+    const backfill = await runBackfill(env, token);
+    return { ok: Boolean(backfill.ok), mode: "scheduled_sync", recent, backfill };
+  } catch (error) {
+    return { ok: false, mode: "scheduled_sync", error: String(error?.message || error).slice(0, 500) };
   }
-
-  // Historical archive is complete: return to the normal rolling sync.
-  const recent = await runSync(env);
-  return { mode: "daily_sync", recent, backfill: null };
 }
 
-async function runBackfill(env) {
+async function runBackfill(env, tokenOverride = null) {
   try {
     await env.DB.prepare(`
       CREATE TABLE IF NOT EXISTS sync_state (
@@ -427,7 +436,7 @@ async function runBackfill(env) {
     if (startDate > today) return { ok: true, complete: true, nextDate: startDate };
     const proposedEnd = addDays(startDate, 2);
     const endDate = proposedEnd > today ? today : proposedEnd;
-    const result = await runSync(env, { startDate, endDate });
+    const result = await runSync(env, { startDate, endDate }, tokenOverride);
     if (!result.ok || result.partial) {
       return { ...result, backfill: true, cursorAdvanced: false, nextDate: startDate };
     }
@@ -478,7 +487,7 @@ async function ensureCoreSchema(db) {
   )`).run();
 }
 
-async function runSync(env, rangeOverride = null) {
+async function runSync(env, rangeOverride = null, tokenOverride = null) {
   const startedAt = new Date().toISOString();
   let runId;
   try {
@@ -544,7 +553,7 @@ async function runSync(env, rangeOverride = null) {
                 activityDetailsProcessed++;
                 const detailPath = `/activity-service/activity/${encodeURIComponent(String(activityId))}`;
                 const detail = await garminGet(detailPath, token);
-                if (detail != null) await saveActivityDetail(env.DB, activityId, detail, detailPath);
+                if (hasPayload(detail)) await saveActivityDetail(env.DB, activityId, detail, detailPath);
               }
               const existingWorkouts = await env.DB.prepare(
                 "SELECT 1 AS found FROM garmin_records WHERE dataset='activity_workouts' AND record_key=? LIMIT 1"
@@ -553,7 +562,7 @@ async function runSync(env, rangeOverride = null) {
                 if (existingDetail) activityDetailsProcessed++;
                 const workoutsPath = `/activity-service/activity/${encodeURIComponent(String(activityId))}/workouts`;
                 const workouts = await garminGet(workoutsPath, token);
-                if (workouts != null) {
+                if (hasPayload(workouts)) {
                   const activityDate = normalizeGarminDate(item.startTimeLocal ?? item.startTimeGMT, endDate);
                   await saveDaily(env.DB, activityDate, "activity_workouts", { activityId: String(activityId), workouts }, workoutsPath);
                   dailyCount++;
@@ -596,7 +605,7 @@ async function runSync(env, rangeOverride = null) {
         ).bind(dataset).first();
         if (!existing) {
           const result = await garminGet(path, token);
-          if (result != null) {
+          if (hasPayload(result)) {
             await saveDaily(env.DB, endDate, dataset, result, path);
             dailyCount++;
           }
@@ -616,7 +625,7 @@ async function runSync(env, rangeOverride = null) {
             await saveDaily(env.DB, date, dataset, row, path);
             dailyCount++;
           }
-        } else if (result != null) {
+        } else if (hasPayload(result)) {
           await saveDaily(env.DB, endDate, dataset, result, path);
           dailyCount++;
         }
@@ -643,7 +652,7 @@ async function runSync(env, rangeOverride = null) {
           if (existing) continue;
           const path = pathForDate(date);
           const result = await garminGet(path, token);
-          if (result != null) {
+          if (hasPayload(result)) {
             await saveDaily(env.DB, date, dataset, result, path);
             dailyCount++;
           }
