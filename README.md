@@ -24,10 +24,10 @@ Official references:
 - https://github.com/garmin/connect-personal-api-python
 
 ## Cloudflare setup (to be completed)
-1. Create a D1 database named `training-center-db`.
-2. Apply `schema.sql`.
-3. Create a Worker from this repository or deploy with Wrangler.
-4. Bind the D1 database as `DB`.
+1. Create a D1 database named `storico_garmin` (ID is stored in `wrangler.toml`).
+2. Apply `schema.sql` to the new database before the first sync. The Worker also bootstraps its core tables defensively.
+3. Create or deploy the Worker with Wrangler using this repository.
+4. Bind the D1 database as `DB` (do not rename this binding; the Worker reads `env.DB`).
 5. Add Worker Secret `GARMIN_PERSONAL_API_KEY` (never commit it).
 6. Add a random Worker Secret `SYNC_BEARER_TOKEN` to protect the manual sync endpoint.
 7. Configure the Cron Trigger from `wrangler.toml`.
