@@ -162,7 +162,7 @@ export default {
       const date = (url.searchParams.get("date") || "").trim();
       const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 100), 1), 200);
       if (!dataset || dataset.length > 100) return json({ error: "Seleziona un dataset valido." }, 400);
-      if (date && !/^\\d{4}-\\d{2}-\\d{2}$/.test(date)) return json({ error: "Data non valida. Usa YYYY-MM-DD." }, 400);
+      if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) return json({ error: "Data non valida. Usa YYYY-MM-DD." }, 400);
       try {
         const sql = "SELECT dataset, record_key, record_date, source_endpoint, raw_json, retrieved_at FROM garmin_records WHERE dataset=? " + (date ? "AND record_date=? " : "") + "ORDER BY record_date DESC, retrieved_at DESC LIMIT ?";
         const stmt = env.DB.prepare(sql);
@@ -176,7 +176,7 @@ export default {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
       const date = url.searchParams.get("date") || "";
-      if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(date)) return json({ error: "Data non valida. Usa YYYY-MM-DD." }, 400);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return json({ error: "Data non valida. Usa YYYY-MM-DD." }, 400);
       try {
         const [steps, daily] = await Promise.all([
           env.DB.prepare("SELECT dataset, record_date, raw_json, retrieved_at FROM garmin_records WHERE dataset='steps' AND record_date=? ORDER BY retrieved_at DESC").bind(date).all(),
@@ -855,7 +855,7 @@ async function runSync(env, rangeOverride = null, tokenOverride = null) {
 
 
 function dashboardHtml() {
-  return \`<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Center · Archivio Garmin</title>
+  return `<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Center · Archivio Garmin</title>
   <style>
   :root{color-scheme:dark;--bg:#0b1020;--panel:#141c2e;--line:#26344d;--muted:#91a0b8;--text:#edf3ff;--accent:#72a7ff}
   *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
@@ -971,5 +971,5 @@ function dashboardHtml() {
   }
   $('load').addEventListener('click',load);$('searchRecords').addEventListener('click',searchRecords);$('auditLoad').addEventListener('click',loadAudit);
   if(token.value)load();
-  </script></body></html>\`;
+  </script></body></html>`;
 }
