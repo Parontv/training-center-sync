@@ -281,7 +281,7 @@ export default {
     if (url.pathname === "/audit" && request.method === "GET") {
       const page = `<!doctype html><html lang="it"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111827"><title>Training Center · Audit</title><body style="margin:0;background:#0b1220;color:#e5e7eb;font:16px system-ui"><main style="max-width:760px;margin:auto;padding:20px"><h2>Training Center · Audit database</h2><p style="color:#9ca3af">Controllo in sola lettura di storico_garmin. Non modifica dati, sincronizzazione o backfill.</p><label for="token">SYNC_BEARER_TOKEN</label><input id="token" type="password" autocomplete="off" placeholder="Inserisci il token" style="box-sizing:border-box;width:100%;padding:14px;margin:8px 0;background:#111827;color:white;border:1px solid #475569;border-radius:9px"><label style="display:block;color:#cbd5e1;font-size:14px"><input id="remember" type="checkbox"> Ricorda su questo dispositivo</label><button id="run" style="width:100%;padding:15px;margin:14px 0;background:#2563eb;color:white;border:0;border-radius:9px;font-weight:700">Esegui audit</button><p id="status" style="color:#93c5fd">Pronto. L'analisi interroga D1 senza scrivere.</p><section id="results"></section><script>
 (function(){
-const $=id=>document.getElementById(id), token=$('token');
+const $=id=>document.getElementById(id), token=$('token'), esc=v=>String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c]));
 try{token.value=localStorage.getItem('training_center_sync_token')||'';if(token.value)$('remember').checked=true}catch(e){}
 $('run').addEventListener('click',async()=>{
  const t=token.value.trim();if(!t){$('status').textContent='Inserisci il token.';return}
@@ -290,13 +290,13 @@ $('run').addEventListener('click',async()=>{
  try{
   const r=await fetch('/audit-data',{headers:{Authorization:'Bearer '+t},cache:'no-store'}),d=await r.json();
   if(!r.ok||!d.ok)throw Error(d.error||('HTTP '+r.status));
-  const card=(label,value,detail)=>'<article style="background:#111827;border:1px solid #334155;border-radius:10px;padding:14px;margin:9px 0"><div style="color:#94a3b8;font-size:13px">'+label+'</div><strong style="font-size:24px">'+(value??'—')+'</strong><div style="color:#94a3b8;font-size:13px">'+(detail||'')+'</div></article>';
+  const card=(label,value,detail)=>'<article style="background:#111827;border:1px solid #334155;border-radius:10px;padding:14px;margin:9px 0"><div style="color:#94a3b8;font-size:13px">'+esc(label)+'</div><strong style="font-size:24px">'+esc(value??'—')+'</strong><div style="color:#94a3b8;font-size:13px">'+esc(detail||'')+'</div></article>';
   const section=(title,body)=>'<h3 style="margin:22px 0 8px">'+title+'</h3>'+body;
-  let html='<p style="color:#94a3b8">Generato: '+new Date(d.generatedAt).toLocaleString('it-IT')+' · DB: '+d.database+'</p>';
+  let html='<p style="color:#94a3b8">Generato: '+esc(new Date(d.generatedAt).toLocaleString('it-IT'))+' · DB: '+esc(d.database)</p>';
   html+=section('Volumi',Object.entries(d.counts).map(([k,v])=>card(k,Number(v).toLocaleString('it-IT'),'record presenti')).join(''));
   html+=section('Integrità',d.checks.map(x=>card(x.label,Number(x.value).toLocaleString('it-IT'),x.detail+' · '+(x.status==='ok'?'OK':x.status==='warning'?'Da verificare':'Informativo'))).join(''));
   html+=section('Dataset Garmin',d.datasets.map(x=>card(x.dataset,Number(x.records).toLocaleString('it-IT'),(x.first_date||'data iniziale n/d')+' → '+(x.last_date||'data finale n/d')+' · vuoti: '+x.empty_records)).join(''));
-  html+=section('Ultime sincronizzazioni',d.recentRuns.map(x=>card('#'+x.id+' · '+x.sync_type,x.status,x.started_at+' · attività '+x.activities_seen+' · record giornalieri '+x.daily_records_seen+' · '+(x.message||''))).join('')||'<p>Nessuna esecuzione.</p>');
+  html+=section('Ultime sincronizzazioni',d.recentRuns.map(x=>card('#'+esc(x.id)+' · '+esc(x.sync_type),esc(x.status),esc(x.started_at+' · attività '+x.activities_seen+' · record giornalieri '+x.daily_records_seen+' · '+(x.message||'')))).join('')||'<p>Nessuna esecuzione.</p>');
   if(d.warnings.length)html+=section('Avvisi',d.warnings.map(x=>card('Query non disponibile',x,'Tabella o colonna non presente')).join(''));
   $('results').innerHTML=html;$('status').textContent='Audit completato. Modalità esclusivamente lettura.';
  }catch(e){$('status').textContent='Audit non riuscito: '+e.message}
