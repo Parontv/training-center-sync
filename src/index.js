@@ -155,6 +155,23 @@ export default {
     if (url.pathname === "/dashboard" && request.method === "GET") {
       return new Response(dashboardHtml(), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
     }
+    if (url.pathname === "/dashboard-records" && request.method === "GET") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
+      const dataset = (url.searchParams.get("dataset") || "").trim();
+      const date = (url.searchParams.get("date") || "").trim();
+      const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 100), 1), 200);
+      if (!dataset || dataset.length > 100) return json({ error: "Seleziona un dataset valido." }, 400);
+      if (date && !/^\\d{4}-\\d{2}-\\d{2}$/.test(date)) return json({ error: "Data non valida. Usa YYYY-MM-DD." }, 400);
+      try {
+        const sql = "SELECT dataset, record_key, record_date, source_endpoint, raw_json, retrieved_at FROM garmin_records WHERE dataset=? " + (date ? "AND record_date=? " : "") + "ORDER BY record_date DESC, retrieved_at DESC LIMIT ?";
+        const stmt = env.DB.prepare(sql);
+        const result = date ? await stmt.bind(dataset, date, limit).all() : await stmt.bind(dataset, limit).all();
+        return json({ ok: true, dataset, date: date || null, count: (result.results || []).length, rows: result.results || [] });
+      } catch (error) {
+        return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500);
+      }
+    }
     if (url.pathname === "/dashboard-record" && request.method === "GET") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
@@ -838,102 +855,121 @@ async function runSync(env, rangeOverride = null, tokenOverride = null) {
 
 
 function dashboardHtml() {
-  return `<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Center · Dashboard</title>
+  return \`<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Center · Archivio Garmin</title>
   <style>
   :root{color-scheme:dark;--bg:#0b1020;--panel:#141c2e;--line:#26344d;--muted:#91a0b8;--text:#edf3ff;--accent:#72a7ff}
   *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
-  main{max-width:1180px;margin:auto;padding:24px 18px 60px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-  h1{font-size:26px;margin:0}h2{font-size:17px;margin:0 0 14px}.muted{color:var(--muted)}.panel,.metric{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
-  .auth{display:flex;gap:8px;margin:18px 0}.auth input{flex:1;min-width:180px}input,button{background:#0e1729;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:11px;font:inherit}button{cursor:pointer;background:#244b83;border-color:#3769ad}button:disabled{opacity:.5}
-  .grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:16px 0}.metric small{display:block;color:var(--muted)}.metric strong{display:block;font-size:26px;margin-top:5px}
-  .cols{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin-top:14px}.scroll{overflow:auto;max-height:520px}
-  table{width:100%;border-collapse:collapse;white-space:nowrap;font-size:13px}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line)}th{color:var(--muted);position:sticky;top:0;background:var(--panel)}
-  .bar{height:7px;background:#26344d;border-radius:8px;overflow:hidden;min-width:90px}.bar i{display:block;height:100%;background:var(--accent)}
-  details.explorer{border:1px solid var(--line);border-radius:10px;margin-top:10px;background:#101a2d}details.explorer summary{cursor:pointer;list-style:none;padding:13px;font-weight:650;display:flex;justify-content:space-between;align-items:center}details.explorer summary::-webkit-details-marker{display:none}details.explorer summary:after{content:"＋";color:var(--accent)}details.explorer[open] summary:after{content:"−"}details.explorer .scroll{padding:0 10px 10px}pre.raw{white-space:pre-wrap;overflow-wrap:anywhere;max-width:680px;max-height:180px;overflow:auto;margin:4px 0;color:#c5d5ef;font-size:12px}
-  .status{margin:10px 0;color:var(--muted);font-size:13px}.pill{border:1px solid var(--line);border-radius:99px;padding:4px 8px;font-size:12px;color:#b8d1ff}
-  @media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cols{grid-template-columns:1fr}main{padding:16px 12px 40px}.metric strong{font-size:22px}}
+  main{max-width:1220px;margin:auto;padding:24px 18px 60px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  h1{font-size:26px;margin:0}h2{font-size:17px;margin:0}.muted{color:var(--muted)}.panel,.metric{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px}
+  .auth{display:flex;gap:8px;margin:18px 0}.auth input{flex:1;min-width:180px}input,select,button{background:#0e1729;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:11px;font:inherit}button{cursor:pointer;background:#244b83;border-color:#3769ad}button:disabled{opacity:.5}
+  .grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:16px 0}.metric small{display:block;color:var(--muted)}.metric strong{display:block;font-size:25px;margin-top:5px}
+  .scroll{overflow:auto;max-height:520px}table{width:100%;border-collapse:collapse;white-space:nowrap;font-size:13px}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line)}th{color:var(--muted);position:sticky;top:0;background:var(--panel)}
+  details.menu{border:1px solid var(--line);border-radius:12px;margin:10px 0;background:var(--panel);overflow:hidden}details.menu>summary{cursor:pointer;list-style:none;padding:15px;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:10px}details.menu>summary::-webkit-details-marker{display:none}details.menu>summary:after{content:"＋";color:var(--accent);font-size:18px}details.menu[open]>summary:after{content:"−"}details.menu .inside{padding:0 14px 14px}
+  details.submenu{border:1px solid var(--line);border-radius:9px;margin:9px 0;background:#101a2d}details.submenu>summary{cursor:pointer;list-style:none;padding:12px;font-weight:650}details.submenu>summary::-webkit-details-marker{display:none}details.submenu>summary:after{content:"＋";float:right;color:var(--accent)}details.submenu[open]>summary:after{content:"−"}details.submenu .inside{padding:0 12px 12px}
+  .status{margin:10px 0;color:var(--muted);font-size:13px}.pill{border:1px solid var(--line);border-radius:99px;padding:4px 8px;font-size:12px;color:#b8d1ff;white-space:nowrap}
+  .bar{height:7px;background:#26344d;border-radius:8px;overflow:hidden;min-width:80px}.bar i{display:block;height:100%;background:var(--accent)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:9px;margin-top:10px}.valuecard{background:#0e1729;border:1px solid var(--line);border-radius:9px;padding:10px}.valuecard small{display:block;color:var(--muted);overflow-wrap:anywhere}.valuecard strong{display:block;font-size:20px;margin-top:4px;overflow-wrap:anywhere}.raw{white-space:pre-wrap;overflow-wrap:anywhere;max-height:260px;overflow:auto;background:#0a1221;border:1px solid var(--line);padding:10px;border-radius:8px;font-size:12px;color:#c5d5ef}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.controls input,.controls select{min-width:180px}.hint{font-size:13px;color:var(--muted);line-height:1.5}
+  @media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}main{padding:16px 12px 40px}.metric strong{font-size:21px}.auth{flex-wrap:wrap}.auth input{width:100%}}
   </style></head><body><main>
-  <div class="top"><div><h1>Training Center</h1><div class="muted">Archivio Garmin · dati letti direttamente da Cloudflare D1</div></div><span class="pill">SOLa LETTURA</span></div>
-  <div class="auth"><input id="token" type="password" placeholder="SYNC_BEARER_TOKEN" autocomplete="off"><button id="load">Aggiorna dashboard</button></div>
-  <div id="status" class="status">Inserisci il token già configurato per consultare l'archivio. Nessun dato viene modificato.</div>
+  <div class="top"><div><h1>Training Center</h1><div class="muted">Archivio Garmin · consultazione diretta di Cloudflare D1</div></div><span class="pill">SOLA LETTURA</span></div>
+  <div class="auth"><input id="token" type="password" placeholder="SYNC_BEARER_TOKEN" autocomplete="off"><button id="load">Aggiorna archivio</button></div>
+  <div id="status" class="status">Inserisci il token già configurato per consultare D1. Questa dashboard non modifica i dati.</div>
   <section class="grid">
-    <div class="metric"><small>Attività</small><strong id="activities">—</strong></div>
-    <div class="metric"><small>Dettagli attività</small><strong id="details">—</strong></div>
-    <div class="metric"><small>Record Garmin</small><strong id="records">—</strong></div>
-    <div class="metric"><small>Record giornalieri</small><strong id="daily">—</strong></div>
-    <div class="metric"><small>Esecuzioni import</small><strong id="runs">—</strong></div>
+    <div class="metric"><small>Attività</small><strong id="activities">—</strong></div><div class="metric"><small>Dettagli attività</small><strong id="details">—</strong></div><div class="metric"><small>Record Garmin</small><strong id="records">—</strong></div><div class="metric"><small>Record giornalieri</small><strong id="daily">—</strong></div><div class="metric"><small>Esecuzioni import</small><strong id="runs">—</strong></div>
   </section>
-  <section class="panel" style="margin-top:14px"><h2>Controllo importazioni</h2><div class="muted" style="font-size:13px;margin-bottom:10px">Per ogni esecuzione mostra i record Garmin effettivamente inseriti o aggiornati in D1 durante quella finestra temporale. Le chiamate senza nuovi record non compaiono in questa ripartizione.</div><button id="auditLoad" type="button">Aggiorna registro importazioni</button><div id="auditStatus" class="status">Registro non ancora caricato.</div><div id="auditRows"></div></section>
-  <section class="panel"><h2>Copertura dei dati per categoria</h2><div class="muted" style="font-size:13px;margin-bottom:12px">Numero di record presenti in D1 e intervallo temporale disponibile. I record vuoti sono conteggiati separatamente, non interpretati come misurazioni.</div><div class="scroll"><table><thead><tr><th>Dataset</th><th>Record</th><th>Copertura</th><th>Dal</th><th>Al</th><th>Vuoti</th></tr></thead><tbody id="datasets"><tr><td colspan="6">In attesa dei dati</td></tr></tbody></table></div></section>
-  <section class="panel" style="margin-top:14px"><h2>Esplora i dati Garmin</h2><div class="muted" style="font-size:13px;margin-bottom:12px">Apri i menu per consultare i singoli record salvati in D1.</div>
-    <details class="explorer"><summary>Attività sportive registrate <span id="activityCount" class="pill">—</span></summary><div class="scroll"><table><thead><tr><th>Data</th><th>Attività</th><th>Distanza</th><th>Durata</th><th>Calorie</th><th>FC media</th><th>FC max</th></tr></thead><tbody id="allActivityRows"><tr><td colspan="7">In attesa dei dati</td></tr></tbody></table></div></details>
-    <details class="explorer"><summary>Consulta i passi di un giorno</summary><div style="padding:12px"><div style="display:flex;gap:8px;flex-wrap:wrap"><input id="stepDate" type="date" value="2015-01-15"><button id="searchSteps" type="button">Cerca data</button></div><div id="stepLookupStatus" class="status">Scegli un giorno e premi Cerca data.</div><div id="stepLookupResult"></div></div></details>
-    <details class="explorer"><summary>Passi giornalieri <span id="stepsCount" class="pill">—</span></summary><div class="scroll"><table><thead><tr><th>Data</th><th>Contenuto Garmin</th></tr></thead><tbody id="stepRows"><tr><td colspan="2">In attesa dei dati</td></tr></tbody></table></div></details>
-  </section>
-  <div class="cols">
-    <section class="panel"><h2>Ultime attività</h2><div class="scroll"><table><thead><tr><th>Data</th><th>Attività</th><th>Distanza</th><th>Durata</th><th>FC media</th></tr></thead><tbody id="activityRows"><tr><td colspan="5">In attesa dei dati</td></tr></tbody></table></div></section>
-    <section class="panel"><h2>Ultimi record giornalieri</h2><div class="scroll"><table><thead><tr><th>Data</th><th>Dataset</th><th>Aggiornato</th></tr></thead><tbody id="dailyRows"><tr><td colspan="3">In attesa dei dati</td></tr></tbody></table></div></section>
-  </div>
-  <div class="status">Questa pagina consulta D1 senza intervenire sul Cron, sul cursore storico o sulle importazioni. Per i dati originali completi resta disponibile l'export.</div>
+
+  <details class="menu">
+    <summary>Panoramica archivio <span class="pill">situazione generale</span></summary>
+    <div class="inside"><p class="hint">Conteggi delle tabelle principali e categorie presenti in D1. I numeri indicano record archiviati, non giorni con misurazioni effettive.</p><div class="scroll"><table><thead><tr><th>Categoria</th><th>Record</th><th>Intervallo date</th><th>Record vuoti</th></tr></thead><tbody id="datasets"><tr><td colspan="4">In attesa dei dati</td></tr></tbody></table></div></div>
+  </details>
+
+  <details class="menu">
+    <summary>Esplora il database Garmin <span class="pill">ricerca per categoria e data</span></summary>
+    <div class="inside">
+      <p class="hint">Scegli una categoria e, se vuoi, una data. La dashboard mostra i valori riconoscibili in forma leggibile e mantiene sempre disponibile il JSON originale.</p>
+      <div class="controls"><select id="recordDataset"><option value="">Seleziona categoria…</option></select><input id="recordDate" type="date"><button id="searchRecords">Cerca record</button></div>
+      <div id="recordStatus" class="status">Seleziona una categoria per iniziare.</div><div id="recordResults"></div>
+    </div>
+  </details>
+
+  <details class="menu">
+    <summary>Attività sportive <span id="activityCount" class="pill">—</span></summary>
+    <div class="inside"><p class="hint">Ultime attività archiviate. Le distanze sono espresse in chilometri e la durata in ore e minuti.</p><div class="scroll"><table><thead><tr><th>Data</th><th>Attività</th><th>Distanza</th><th>Durata</th><th>Calorie</th><th>FC media</th><th>FC max</th></tr></thead><tbody id="allActivityRows"><tr><td colspan="7">In attesa dei dati</td></tr></tbody></table></div></div>
+  </details>
+
+  <details class="menu">
+    <summary>Ultimi aggiornamenti giornalieri <span class="pill">daily records</span></summary>
+    <div class="inside"><p class="hint">Elenco degli ultimi record giornalieri presenti nella tabella dedicata.</p><div class="scroll"><table><thead><tr><th>Data</th><th>Categoria</th><th>Ultimo aggiornamento</th></tr></thead><tbody id="dailyRows"><tr><td colspan="3">In attesa dei dati</td></tr></tbody></table></div></div>
+  </details>
+
+  <details class="menu">
+    <summary>Controllo importazioni <span class="pill">solo verifica</span></summary>
+    <div class="inside"><p class="hint">Sezione di controllo in sola lettura. Serve a verificare se le esecuzioni sono andate a buon fine e quali record risultano scritti. Non avvia importazioni e non modifica il backfill.</p><button id="auditLoad" type="button">Aggiorna controllo</button><div id="auditStatus" class="status">Controllo non ancora caricato.</div><div id="auditRows"></div></div>
+  </details>
+  <div class="status">Dashboard in sola lettura: nessuna modifica al Cron, al cursore storico o ai record originali.</div>
   </main><script>
-  const $=id=>document.getElementById(id);let token=$('token');
+  const $=id=>document.getElementById(id);const token=$('token');
   try{token.value=localStorage.getItem('training_center_sync_token')||''}catch(e){}
-  const fmt=n=>Number(n||0).toLocaleString('it-IT');
-  const date=s=>s?String(s).slice(0,10):'—';
-  const dist=n=>n==null?'—':(Number(n)/1000).toFixed(2)+' km';
-  const dur=n=>{if(n==null)return'—';let m=Math.round(Number(n)/60);return Math.floor(m/60)+'h '+(m%60)+'m'};
+  const fmt=n=>Number(n||0).toLocaleString('it-IT'),date=s=>s?String(s).slice(0,10):'—';
   function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-  async function load(){let t=token.value.trim();if(!t){$('status').textContent='Inserisci il token di accesso.';return} $('load').disabled=true;$('status').textContent='Lettura dei dati da D1…';
-  try{let r=await fetch('/dashboard-data',{headers:{Authorization:'Bearer '+t},cache:'no-store'});let d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||('HTTP '+r.status));try{localStorage.setItem('training_center_sync_token',t)}catch(e){}
-  $('activities').textContent=fmt(d.counts.activities);$('details').textContent=fmt(d.counts.activity_details);$('records').textContent=fmt(d.counts.garmin_records);$('daily').textContent=fmt(d.counts.daily_records);$('runs').textContent=fmt(d.counts.sync_runs);
-  let max=Math.max(1,...d.datasets.map(x=>Number(x.records||0)));
-  $('datasets').innerHTML=d.datasets.map(x=>'<tr><td><b>'+esc(x.dataset)+'</b></td><td>'+fmt(x.records)+'</td><td><div class="bar"><i style="width:'+Math.max(2,Number(x.records||0)/max*100)+'%"></i></div></td><td>'+date(x.first_date)+'</td><td>'+date(x.last_date)+'</td><td>'+fmt(x.empty_records)+'</td></tr>').join('')||'<tr><td colspan="6">Nessun dataset</td></tr>';
-  $('activityRows').innerHTML=d.activities.map(x=>'<tr><td>'+esc(date(x.start_time_local))+'</td><td>'+esc(x.activity_name||x.activity_type||'Attività')+'</td><td>'+dist(x.distance_m)+'</td><td>'+dur(x.duration_s)+'</td><td>'+(x.average_hr==null?'—':fmt(x.average_hr)+' bpm')+'</td></tr>').join('')||'<tr><td colspan="5">Nessuna attività registrata</td></tr>';
-  $('dailyRows').innerHTML=d.recentDailyRecords.map(x=>'<tr><td>'+esc(date(x.record_date))+'</td><td>'+esc(x.dataset)+'</td><td>'+esc(x.updated_at||'—')+'</td></tr>').join('')||'<tr><td colspan="3">Nessun record</td></tr>';
-  $('activityCount').textContent=fmt(d.activities.length)+' record';
-  $('allActivityRows').innerHTML=d.activities.map(x=>'<tr><td>'+esc(date(x.start_time_local))+'</td><td>'+esc(x.activity_name||x.activity_type||'Attività')+'</td><td>'+dist(x.distance_m)+'</td><td>'+dur(x.duration_s)+'</td><td>'+fmt(x.calories)+'</td><td>'+(x.average_hr==null?'—':fmt(x.average_hr)+' bpm')+'</td><td>'+(x.max_hr==null?'—':fmt(x.max_hr)+' bpm')+'</td></tr>').join('')||'<tr><td colspan="7">Nessuna attività registrata</td></tr>';
-  $('stepsCount').textContent=fmt(d.steps.length)+' record';
-  $('stepRows').innerHTML=d.steps.map(x=>'<tr><td>'+esc(date(x.record_date))+'</td><td><pre class="raw">'+esc(JSON.stringify(JSON.parse(x.raw_json||'null'),null,2))+'</pre></td></tr>').join('')||'<tr><td colspan="2">Nessun dato passi registrato</td></tr>';
-  $('status').textContent='Aggiornato '+new Date(d.generatedAt).toLocaleString('it-IT')+' · dati letti direttamente da D1.';
-  }catch(e){$('status').textContent='Errore: '+e.message}finally{$('load').disabled=false}}
+  const dist=n=>n==null?'—':(Number(n)/1000).toFixed(2)+' km';
+  const dur=n=>{if(n==null)return'—';const m=Math.round(Number(n)/60);return Math.floor(m/60)+'h '+(m%60)+'m'};
+  function flatten(v,path,out){
+    if(v===null||v===undefined){out.push({key:path||'valore',value:'Non disponibile',empty:true});return}
+    if(Array.isArray(v)){if(!v.length){out.push({key:path||'valore',value:'Array vuoto',empty:true});return}if(v.length>12){out.push({key:path||'elenco',value:'Elenco di '+v.length+' elementi',complex:true});return}v.forEach((x,i)=>flatten(x,path+'['+i+']',out));return}
+    if(typeof v==='object'){const entries=Object.entries(v);if(!entries.length){out.push({key:path||'valore',value:'Oggetto vuoto',empty:true});return}entries.forEach(([k,x])=>flatten(x,path?path+'.'+k:k,out));return}
+    out.push({key:path||'valore',value:typeof v==='number'?v.toLocaleString('it-IT'):String(v)});
+  }
+  function prettyRecord(row){
+    let obj;try{obj=JSON.parse(row.raw_json||'null')}catch(e){obj=null}
+    const fields=[];flatten(obj,'',fields);
+    const useful=fields.filter(x=>!x.empty&&!x.complex);
+    const cards=useful.slice(0,80).map(x=>'<div class="valuecard"><small>'+esc(x.key)+'</small><strong>'+esc(x.value)+'</strong></div>').join('');
+    const notes=fields.filter(x=>x.empty||x.complex).slice(0,40).map(x=>'<div class="valuecard"><small>'+esc(x.key)+'</small><strong style="font-size:14px">'+esc(x.value)+'</strong></div>').join('');
+    return '<div class="panel" style="margin:10px 0"><div class="top"><b>'+esc(row.dataset)+' · '+esc(row.record_date||'data non specificata')+'</b><span class="pill">letto da D1</span></div><div class="hint" style="margin-top:6px">Endpoint: '+esc(row.source_endpoint||'non specificato')+' · acquisito: '+esc(row.retrieved_at||'—')+'</div><div class="cards">'+(cards||'<p class="hint">Nessun valore semplice disponibile.</p>')+'</div>'+(notes?'<details class="submenu"><summary>Campi vuoti, elenchi e strutture complesse</summary><div class="inside"><div class="cards">'+notes+'</div></div></details>':'')+'<details class="submenu"><summary>JSON originale Garmin</summary><div class="inside"><pre class="raw">'+esc(JSON.stringify(obj,null,2))+'</pre></div></details></div>';
+  }
+  async function load(){
+    const t=token.value.trim();if(!t){$('status').textContent='Inserisci il token di accesso.';return}
+    $('load').disabled=true;$('status').textContent='Lettura dei dati da D1…';
+    try{
+      const r=await fetch('/dashboard-data',{headers:{Authorization:'Bearer '+t},cache:'no-store'});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||('HTTP '+r.status));
+      try{localStorage.setItem('training_center_sync_token',t)}catch(e){}
+      $('activities').textContent=fmt(d.counts.activities);$('details').textContent=fmt(d.counts.activity_details);$('records').textContent=fmt(d.counts.garmin_records);$('daily').textContent=fmt(d.counts.daily_records);$('runs').textContent=fmt(d.counts.sync_runs);
+      $('datasets').innerHTML=d.datasets.map(x=>'<tr><td><b>'+esc(x.dataset)+'</b></td><td>'+fmt(x.records)+'</td><td>'+esc(date(x.first_date))+' → '+esc(date(x.last_date))+'</td><td>'+fmt(x.empty_records)+'</td></tr>').join('')||'<tr><td colspan="4">Nessun dataset</td></tr>';
+      const select=$('recordDataset'),previous=select.value;select.innerHTML='<option value="">Seleziona categoria…</option>'+d.datasets.map(x=>'<option value="'+esc(x.dataset)+'">'+esc(x.dataset)+' ('+fmt(x.records)+')</option>').join('');if(previous)select.value=previous;
+      $('activityCount').textContent=fmt(d.activities.length)+' attività';
+      $('allActivityRows').innerHTML=d.activities.map(x=>'<tr><td>'+esc(date(x.start_time_local))+'</td><td>'+esc(x.activity_name||x.activity_type||'Attività')+'</td><td>'+dist(x.distance_m)+'</td><td>'+dur(x.duration_s)+'</td><td>'+fmt(x.calories)+'</td><td>'+(x.average_hr==null?'—':fmt(x.average_hr)+' bpm')+'</td><td>'+(x.max_hr==null?'—':fmt(x.max_hr)+' bpm')+'</td></tr>').join('')||'<tr><td colspan="7">Nessuna attività registrata</td></tr>';
+      $('dailyRows').innerHTML=d.recentDailyRecords.map(x=>'<tr><td>'+esc(date(x.record_date))+'</td><td>'+esc(x.dataset)+'</td><td>'+esc(x.updated_at||'—')+'</td></tr>').join('')||'<tr><td colspan="3">Nessun record</td></tr>';
+      $('status').textContent='Archivio aggiornato '+new Date(d.generatedAt).toLocaleString('it-IT')+' · dati letti direttamente da D1.';
+    }catch(e){$('status').textContent='Errore: '+e.message}finally{$('load').disabled=false}
+  }
+  async function searchRecords(){
+    const t=token.value.trim(),dataset=$('recordDataset').value,day=$('recordDate').value;
+    if(!t){$('recordStatus').textContent='Inserisci il token di accesso.';return}
+    if(!dataset){$('recordStatus').textContent='Seleziona prima una categoria.';return}
+    $('searchRecords').disabled=true;$('recordStatus').textContent='Ricerca in D1…';$('recordResults').innerHTML='';
+    try{
+      const q=new URLSearchParams({dataset,limit:'100'});if(day)q.set('date',day);
+      const r=await fetch('/dashboard-records?'+q.toString(),{headers:{Authorization:'Bearer '+t},cache:'no-store'});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||('HTTP '+r.status));
+      $('recordStatus').textContent=d.count+' record trovati · '+dataset+(day?' · '+day:' · ultimi record disponibili')+'.';
+      $('recordResults').innerHTML=(d.rows||[]).map(prettyRecord).join('')||'<p class="hint">Nessun record trovato. L’assenza di record non equivale a una misurazione pari a zero.</p>';
+    }catch(e){$('recordStatus').textContent='Errore: '+e.message}finally{$('searchRecords').disabled=false}
+  }
   async function loadAudit(){
-    const t=token.value.trim(); if(!t){$('auditStatus').textContent='Inserisci il token di accesso.';return}
-    $('auditLoad').disabled=true;$('auditStatus').textContent='Lettura registro importazioni…';
+    const t=token.value.trim();if(!t){$('auditStatus').textContent='Inserisci il token di accesso.';return}
+    $('auditLoad').disabled=true;$('auditStatus').textContent='Verifica delle ultime esecuzioni…';
     try{
-      const r=await fetch('/dashboard-audit',{headers:{Authorization:'Bearer '+t},cache:'no-store'});
-      const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||('HTTP '+r.status));
+      const r=await fetch('/dashboard-audit',{headers:{Authorization:'Bearer '+t},cache:'no-store'});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||('HTTP '+r.status));
       $('auditRows').innerHTML=(d.runs||[]).map(run=>{
-        const ds=(run.datasets||[]);
-        const details=ds.length?'<div class="scroll"><table><thead><tr><th>Dataset modificato</th><th>Record scritti</th><th>Vuoti</th><th>Dal</th><th>Al</th></tr></thead><tbody>'+ds.map(x=>'<tr><td>'+esc(x.dataset)+'</td><td>'+fmt(x.records_written)+'</td><td>'+fmt(x.empty_records)+'</td><td>'+esc(date(x.first_date))+'</td><td>'+esc(date(x.last_date))+'</td></tr>').join('')+'</tbody></table></div>':'<p class="muted">Nessun record Garmin risulta inserito o aggiornato in questa finestra.</p>';
-        return '<details class="explorer"><summary>Run #'+fmt(run.id)+' · '+esc(run.started_at)+' · '+esc(run.status)+' <span class="pill">'+fmt(ds.reduce((n,x)=>n+Number(x.records_written||0),0))+' record</span></summary><div style="padding:12px"><div class="muted">Intervallo: '+esc(run.started_at)+' → '+esc(run.finished_at||'in corso')+' · attività: '+fmt(run.activities_seen)+' · record giornalieri: '+fmt(run.daily_records_seen)+'</div>'+details+(run.message?'<pre class="raw">'+esc(run.message)+'</pre>':'')+'</div></details>';
-      }).join('')||'<p>Nessuna importazione registrata.</p>';
-      $('auditStatus').textContent='Mostrate '+fmt(d.runs.length)+' esecuzioni. I record elencati sono quelli con retrieved_at compreso tra inizio e fine del run.';
-    }catch(e){$('auditStatus').textContent='Errore registro: '+e.message}
-    finally{$('auditLoad').disabled=false}
+        const ds=run.datasets||[],written=ds.reduce((n,x)=>n+Number(x.records_written||0),0);
+        const rows=ds.length?'<div class="scroll"><table><thead><tr><th>Categoria</th><th>Record scritti/aggiornati</th><th>Vuoti</th><th>Intervallo date</th></tr></thead><tbody>'+ds.map(x=>'<tr><td>'+esc(x.dataset)+'</td><td>'+fmt(x.records_written)+'</td><td>'+fmt(x.empty_records)+'</td><td>'+esc(date(x.first_date))+' → '+esc(date(x.last_date))+'</td></tr>').join('')+'</tbody></table></div>':'<p class="hint">Nessun record Garmin attribuito a questa finestra temporale.</p>';
+        return '<details class="submenu"><summary>Run #'+fmt(run.id)+' · '+esc(run.started_at)+' · '+esc(run.status)+' · '+fmt(written)+' record</summary><div class="inside"><p class="hint">Attività: '+fmt(run.activities_seen)+' · record giornalieri: '+fmt(run.daily_records_seen)+' · fine: '+esc(run.finished_at||'in corso')+'</p>'+rows+(run.message?'<pre class="raw">'+esc(run.message)+'</pre>':'')+'</div></details>';
+      }).join('')||'<p class="hint">Nessuna esecuzione registrata.</p>';
+      $('auditStatus').textContent='Controllate '+fmt(d.runs.length)+' esecuzioni recenti. Questo riepilogo attribuisce i record tramite il timestamp di acquisizione: è un controllo indicativo, non un log completo delle chiamate Garmin.';
+    }catch(e){$('auditStatus').textContent='Errore nel controllo: '+e.message}finally{$('auditLoad').disabled=false}
   }
-  async function searchSteps(){
-    const t=token.value.trim(), day=$('stepDate').value;
-    if(!t){$('stepLookupStatus').textContent='Inserisci il token di accesso.';return}
-    if(!day){$('stepLookupStatus').textContent='Seleziona una data.';return}
-    $('searchSteps').disabled=true;$('stepLookupStatus').textContent='Ricerca in D1…';
-    try{
-      const r=await fetch('/dashboard-record?date='+encodeURIComponent(day),{headers:{Authorization:'Bearer '+t},cache:'no-store'});
-      const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||('HTTP '+r.status));
-      const rows=[...(d.steps||[]),...(d.daily||[])];
-      if(!rows.length){$('stepLookupStatus').textContent='Nessun record passi trovato per '+day+'. Questo non prova che i passi siano zero: Garmin potrebbe non aver fornito quel dato.';$('stepLookupResult').innerHTML='';return}
-      const raw=rows.map(x=>x.raw_json).join(' ');
-      let parsed=[];for(const row of rows){try{parsed.push(JSON.parse(row.raw_json))}catch(e){}}
-      const found=[];
-      function walk(v,path){if(!v||typeof v!=='object')return;for(const [k,val] of Object.entries(v)){if(/step|passi/i.test(k)&&typeof val==='number')found.push({key:k,value:val,path:path?path+'.'+k:k});if(val&&typeof val==='object')walk(val,path?path+'.'+k:k)}}
-      parsed.forEach(v=>walk(v,''));
-      const summary=found.length?'<div class="metric" style="margin:10px 0"><small>Valore/i con campo relativo ai passi</small><strong>'+found.map(x=>fmt(x.value)+' <span style="font-size:13px">'+esc(x.key)+'</span>').join('<br>')+'</strong></div>':'<p class="muted">Il JSON non contiene un campo numerico identificabile automaticamente come passi. Consulta il contenuto originale qui sotto.</p>';
-      $('stepLookupStatus').textContent='Trovati '+rows.length+' record per '+day+'.';
-      $('stepLookupResult').innerHTML=summary+rows.map(x=>'<div style="margin-top:10px"><b>'+esc(x.dataset)+' · '+esc(x.record_date)+'</b><pre class="raw">'+esc(JSON.stringify(JSON.parse(x.raw_json||'null'),null,2))+'</pre></div>').join('');
-    }catch(e){$('stepLookupStatus').textContent='Errore: '+e.message}
-    finally{$('searchSteps').disabled=false}
-  }
-  $('searchSteps').addEventListener('click',searchSteps);
-  $('auditLoad').addEventListener('click',loadAudit);
-  $('load').addEventListener('click',load);if(token.value){load();loadAudit();}
-  </script></body></html>`;
+  $('load').addEventListener('click',load);$('searchRecords').addEventListener('click',searchRecords);$('auditLoad').addEventListener('click',loadAudit);
+  if(token.value)load();
+  </script></body></html>\`;
 }
