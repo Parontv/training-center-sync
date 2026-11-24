@@ -1069,26 +1069,11 @@ function dashboardHtml() {
       try{localStorage.setItem('training_center_sync_token',t)}catch(e){}
       $('activities').textContent=fmt(d.counts.activities);$('details').textContent=fmt(d.counts.activity_details);$('records').textContent=fmt(d.counts.garmin_records);$('daily').textContent=fmt(d.counts.daily_records);$('runs').textContent=fmt(d.counts.sync_runs);
       $('datasets').innerHTML=d.datasets.map(x=>'<tr><td><b>'+esc(x.dataset)+'</b></td><td>'+fmt(x.records)+'</td><td>'+esc(date(x.first_date))+' → '+esc(date(x.last_date))+'</td><td>'+fmt(x.empty_records)+'</td></tr>').join('')||'<tr><td colspan="4">Nessun dataset</td></tr>';
-      const select=$('recordDataset'),previous=select.value;select.innerHTML='<option value="">Seleziona categoria…</option>'+d.datasets.map(x=>'<option value="'+esc(x.dataset)+'">'+esc(x.dataset)+' ('+fmt(x.records)+')</option>').join('');if(previous)select.value=previous;
       $('activityCount').textContent=fmt(d.counts.activities||d.activities.length)+' attività · '+d.activities.length+' mostrate';
       const activitySelect=$('activitySelect'),previousActivity=activitySelect.value;
       activitySelect.innerHTML='<option value="">Seleziona attività…</option>'+d.activities.map(x=>'<option value="'+esc(x.activity_id)+'">'+esc(date(x.start_time_local))+' · '+esc(x.activity_name||x.activity_type||'Attività')+' · '+esc(dist(x.distance_m))+'</option>').join('');
       if(previousActivity)activitySelect.value=previousActivity;
       const q=d.quality||{},aq=q.activities||{},gq=q.garminRecords||{};
-      const qualityItems=[
-        ['Attività archiviate',fmt(aq.total)],
-        ['Attività senza data',fmt(aq.missing_date)],
-        ['Attività senza tipo',fmt(aq.missing_type)],
-        ['Attività senza distanza',fmt(aq.missing_distance)],
-        ['Attività senza durata',fmt(aq.missing_duration)],
-        ['Attività senza FC media',fmt(aq.missing_average_hr)],
-        ['Attività senza FC massima',fmt(aq.missing_max_hr)],
-        ['JSON attività non validi',fmt(aq.invalid_json)],
-        ['Record Garmin vuoti',fmt(gq.empty_payloads)],
-        ['JSON Garmin non validi',fmt(gq.invalid_json)]
-      ];
-      $('qualitySummary').innerHTML=qualityItems.map(x=>'<div class="valuecard"><small>'+esc(x[0])+'</small><strong>'+esc(x[1])+'</strong></div>').join('');
-      $('allActivityRows').innerHTML=d.activities.map(x=>'<tr><td>'+esc(date(x.start_time_local))+'</td><td>'+esc(x.activity_name||x.activity_type||'Attività')+'</td><td>'+dist(x.distance_m)+'</td><td>'+dur(x.duration_s)+'</td><td>'+fmt(x.calories)+'</td><td>'+(x.average_hr==null?'—':fmt(x.average_hr)+' bpm')+'</td><td>'+(x.max_hr==null?'—':fmt(x.max_hr)+' bpm')+'</td></tr>').join('')||'<tr><td colspan="7">Nessuna attività registrata</td></tr>';
       $('dailyRows').innerHTML=d.recentDailyRecords.map(x=>'<tr><td>'+esc(date(x.record_date))+'</td><td>'+esc(x.dataset)+'</td><td>'+esc(x.updated_at||'—')+'</td></tr>').join('')||'<tr><td colspan="3">Nessun record</td></tr>';
       $('status').textContent='Archivio aggiornato '+new Date(d.generatedAt).toLocaleString('it-IT')+' · dati letti direttamente da D1.';
     }catch(e){$('status').textContent='Errore: '+e.message}finally{$('load').disabled=false}
@@ -1187,7 +1172,7 @@ function dashboardHtml() {
   $('browserNext').addEventListener('click',()=>{browserOffset+=50;browseDatabase(false)});
   $('browserRows').addEventListener('click',event=>{const b=event.target.closest('.browserOpen');if(b)openBrowserRow(Number(b.dataset.index))});
   $('browserSearch').addEventListener('keydown',event=>{if(event.key==='Enter')browseDatabase(true)});
-  $('searchRecords').addEventListener('click',searchRecords);$('recordDataset').addEventListener('change',loadRecordDates);$('recordDate').addEventListener('change',()=>{$('searchRecords').disabled=!$('recordDate').value;$('recordResults').innerHTML='';$('recordDetail').innerHTML='';});$('recordResults').addEventListener('click',event=>{const button=event.target.closest('.openGarminRecord');if(!button)return;const row=(window.__garminBrowserRows||[])[Number(button.dataset.index)];if(!row)return;$('recordDetail').innerHTML=prettyRecord(row);$('recordDetail').scrollIntoView({behavior:'smooth',block:'start'});});$('auditLoad').addEventListener('click',loadAudit);$('openActivity').addEventListener('click',openActivity);$('activitySelect').addEventListener('change',()=>{$('activityDetail').innerHTML='';$('activityDetailStatus').textContent='Premi “Apri attività” per caricare i dettagli.';});
+  });$('auditLoad').addEventListener('click',loadAudit);$('openActivity').addEventListener('click',openActivity);$('activitySelect').addEventListener('change',()=>{$('activityDetail').innerHTML='';$('activityDetailStatus').textContent='Premi “Apri attività” per caricare i dettagli.';});
   if(token.value){load();browseDatabase();}
   </script></body></html>`;
 }
