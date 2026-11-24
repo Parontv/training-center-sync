@@ -616,7 +616,7 @@ async function runScheduledDailySync(event, env) {
     }
     if (!env.GARMIN_PERSONAL_API_KEY) throw new Error("Worker Secret GARMIN_PERSONAL_API_KEY is missing");
     const token = await getBearerToken(env.GARMIN_PERSONAL_API_KEY);
-    const result = await runSync(env, { startDate: yesterday, endDate: yesterday }, token);
+    const result = await runSync(env, { startDate: yesterday, endDate: yesterday }, token, { refreshDateScoped: true });
     console.log("Daily Garmin previous-day sync completed.", { todayRome, targetDate: yesterday, result });
     return { ...result, mode: "daily_previous_day", targetDate: yesterday, todayRome };
   } catch (error) {
@@ -696,7 +696,7 @@ async function ensureCoreSchema(db) {
   )`).run();
 }
 
-async function runSync(env, rangeOverride = null, tokenOverride = null) {
+async function runSync(env, rangeOverride = null, tokenOverride = null, options = {}) {
   const startedAt = new Date().toISOString();
   let runId;
   try {
@@ -869,7 +869,10 @@ async function runSync(env, rangeOverride = null, tokenOverride = null) {
           const existing = await env.DB.prepare(
             "SELECT 1 AS found FROM garmin_records WHERE dataset=? AND record_date=? LIMIT 1"
           ).bind(dataset, date).first();
-          if (existing) continue;
+          // Historical backfill skips dates already archived. The daily refresh deliberately
+          // re-fetches its bounded target date so Garmin updates can replace earlier
+          // empty or provisional payloads through saveDaily's existing UPSERT.
+          if (existing && !options.refreshDateScoped) continue;
           const path = pathForDate(date);
           const result = await garminGet(path, token, { allowNotFound: true });
           if (hasPayload(result)) {
