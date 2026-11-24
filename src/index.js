@@ -3,11 +3,11 @@ const TOKEN_PATH = "/personalapitoken-service/personal-api/personal-api-key/toke
 
 export default {
   async scheduled(event, env, ctx) {
-    if (event.cron === "*/5 * * * *") {
+    if (event.cron === "*/3 * * * *") {
       ctx.waitUntil(runScheduledSync(env));
       return;
     }
-    if (event.cron === "0 10 * * *" || event.cron === "0 11 * * *") {
+    if (event.cron === "0 10,11 * * *") {
       ctx.waitUntil(runScheduledDailySync(event, env));
     }
   },
@@ -654,8 +654,8 @@ async function runScheduledDailySync(event, env) {
     hour: "2-digit",
     hourCycle: "h23"
   }).format(new Date()));
-  // Cloudflare Cron uses UTC. Two guarded triggers keep the run at noon in Italy
-  // across winter time (CET) and summer time (CEST).
+  // Cloudflare Cron uses UTC. One combined trigger at 10:00 and 11:00 UTC
+  // plus this Rome-time guard keeps one daily run at noon across CET and CEST.
   if (romeHour !== 12) {
     console.log("Daily Garmin sync skipped: this UTC trigger is outside 12:00 Europe/Rome.", { cron: event.cron, romeHour });
     return { ok: true, skipped: true, reason: "not_noon_in_europe_rome" };
