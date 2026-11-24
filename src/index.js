@@ -195,6 +195,37 @@ export default {
         return json({ ok: true, source, total: Number(count?.total || 0), limit, offset, hasMore: offset + (result.results || []).length < Number(count?.total || 0), rows: result.results || [], categories: (categories.results || []).map(x => x.value) });
       } catch (error) { return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500); }
     }
+    if (url.pathname === "/dashboard-schema" && request.method === "GET") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== "Bearer " + expected) return json({ error: "unauthorized" }, 401);
+      try {
+        const [garmin, daily] = await Promise.all([
+          env.DB.prepare(`
+            SELECT g.dataset AS dataset, jt.fullkey AS field_path, jt.type AS value_type,
+              COUNT(*) AS occurrences, COUNT(DISTINCT g.record_key) AS records_with_field,
+              MIN(CASE WHEN jt.atom IS NOT NULL THEN substr(CAST(jt.atom AS TEXT),1,120) END) AS example
+            FROM garmin_records g, json_tree(g.raw_json) jt
+            WHERE json_valid(g.raw_json) AND jt.type NOT IN ('object','array')
+            GROUP BY g.dataset, jt.fullkey, jt.type
+            ORDER BY g.dataset, jt.fullkey, jt.type
+          `).all(),
+          env.DB.prepare(`
+            SELECT d.dataset AS dataset, jt.fullkey AS field_path, jt.type AS value_type,
+              COUNT(*) AS occurrences, COUNT(DISTINCT d.record_date) AS records_with_field,
+              MIN(CASE WHEN jt.atom IS NOT NULL THEN substr(CAST(jt.atom AS TEXT),1,120) END) AS example
+            FROM daily_records d, json_tree(d.raw_json) jt
+            WHERE json_valid(d.raw_json) AND jt.type NOT IN ('object','array')
+            GROUP BY d.dataset, jt.fullkey, jt.type
+            ORDER BY d.dataset, jt.fullkey, jt.type
+          `).all()
+        ]);
+        return json({ ok: true, generatedAt: new Date().toISOString(),
+          garmin_records: garmin.results || [], daily_records: daily.results || [],
+          totals: { garmin_fields: (garmin.results || []).length, daily_fields: (daily.results || []).length } });
+      } catch (error) {
+        return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500);
+      }
+    }
     if (url.pathname === "/dashboard-record-dates" && request.method === "GET") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
@@ -1110,6 +1141,16 @@ function dashboardHtml() {
   </details>
 
   <details class="menu">
+    <summary>Mappa completa dei campi Garmin <span class="pill">struttura JSON</span></summary>
+    <div class="inside">
+      <p class="hint">Analizza i JSON archiviati e mostra tutti i campi realmente presenti, il tipo di dato, quante volte compare e un esempio. Solo lettura.</p>
+      <button id="schemaLoad" type="button">Analizza tutti i campi</button>
+      <div id="schemaStatus" class="status">Mappa non ancora generata.</div>
+      <div id="schemaResults"></div>
+    </div>
+  </details>
+
+  <details class="menu">
     <summary>Esplora tutto il database D1 <span class="pill">navigazione completa</span></summary>
     <div class="inside">
       <p class="hint">Naviga tra tutte le tabelle, filtra per categoria, data o testo, apri qualsiasi riga e consulta i campi e il JSON originale. Usa Avanti/Indietro per scorrere l'intero archivio.</p>
@@ -1249,6 +1290,18 @@ function dashboardHtml() {
     }catch(e){$('auditStatus').textContent='Errore nel controllo: '+e.message}finally{$('auditLoad').disabled=false}
   }
   $('load').addEventListener('click',load);
+  async function loadSchema(){
+    const t=token.value.trim();if(!t){$('schemaStatus').textContent='Inserisci il token di accesso.';return}
+    $('schemaLoad').disabled=true;$('schemaStatus').textContent='Analisi di tutti i JSON in corso…';$('schemaResults').innerHTML='';
+    try{
+      const r=await fetch('/dashboard-schema',{headers:{Authorization:'Bearer '+t},cache:'no-store'});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||('HTTP '+r.status));
+      const render=(title,rows)=>'<h3>'+title+' · '+rows.length+' campi</h3><div class="scroll"><table><thead><tr><th>Dataset</th><th>Percorso campo</th><th>Tipo</th><th>Occorrenze</th><th>Record</th><th>Esempio</th></tr></thead><tbody>'+rows.map(x=>'<tr><td>'+esc(x.dataset)+'</td><td><code>'+esc(x.field_path)+'</code></td><td>'+esc(x.value_type)+'</td><td>'+fmt(x.occurrences)+'</td><td>'+fmt(x.records_with_field)+'</td><td>'+esc(x.example??'—')+'</td></tr>').join('')+'</tbody></table></div>';
+      $('schemaResults').innerHTML=render('Garmin records',d.garmin_records||[])+render('Daily records',d.daily_records||[]);
+      $('schemaStatus').textContent='Analisi completata · '+fmt(d.totals.garmin_fields)+' strutture campo nei Garmin records e '+fmt(d.totals.daily_fields)+' nei daily records. I record originali non sono stati modificati.';
+    }catch(e){$('schemaStatus').textContent='Errore analisi: '+e.message}
+    finally{$('schemaLoad').disabled=false}
+  }
+  $('schemaLoad').addEventListener('click',loadSchema);
   $('browserSearchButton').addEventListener('click',()=>browseDatabase(true));
   $('browserSource').addEventListener('change',()=>{$('browserCategory').innerHTML='<option value="">Tutte le categorie</option>';browseDatabase(true)});
   $('browserCategory').addEventListener('change',()=>browseDatabase(true));
