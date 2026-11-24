@@ -15,11 +15,14 @@ Database previsto: `storico_garmin` (binding Worker: `DB`).
 2. Aprire la dashboard Training Center, inserire il `SYNC_BEARER_TOKEN` e usare **Verifica funzioni JSON D1**.
 3. Verificare che `json_valid`, `json_extract`, `json_tree` e `json_each` siano disponibili.
 4. Usare **Analizza tutti i campi** per raccogliere i percorsi JSON reali.
-5. Solo dopo questi controlli, eseguire `001_analytics_base_views.sql` una sola volta nella console SQL D1 del database `storico_garmin`.
+5. Eseguire `001_analytics_base_views.sql` una sola volta nella console SQL D1 del database `storico_garmin`.
+6. Tornare alla dashboard e usare **Verifica viste analitiche**. Il controllo deve mostrare 6/6 viste installate.
 
 ## Verifiche dopo l'installazione
 
-Eseguire queste query nella console D1:
+La dashboard interroga anche `GET /analytics-view-status` (protetto da `SYNC_BEARER_TOKEN`), che legge `sqlite_master` e controlla la presenza delle sei viste previste. L'endpoint è in sola lettura e non applica SQL.
+
+Per una verifica manuale, eseguire queste query nella console D1:
 
 ```sql
 SELECT COUNT(*) AS activities FROM vw_activities;
