@@ -1101,32 +1101,6 @@ function dashboardHtml() {
     $('browserDetail').innerHTML='<div class="panel" style="margin-top:12px"><div class="top"><b>'+esc(row.category||'Record')+' · '+esc(row.label||row.row_id)+'</b><span class="pill">D1 · sola lettura</span></div><p class="hint">ID: '+esc(row.row_id)+' · data: '+esc(row.record_date||'—')+' · acquisito: '+esc(row.retrieved_at||'—')+' · fonte: '+esc(row.source_info||'—')+'</p><h3>Campi leggibili</h3><div class="cards">'+(cards||'<p class="hint">Nessun campo leggibile.</p>')+'</div><details class="submenu" open><summary>JSON originale completo</summary><div class="inside"><pre class="raw">'+esc(typeof parsed==='string'?parsed:JSON.stringify(parsed,null,2))+'</pre></div></details></div>';
     $('browserDetail').scrollIntoView({behavior:'smooth',block:'start'});
   }
-  async function loadRecordDates(){
-    const t=token.value.trim(),dataset=$('recordDataset').value,select=$('recordDate');
-    select.disabled=true;$('searchRecords').disabled=true;select.innerHTML='<option value="">Caricamento date…</option>';$('recordResults').innerHTML='';$('recordDetail').innerHTML='';
-    if(!t||!dataset){select.innerHTML='<option value="">2 · Seleziona data…</option>';return}
-    try{
-      const q=new URLSearchParams({dataset});
-      const r=await fetch('/dashboard-record-dates?'+q.toString(),{headers:{Authorization:'Bearer '+t},cache:'no-store'});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||('HTTP '+r.status));
-      select.innerHTML='<option value="">2 · Seleziona data…</option>'+(d.dates||[]).map(x=>'<option value="'+esc(x.record_date)+'">'+esc(x.record_date)+' · '+fmt(x.records)+' record</option>').join('');
-      select.disabled=!(d.dates||[]).length;$('recordStatus').textContent=(d.dates||[]).length+' date disponibili per '+dataset+'. Seleziona un giorno.';
-      if(!(d.dates||[]).length)select.innerHTML='<option value="">Nessuna data disponibile</option>';
-    }catch(e){select.innerHTML='<option value="">Errore caricamento date</option>';$('recordStatus').textContent='Errore: '+e.message}
-  }
-  async function searchRecords(){
-    const t=token.value.trim(),dataset=$('recordDataset').value,day=$('recordDate').value;
-    if(!t){$('recordStatus').textContent='Inserisci il token di accesso.';return}
-    if(!dataset){$('recordStatus').textContent='Seleziona prima una categoria.';return}
-    $('searchRecords').disabled=true;$('recordStatus').textContent='Ricerca in D1…';$('recordResults').innerHTML='';
-    try{
-      const q=new URLSearchParams({dataset,limit:'100'});if(day)q.set('date',day);
-      const r=await fetch('/dashboard-records?'+q.toString(),{headers:{Authorization:'Bearer '+t},cache:'no-store'});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||('HTTP '+r.status));
-      $('recordStatus').textContent=d.count+' record trovati · '+dataset+' · '+day+'. Clicca una riga per aprire il dettaglio.';
-      $('recordDetail').innerHTML='';
-      $('recordResults').innerHTML=d.rows.length?'<div class="scroll"><table><thead><tr><th>Record</th><th>Data</th><th>Acquisito</th><th>Endpoint</th><th>Azione</th></tr></thead><tbody>'+d.rows.map((row,i)=>'<tr><td>'+esc(row.record_key)+'</td><td>'+esc(row.record_date||'—')+'</td><td>'+esc(row.retrieved_at||'—')+'</td><td>'+esc(row.source_endpoint||'—')+'</td><td><button type="button" class="openGarminRecord" data-index="'+i+'">Apri record</button></td></tr>').join('')+'</tbody></table></div>':'<p class="hint">Nessun record trovato. L’assenza di record non equivale a una misurazione pari a zero.</p>';
-      window.__garminBrowserRows=d.rows||[];
-    }catch(e){$('recordStatus').textContent='Errore: '+e.message}finally{$('searchRecords').disabled=false}
-  }
   async function openActivity(){
     const t=token.value.trim(),activityId=$('activitySelect').value;
     if(!t){$('activityDetailStatus').textContent='Inserisci il token di accesso.';return}
@@ -1172,7 +1146,7 @@ function dashboardHtml() {
   $('browserNext').addEventListener('click',()=>{browserOffset+=50;browseDatabase(false)});
   $('browserRows').addEventListener('click',event=>{const b=event.target.closest('.browserOpen');if(b)openBrowserRow(Number(b.dataset.index))});
   $('browserSearch').addEventListener('keydown',event=>{if(event.key==='Enter')browseDatabase(true)});
-  });$('auditLoad').addEventListener('click',loadAudit);$('openActivity').addEventListener('click',openActivity);$('activitySelect').addEventListener('change',()=>{$('activityDetail').innerHTML='';$('activityDetailStatus').textContent='Premi “Apri attività” per caricare i dettagli.';});
+  $('auditLoad').addEventListener('click',loadAudit);$('openActivity').addEventListener('click',openActivity);$('activitySelect').addEventListener('change',()=>{$('activityDetail').innerHTML='';$('activityDetailStatus').textContent='Premi “Apri attività” per caricare i dettagli.';});
   if(token.value){load();browseDatabase();}
   </script></body></html>`;
 }
