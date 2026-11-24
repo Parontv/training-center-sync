@@ -1175,8 +1175,9 @@ function dashboardHtml() {
     <summary>Mappa completa dei campi Garmin <span class="pill">struttura JSON</span></summary>
     <div class="inside">
       <p class="hint">Analizza i JSON archiviati e mostra tutti i campi realmente presenti, il tipo di dato, quante volte compare e un esempio. Solo lettura.</p>
-      <button id="schemaLoad" type="button">Analizza tutti i campi</button>
+      <div class="controls"><button id="schemaLoad" type="button">Analizza tutti i campi</button><button id="analyticsCheck" type="button">Verifica funzioni JSON D1</button></div>
       <div id="schemaStatus" class="status">Mappa non ancora generata.</div>
+      <div id="analyticsCheckStatus" class="status">Compatibilità SQL non ancora verificata.</div>
       <div id="schemaResults"></div>
     </div>
   </details>
@@ -1333,6 +1334,18 @@ function dashboardHtml() {
     finally{$('schemaLoad').disabled=false}
   }
   $('schemaLoad').addEventListener('click',loadSchema);
+  async function checkAnalyticsCapabilities(){
+    const t=token.value.trim();if(!t){$('analyticsCheckStatus').textContent='Inserisci il token di accesso.';return}
+    $('analyticsCheck').disabled=true;$('analyticsCheckStatus').textContent='Verifica funzioni JSON di SQLite/D1…';
+    try{
+      const r=await fetch('/analytics-capabilities',{headers:{Authorization:'Bearer '+t},cache:'no-store'});
+      const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||('HTTP '+r.status));
+      const j=d.json_functions||{};
+      $('analyticsCheckStatus').textContent='D1 compatibile · SQLite '+(d.sqlite_version||'n/d')+' · json_valid: '+j.json_valid+' · json_extract: '+j.json_extract+' · json_tree nodi: '+j.json_tree+' · json_each elementi: '+j.json_each+'. Test in sola lettura.';
+    }catch(e){$('analyticsCheckStatus').textContent='Verifica non riuscita: '+e.message}
+    finally{$('analyticsCheck').disabled=false}
+  }
+  $('analyticsCheck').addEventListener('click',checkAnalyticsCapabilities);
   $('browserSearchButton').addEventListener('click',()=>browseDatabase(true));
   $('browserSource').addEventListener('change',()=>{$('browserCategory').innerHTML='<option value="">Tutte le categorie</option>';browseDatabase(true)});
   $('browserCategory').addEventListener('change',()=>browseDatabase(true));
