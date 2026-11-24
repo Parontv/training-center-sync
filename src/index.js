@@ -155,6 +155,28 @@ export default {
     if (url.pathname === "/dashboard" && request.method === "GET") {
       return new Response(dashboardHtml(), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
     }
+    if (url.pathname === "/dashboard-audit" && request.method === "GET") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
+      try {
+        const runs = await env.DB.prepare("SELECT id, started_at, finished_at, status, activities_seen, daily_records_seen, message FROM sync_runs ORDER BY id DESC LIMIT 30").all();
+        const audit = [];
+        for (const run of (runs.results || [])) {
+          const datasets = await env.DB.prepare(`
+            SELECT dataset, COUNT(*) AS records_written,
+              SUM(CASE WHEN raw_json='[]' OR raw_json='{}' THEN 1 ELSE 0 END) AS empty_records,
+              MIN(record_date) AS first_date, MAX(record_date) AS last_date
+            FROM garmin_records
+            WHERE retrieved_at >= datetime(?) AND retrieved_at <= datetime(?)
+            GROUP BY dataset ORDER BY dataset
+          `).bind(run.started_at, run.finished_at || run.started_at).all();
+          audit.push({ ...run, datasets: datasets.results || [] });
+        }
+        return json({ ok: true, runs: audit });
+      } catch (error) {
+        return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500);
+      }
+    }
     if (url.pathname === "/dashboard-data" && request.method === "GET") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
@@ -826,6 +848,7 @@ function dashboardHtml() {
     <div class="metric"><small>Record giornalieri</small><strong id="daily">—</strong></div>
     <div class="metric"><small>Esecuzioni import</small><strong id="runs">—</strong></div>
   </section>
+  <section class="panel" style="margin-top:14px"><h2>Controllo importazioni</h2><div class="muted" style="font-size:13px;margin-bottom:10px">Per ogni esecuzione mostra i record Garmin effettivamente inseriti o aggiornati in D1 durante quella finestra temporale. Le chiamate senza nuovi record non compaiono in questa ripartizione.</div><button id="auditLoad" type="button">Aggiorna registro importazioni</button><div id="auditStatus" class="status">Registro non ancora caricato.</div><div id="auditRows"></div></section>
   <section class="panel"><h2>Copertura dei dati per categoria</h2><div class="muted" style="font-size:13px;margin-bottom:12px">Numero di record presenti in D1 e intervallo temporale disponibile. I record vuoti sono conteggiati separatamente, non interpretati come misurazioni.</div><div class="scroll"><table><thead><tr><th>Dataset</th><th>Record</th><th>Copertura</th><th>Dal</th><th>Al</th><th>Vuoti</th></tr></thead><tbody id="datasets"><tr><td colspan="6">In attesa dei dati</td></tr></tbody></table></div></section>
   <section class="panel" style="margin-top:14px"><h2>Esplora i dati Garmin</h2><div class="muted" style="font-size:13px;margin-bottom:12px">Apri i menu per consultare i singoli record salvati in D1.</div>
     <details class="explorer"><summary>Attività sportive registrate <span id="activityCount" class="pill">—</span></summary><div class="scroll"><table><thead><tr><th>Data</th><th>Attività</th><th>Distanza</th><th>Durata</th><th>Calorie</th><th>FC media</th><th>FC max</th></tr></thead><tbody id="allActivityRows"><tr><td colspan="7">In attesa dei dati</td></tr></tbody></table></div></details>
@@ -857,6 +880,22 @@ function dashboardHtml() {
   $('stepRows').innerHTML=d.steps.map(x=>'<tr><td>'+esc(date(x.record_date))+'</td><td><pre class="raw">'+esc(JSON.stringify(JSON.parse(x.raw_json||'null'),null,2))+'</pre></td></tr>').join('')||'<tr><td colspan="2">Nessun dato passi registrato</td></tr>';
   $('status').textContent='Aggiornato '+new Date(d.generatedAt).toLocaleString('it-IT')+' · dati letti direttamente da D1.';
   }catch(e){$('status').textContent='Errore: '+e.message}finally{$('load').disabled=false}}
-  $('load').addEventListener('click',load);if(token.value)load();
+  async function loadAudit(){
+    const t=token.value.trim(); if(!t){$('auditStatus').textContent='Inserisci il token di accesso.';return}
+    $('auditLoad').disabled=true;$('auditStatus').textContent='Lettura registro importazioni…';
+    try{
+      const r=await fetch('/dashboard-audit',{headers:{Authorization:'Bearer '+t},cache:'no-store'});
+      const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||('HTTP '+r.status));
+      $('auditRows').innerHTML=(d.runs||[]).map(run=>{
+        const ds=(run.datasets||[]);
+        const details=ds.length?'<div class="scroll"><table><thead><tr><th>Dataset modificato</th><th>Record scritti</th><th>Vuoti</th><th>Dal</th><th>Al</th></tr></thead><tbody>'+ds.map(x=>'<tr><td>'+esc(x.dataset)+'</td><td>'+fmt(x.records_written)+'</td><td>'+fmt(x.empty_records)+'</td><td>'+esc(date(x.first_date))+'</td><td>'+esc(date(x.last_date))+'</td></tr>').join('')+'</tbody></table></div>':'<p class="muted">Nessun record Garmin risulta inserito o aggiornato in questa finestra.</p>';
+        return '<details class="explorer"><summary>Run #'+fmt(run.id)+' · '+esc(run.started_at)+' · '+esc(run.status)+' <span class="pill">'+fmt(ds.reduce((n,x)=>n+Number(x.records_written||0),0))+' record</span></summary><div style="padding:12px"><div class="muted">Intervallo: '+esc(run.started_at)+' → '+esc(run.finished_at||'in corso')+' · attività: '+fmt(run.activities_seen)+' · record giornalieri: '+fmt(run.daily_records_seen)+'</div>'+details+(run.message?'<pre class="raw">'+esc(run.message)+'</pre>':'')+'</div></details>';
+      }).join('')||'<p>Nessuna importazione registrata.</p>';
+      $('auditStatus').textContent='Mostrate '+fmt(d.runs.length)+' esecuzioni. I record elencati sono quelli con retrieved_at compreso tra inizio e fine del run.';
+    }catch(e){$('auditStatus').textContent='Errore registro: '+e.message}
+    finally{$('auditLoad').disabled=false}
+  }
+  $('auditLoad').addEventListener('click',loadAudit);
+  $('load').addEventListener('click',load);if(token.value){load();loadAudit();}
   </script></body></html>`;
 }
