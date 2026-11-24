@@ -195,6 +195,37 @@ export default {
         return json({ ok: true, source, total: Number(count?.total || 0), limit, offset, hasMore: offset + (result.results || []).length < Number(count?.total || 0), rows: result.results || [], categories: (categories.results || []).map(x => x.value) });
       } catch (error) { return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500); }
     }
+    if (url.pathname === "/analytics-capabilities" && request.method === "GET") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== "Bearer " + expected) return json({ error: "unauthorized" }, 401);
+      try {
+        const sample = '{"date":"2026-11-24","metrics":{"restingHeartRate":52,"steps":8432},"items":[{"value":1},{"value":2}]}';
+        const scalar = await env.DB.prepare(
+          "SELECT sqlite_version() AS sqlite_version, json_valid(?) AS json_valid, json_extract(?, '$.metrics.restingHeartRate') AS json_extract_value"
+        ).bind(sample, sample).first();
+        const tree = await env.DB.prepare(
+          "SELECT COUNT(*) AS json_tree_nodes FROM json_tree(?)"
+        ).bind(sample).first();
+        const each = await env.DB.prepare(
+          "SELECT COUNT(*) AS json_each_items FROM json_each(?, '$.items')"
+        ).bind(sample).first();
+        return json({
+          ok: true,
+          readOnly: true,
+          database: "storico_garmin",
+          sqlite_version: scalar?.sqlite_version || null,
+          json_functions: {
+            json_valid: Number(scalar?.json_valid) === 1,
+            json_extract: scalar?.json_extract_value ?? null,
+            json_tree: Number(tree?.json_tree_nodes || 0),
+            json_each: Number(each?.json_each_items || 0)
+          },
+          note: "Test eseguito su JSON campione: nessuna tabella o riga D1 è stata modificata."
+        });
+      } catch (error) {
+        return json({ ok: false, readOnly: true, error: String(error?.message || error).slice(0, 300) }, 500);
+      }
+    }
     if (url.pathname === "/dashboard-schema" && request.method === "GET") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== "Bearer " + expected) return json({ error: "unauthorized" }, 401);
