@@ -1070,10 +1070,23 @@ function dashboardHtml() {
       $('activities').textContent=fmt(d.counts.activities);$('details').textContent=fmt(d.counts.activity_details);$('records').textContent=fmt(d.counts.garmin_records);$('daily').textContent=fmt(d.counts.daily_records);$('runs').textContent=fmt(d.counts.sync_runs);
       $('datasets').innerHTML=d.datasets.map(x=>'<tr><td><b>'+esc(x.dataset)+'</b></td><td>'+fmt(x.records)+'</td><td>'+esc(date(x.first_date))+' → '+esc(date(x.last_date))+'</td><td>'+fmt(x.empty_records)+'</td></tr>').join('')||'<tr><td colspan="4">Nessun dataset</td></tr>';
       $('activityCount').textContent=fmt(d.counts.activities||d.activities.length)+' attività · '+d.activities.length+' mostrate';
+      $('allActivityRows').innerHTML=d.activities.length?d.activities.map(a=>'<tr><td>'+esc(date(a.start_time_local))+'</td><td>'+esc(a.activity_name||a.activity_type||'Attività')+'</td><td>'+esc(dist(a.distance_m))+'</td><td>'+esc(dur(a.duration_s))+'</td><td>'+fmt(a.calories)+'</td><td>'+esc(a.average_hr==null?'—':fmt(a.average_hr)+' bpm')+'</td><td>'+esc(a.max_hr==null?'—':fmt(a.max_hr)+' bpm')+'</td></tr>').join(''):'<tr><td colspan="7">Nessuna attività archiviata.</td></tr>';
       const activitySelect=$('activitySelect'),previousActivity=activitySelect.value;
       activitySelect.innerHTML='<option value="">Seleziona attività…</option>'+d.activities.map(x=>'<option value="'+esc(x.activity_id)+'">'+esc(date(x.start_time_local))+' · '+esc(x.activity_name||x.activity_type||'Attività')+' · '+esc(dist(x.distance_m))+'</option>').join('');
       if(previousActivity)activitySelect.value=previousActivity;
       const q=d.quality||{},aq=q.activities||{},gq=q.garminRecords||{};
+      $('qualitySummary').innerHTML=[
+        ['Attività archiviate',aq.total,'Totale attività presenti in D1'],
+        ['Date mancanti',aq.missing_date,'Attività senza data'],
+        ['Tipo mancante',aq.missing_type,'Attività senza tipo'],
+        ['Distanza mancante',aq.missing_distance,'Non sempre disponibile da Garmin'],
+        ['Durata mancante',aq.missing_duration,'Non sempre disponibile da Garmin'],
+        ['FC media mancante',aq.missing_average_hr,'Non sempre disponibile da Garmin'],
+        ['FC max mancante',aq.missing_max_hr,'Non sempre disponibile da Garmin'],
+        ['JSON attività non valido',aq.invalid_json,'Controllo struttura JSON'],
+        ['Record Garmin vuoti',gq.empty_payloads,'Payload nulli, vuoti o senza contenuto'],
+        ['JSON Garmin non valido',gq.invalid_json,'Controllo struttura JSON']
+      ].map(x=>'<div class="valuecard"><small>'+esc(x[0])+'</small><strong>'+fmt(x[1])+'</strong><small>'+esc(x[2])+'</small></div>').join('');
       $('dailyRows').innerHTML=d.recentDailyRecords.map(x=>'<tr><td>'+esc(date(x.record_date))+'</td><td>'+esc(x.dataset)+'</td><td>'+esc(x.updated_at||'—')+'</td></tr>').join('')||'<tr><td colspan="3">Nessun record</td></tr>';
       $('status').textContent='Archivio aggiornato '+new Date(d.generatedAt).toLocaleString('it-IT')+' · dati letti direttamente da D1.';
     }catch(e){$('status').textContent='Errore: '+e.message}finally{$('load').disabled=false}
