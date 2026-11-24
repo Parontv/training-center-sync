@@ -226,7 +226,25 @@ export default {
         return json({ ok: false, readOnly: true, error: String(error?.message || error).slice(0, 300) }, 500);
       }
     }
-    if (url.pathname === "/dashboard-schema" && request.method === "GET") {
+        if (url.pathname === "/analytics-view-status" && request.method === "GET") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== "Bearer " + expected) return json({ error: "unauthorized" }, 401);
+      try {
+        const expectedViews = ["vw_activities","vw_daily_records","vw_garmin_records","vw_activity_details","vw_json_scalar_fields","vw_json_field_catalog"];
+        const placeholders = expectedViews.map(() => "?").join(",");
+        const found = await env.DB.prepare(
+          "SELECT name, type FROM sqlite_master WHERE type='view' AND name IN (" + placeholders + ") ORDER BY name"
+        ).bind(...expectedViews).all();
+        const present = (found.results || []).map(row => row.name);
+        const missing = expectedViews.filter(name => !present.includes(name));
+        return json({ ok: true, readOnly: true, database: "storico_garmin",
+          installed: missing.length === 0, expected: expectedViews.length, present, missing,
+          note: "Controllo sqlite_master in sola lettura: nessuna vista, tabella o riga è stata modificata." });
+      } catch (error) {
+        return json({ ok: false, readOnly: true, error: String(error?.message || error).slice(0, 300) }, 500);
+      }
+    }
+if (url.pathname === "/dashboard-schema" && request.method === "GET") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== "Bearer " + expected) return json({ error: "unauthorized" }, 401);
       try {
@@ -1178,6 +1196,8 @@ function dashboardHtml() {
       <div class="controls"><button id="schemaLoad" type="button">Analizza tutti i campi</button><button id="analyticsCheck" type="button">Verifica funzioni JSON D1</button></div>
       <div id="schemaStatus" class="status">Mappa non ancora generata.</div>
       <div id="analyticsCheckStatus" class="status">Compatibilità SQL non ancora verificata.</div>
+      <div class="controls"><button id="analyticsViewsCheck" type="button">Verifica viste analitiche</button></div>
+      <div id="analyticsViewsStatus" class="status">Installazione delle viste non ancora verificata.</div>
       <div id="schemaResults"></div>
     </div>
   </details>
@@ -1346,6 +1366,20 @@ function dashboardHtml() {
     finally{$('analyticsCheck').disabled=false}
   }
   $('analyticsCheck').addEventListener('click',checkAnalyticsCapabilities);
+  async function checkAnalyticsViews(){
+    const t=token.value.trim();if(!t){$('analyticsViewsStatus').textContent='Inserisci il token di accesso.';return}
+    $('analyticsViewsCheck').disabled=true;$('analyticsViewsStatus').textContent='Controllo delle viste installate in D1…';
+    try{
+      const r=await fetch('/analytics-view-status',{headers:{Authorization:'Bearer '+t},cache:'no-store'});
+      const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||('HTTP '+r.status));
+      $('analyticsViewsStatus').textContent=d.installed
+        ? 'Viste analitiche installate · '+d.present.length+'/'+d.expected+'. Controllo in sola lettura.'
+        : 'Viste non ancora complete · presenti '+d.present.length+'/'+d.expected+' · mancanti: '+(d.missing||[]).join(', ')+'. Nessuna modifica eseguita.';
+    }catch(e){$('analyticsViewsStatus').textContent='Verifica non riuscita: '+e.message}
+    finally{$('analyticsViewsCheck').disabled=false}
+  }
+  $('analyticsViewsCheck').addEventListener('click',checkAnalyticsViews);
+
   $('browserSearchButton').addEventListener('click',()=>browseDatabase(true));
   $('browserSource').addEventListener('change',()=>{$('browserCategory').innerHTML='<option value="">Tutte le categorie</option>';browseDatabase(true)});
   $('browserCategory').addEventListener('change',()=>browseDatabase(true));
