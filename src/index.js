@@ -278,6 +278,70 @@ export default {
         return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500);
       }
     }
+    if (url.pathname === "/audit" && request.method === "GET") {
+      const page = `<!doctype html><html lang="it"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111827"><title>Training Center · Audit</title><body style="margin:0;background:#0b1220;color:#e5e7eb;font:16px system-ui"><main style="max-width:760px;margin:auto;padding:20px"><h2>Training Center · Audit database</h2><p style="color:#9ca3af">Controllo in sola lettura di storico_garmin. Non modifica dati, sincronizzazione o backfill.</p><label for="token">SYNC_BEARER_TOKEN</label><input id="token" type="password" autocomplete="off" placeholder="Inserisci il token" style="box-sizing:border-box;width:100%;padding:14px;margin:8px 0;background:#111827;color:white;border:1px solid #475569;border-radius:9px"><label style="display:block;color:#cbd5e1;font-size:14px"><input id="remember" type="checkbox"> Ricorda su questo dispositivo</label><button id="run" style="width:100%;padding:15px;margin:14px 0;background:#2563eb;color:white;border:0;border-radius:9px;font-weight:700">Esegui audit</button><p id="status" style="color:#93c5fd">Pronto. L'analisi interroga D1 senza scrivere.</p><section id="results"></section><script>
+(function(){
+const $=id=>document.getElementById(id), token=$('token');
+try{token.value=localStorage.getItem('training_center_sync_token')||'';if(token.value)$('remember').checked=true}catch(e){}
+$('run').addEventListener('click',async()=>{
+ const t=token.value.trim();if(!t){$('status').textContent='Inserisci il token.';return}
+ try{if($('remember').checked)localStorage.setItem('training_center_sync_token',t);else localStorage.removeItem('training_center_sync_token')}catch(e){}
+ $('run').disabled=true;$('status').textContent='Analisi in corso…';$('results').innerHTML='';
+ try{
+  const r=await fetch('/audit-data',{headers:{Authorization:'Bearer '+t},cache:'no-store'}),d=await r.json();
+  if(!r.ok||!d.ok)throw Error(d.error||('HTTP '+r.status));
+  const card=(label,value,detail)=>'<article style="background:#111827;border:1px solid #334155;border-radius:10px;padding:14px;margin:9px 0"><div style="color:#94a3b8;font-size:13px">'+label+'</div><strong style="font-size:24px">'+(value??'—')+'</strong><div style="color:#94a3b8;font-size:13px">'+(detail||'')+'</div></article>';
+  const section=(title,body)=>'<h3 style="margin:22px 0 8px">'+title+'</h3>'+body;
+  let html='<p style="color:#94a3b8">Generato: '+new Date(d.generatedAt).toLocaleString('it-IT')+' · DB: '+d.database+'</p>';
+  html+=section('Volumi',Object.entries(d.counts).map(([k,v])=>card(k,Number(v).toLocaleString('it-IT'),'record presenti')).join(''));
+  html+=section('Integrità',d.checks.map(x=>card(x.label,Number(x.value).toLocaleString('it-IT'),x.detail+' · '+(x.status==='ok'?'OK':x.status==='warning'?'Da verificare':'Informativo'))).join(''));
+  html+=section('Dataset Garmin',d.datasets.map(x=>card(x.dataset,Number(x.records).toLocaleString('it-IT'),(x.first_date||'data iniziale n/d')+' → '+(x.last_date||'data finale n/d')+' · vuoti: '+x.empty_records)).join(''));
+  html+=section('Ultime sincronizzazioni',d.recentRuns.map(x=>card('#'+x.id+' · '+x.sync_type,x.status,x.started_at+' · attività '+x.activities_seen+' · record giornalieri '+x.daily_records_seen+' · '+(x.message||''))).join('')||'<p>Nessuna esecuzione.</p>');
+  if(d.warnings.length)html+=section('Avvisi',d.warnings.map(x=>card('Query non disponibile',x,'Tabella o colonna non presente')).join(''));
+  $('results').innerHTML=html;$('status').textContent='Audit completato. Modalità esclusivamente lettura.';
+ }catch(e){$('status').textContent='Audit non riuscito: '+e.message}
+ finally{$('run').disabled=false}
+});
+})();
+</script></main></body></html>`;
+      return new Response(page, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
+    }
+    if (url.pathname === "/audit-data" && request.method === "GET") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== "Bearer " + expected) return json({ error: "unauthorized" }, 401);
+      if (!env.DB) return json({ ok: false, error: "D1 binding DB is missing" }, 503);
+      const warnings = [];
+      const safe = async (label, sql) => {
+        try { return await env.DB.prepare(sql).all(); }
+        catch (error) { warnings.push(label + ": " + String(error?.message || error).slice(0, 180)); return { results: [] }; }
+      };
+      try {
+        const [countsResult, datasetsResult, activityQuality, garminQuality, dailyQuality, orphanDetails, recentRuns] = await Promise.all([
+          safe("Conteggi", "SELECT 'activities' AS table_name, COUNT(*) AS records FROM activities UNION ALL SELECT 'activity_details', COUNT(*) FROM activity_details UNION ALL SELECT 'daily_records', COUNT(*) FROM daily_records UNION ALL SELECT 'garmin_records', COUNT(*) FROM garmin_records UNION ALL SELECT 'sync_runs', COUNT(*) FROM sync_runs"),
+          safe("Dataset Garmin", "SELECT dataset, COUNT(*) AS records, MIN(record_date) AS first_date, MAX(record_date) AS last_date, SUM(CASE WHEN raw_json IS NULL OR TRIM(raw_json)='' OR raw_json IN ('[]','{}','null') THEN 1 ELSE 0 END) AS empty_records FROM garmin_records GROUP BY dataset ORDER BY dataset"),
+          safe("Qualità attività", "SELECT COUNT(*) AS total, SUM(CASE WHEN activity_id IS NULL OR activity_id='' THEN 1 ELSE 0 END) AS missing_id, SUM(CASE WHEN start_time_local IS NULL OR start_time_local='' THEN 1 ELSE 0 END) AS missing_date, SUM(CASE WHEN activity_type IS NULL OR activity_type='' THEN 1 ELSE 0 END) AS missing_type, SUM(CASE WHEN json_valid(raw_json)=0 THEN 1 ELSE 0 END) AS invalid_json FROM activities"),
+          safe("Qualità Garmin", "SELECT COUNT(*) AS total, SUM(CASE WHEN raw_json IS NULL OR TRIM(raw_json)='' OR raw_json IN ('[]','{}','null') THEN 1 ELSE 0 END) AS empty_payloads, SUM(CASE WHEN json_valid(raw_json)=0 THEN 1 ELSE 0 END) AS invalid_json, SUM(CASE WHEN record_date IS NULL OR record_date='' THEN 1 ELSE 0 END) AS missing_date FROM garmin_records"),
+          safe("Qualità giornaliera", "SELECT COUNT(*) AS total, COUNT(DISTINCT record_date) AS distinct_dates, MIN(record_date) AS first_date, MAX(record_date) AS last_date, SUM(CASE WHEN json_valid(raw_json)=0 THEN 1 ELSE 0 END) AS invalid_json, SUM(CASE WHEN raw_json IS NULL OR TRIM(raw_json)='' OR raw_json IN ('[]','{}','null') THEN 1 ELSE 0 END) AS empty_payloads FROM daily_records"),
+          safe("Dettagli orfani", "SELECT COUNT(*) AS total FROM activity_details d LEFT JOIN activities a ON a.activity_id=d.activity_id WHERE a.activity_id IS NULL"),
+          safe("Ultime sincronizzazioni", "SELECT id, started_at, finished_at, status, sync_type, activities_seen, daily_records_seen, message FROM sync_runs ORDER BY id DESC LIMIT 10")
+        ]);
+        const countMap = Object.fromEntries((countsResult.results || []).map(x => [x.table_name, Number(x.records || 0)]));
+        const aq = activityQuality.results?.[0] || {}, gq = garminQuality.results?.[0] || {}, dq = dailyQuality.results?.[0] || {};
+        const orphan = Number(orphanDetails.results?.[0]?.total || 0);
+        const checks = [
+          { label: "Attività senza data", value: Number(aq.missing_date || 0), detail: "Campo data non valorizzato", status: Number(aq.missing_date || 0) ? "warning" : "ok" },
+          { label: "Attività senza tipo", value: Number(aq.missing_type || 0), detail: "Campo tipo non valorizzato", status: Number(aq.missing_type || 0) ? "warning" : "ok" },
+          { label: "JSON attività non validi", value: Number(aq.invalid_json || 0), detail: "Payload non interpretabile come JSON", status: Number(aq.invalid_json || 0) ? "warning" : "ok" },
+          { label: "Record Garmin vuoti", value: Number(gq.empty_payloads || 0), detail: "Null, array/oggetto vuoto o stringa vuota; non equivale automaticamente a errore", status: Number(gq.empty_payloads || 0) ? "warning" : "ok" },
+          { label: "JSON Garmin non validi", value: Number(gq.invalid_json || 0), detail: "Payload non interpretabile come JSON", status: Number(gq.invalid_json || 0) ? "warning" : "ok" },
+          { label: "Record Garmin senza data", value: Number(gq.missing_date || 0), detail: "Record senza record_date", status: Number(gq.missing_date || 0) ? "warning" : "ok" },
+          { label: "Dettagli attività senza attività madre", value: orphan, detail: "activity_details senza corrispondenza in activities", status: orphan ? "warning" : "ok" },
+          { label: "JSON daily_records non validi", value: Number(dq.invalid_json || 0), detail: "Payload giornalieri non interpretabili", status: Number(dq.invalid_json || 0) ? "warning" : "ok" },
+          { label: "Daily records vuoti", value: Number(dq.empty_payloads || 0), detail: "Da interpretare in base al dataset e al periodo", status: Number(dq.empty_payloads || 0) ? "warning" : "ok" }
+        ];
+        return json({ ok: true, generatedAt: new Date().toISOString(), database: "storico_garmin", counts: countMap, checks, datasets: datasetsResult.results || [], recentRuns: recentRuns.results || [], coverage: { dailyRecords: { total: Number(dq.total || 0), distinctDates: Number(dq.distinct_dates || 0), firstDate: dq.first_date || null, lastDate: dq.last_date || null } }, warnings });
+      } catch (error) { return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500); }
+    }
     if (url.pathname === "/dashboard-data" && request.method === "GET") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
