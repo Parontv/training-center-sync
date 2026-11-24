@@ -161,6 +161,18 @@ export default {
     if (url.pathname === "/dashboard" && request.method === "GET") {
       return new Response(dashboardHtml(), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
     }
+    if (url.pathname === "/dashboard-record-dates" && request.method === "GET") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
+      const dataset = (url.searchParams.get("dataset") || "").trim();
+      if (!dataset || dataset.length > 100) return json({ error: "Seleziona un dataset valido." }, 400);
+      try {
+        const result = await env.DB.prepare("SELECT record_date, COUNT(*) AS records, MAX(retrieved_at) AS last_retrieved FROM garmin_records WHERE dataset=? AND record_date IS NOT NULL GROUP BY record_date ORDER BY record_date DESC LIMIT 1000").bind(dataset).all();
+        return json({ ok: true, dataset, dates: result.results || [] });
+      } catch (error) {
+        return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500);
+      }
+    }
     if (url.pathname === "/dashboard-records" && request.method === "GET") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
@@ -970,8 +982,8 @@ function dashboardHtml() {
     <summary>Esplora il database Garmin <span class="pill">ricerca per categoria e data</span></summary>
     <div class="inside">
       <p class="hint">Scegli una categoria e, se vuoi, una data. La dashboard mostra i valori riconoscibili in forma leggibile e mantiene sempre disponibile il JSON originale.</p>
-      <div class="controls"><select id="recordDataset"><option value="">Seleziona categoria…</option></select><input id="recordDate" type="date"><button id="searchRecords">Cerca record</button></div>
-      <div id="recordStatus" class="status">Seleziona una categoria per iniziare.</div><div id="recordResults"></div>
+      <div class="controls"><select id="recordDataset"><option value="">1 · Seleziona categoria…</option></select><select id="recordDate" disabled><option value="">2 · Seleziona data…</option></select><button id="searchRecords" disabled>Carica record</button></div>
+      <div id="recordStatus" class="status">Scegli una categoria, poi una data e infine apri il singolo record.</div><div id="recordResults"></div><div id="recordDetail"></div>
     </div>
   </details>
 
@@ -1045,6 +1057,18 @@ function dashboardHtml() {
       $('status').textContent='Archivio aggiornato '+new Date(d.generatedAt).toLocaleString('it-IT')+' · dati letti direttamente da D1.';
     }catch(e){$('status').textContent='Errore: '+e.message}finally{$('load').disabled=false}
   }
+  async function loadRecordDates(){
+    const t=token.value.trim(),dataset=$('recordDataset').value,select=$('recordDate');
+    select.disabled=true;$('searchRecords').disabled=true;select.innerHTML='<option value="">Caricamento date…</option>';$('recordResults').innerHTML='';$('recordDetail').innerHTML='';
+    if(!t||!dataset){select.innerHTML='<option value="">2 · Seleziona data…</option>';return}
+    try{
+      const q=new URLSearchParams({dataset});
+      const r=await fetch('/dashboard-record-dates?'+q.toString(),{headers:{Authorization:'Bearer '+t},cache:'no-store'});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||('HTTP '+r.status));
+      select.innerHTML='<option value="">2 · Seleziona data…</option>'+(d.dates||[]).map(x=>'<option value="'+esc(x.record_date)+'">'+esc(x.record_date)+' · '+fmt(x.records)+' record</option>').join('');
+      select.disabled=!(d.dates||[]).length;$('recordStatus').textContent=(d.dates||[]).length+' date disponibili per '+dataset+'. Seleziona un giorno.';
+      if(!(d.dates||[]).length)select.innerHTML='<option value="">Nessuna data disponibile</option>';
+    }catch(e){select.innerHTML='<option value="">Errore caricamento date</option>';$('recordStatus').textContent='Errore: '+e.message}
+  }
   async function searchRecords(){
     const t=token.value.trim(),dataset=$('recordDataset').value,day=$('recordDate').value;
     if(!t){$('recordStatus').textContent='Inserisci il token di accesso.';return}
@@ -1053,8 +1077,10 @@ function dashboardHtml() {
     try{
       const q=new URLSearchParams({dataset,limit:'100'});if(day)q.set('date',day);
       const r=await fetch('/dashboard-records?'+q.toString(),{headers:{Authorization:'Bearer '+t},cache:'no-store'});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||('HTTP '+r.status));
-      $('recordStatus').textContent=d.count+' record trovati · '+dataset+(day?' · '+day:' · ultimi record disponibili')+'.';
-      $('recordResults').innerHTML=(d.rows||[]).map(prettyRecord).join('')||'<p class="hint">Nessun record trovato. L’assenza di record non equivale a una misurazione pari a zero.</p>';
+      $('recordStatus').textContent=d.count+' record trovati · '+dataset+' · '+day+'. Clicca una riga per aprire il dettaglio.';
+      $('recordDetail').innerHTML='';
+      $('recordResults').innerHTML=d.rows.length?'<div class="scroll"><table><thead><tr><th>Record</th><th>Data</th><th>Acquisito</th><th>Endpoint</th><th>Azione</th></tr></thead><tbody>'+d.rows.map((row,i)=>'<tr><td>'+esc(row.record_key)+'</td><td>'+esc(row.record_date||'—')+'</td><td>'+esc(row.retrieved_at||'—')+'</td><td>'+esc(row.source_endpoint||'—')+'</td><td><button type="button" class="openGarminRecord" data-index="'+i+'">Apri record</button></td></tr>').join('')+'</tbody></table></div>':'<p class="hint">Nessun record trovato. L’assenza di record non equivale a una misurazione pari a zero.</p>';
+      window.__garminBrowserRows=d.rows||[];
     }catch(e){$('recordStatus').textContent='Errore: '+e.message}finally{$('searchRecords').disabled=false}
   }
   async function openActivity(){
@@ -1094,7 +1120,7 @@ function dashboardHtml() {
       $('auditStatus').textContent='Controllate '+fmt(d.runs.length)+' esecuzioni recenti. Questo riepilogo attribuisce i record tramite il timestamp di acquisizione: è un controllo indicativo, non un log completo delle chiamate Garmin.';
     }catch(e){$('auditStatus').textContent='Errore nel controllo: '+e.message}finally{$('auditLoad').disabled=false}
   }
-  $('load').addEventListener('click',load);$('searchRecords').addEventListener('click',searchRecords);$('auditLoad').addEventListener('click',loadAudit);$('openActivity').addEventListener('click',openActivity);$('activitySelect').addEventListener('change',()=>{$('activityDetail').innerHTML='';$('activityDetailStatus').textContent='Premi “Apri attività” per caricare i dettagli.';});
+  $('load').addEventListener('click',load);$('searchRecords').addEventListener('click',searchRecords);$('recordDataset').addEventListener('change',loadRecordDates);$('recordDate').addEventListener('change',()=>{$('searchRecords').disabled=!$('recordDate').value;$('recordResults').innerHTML='';$('recordDetail').innerHTML='';});$('recordResults').addEventListener('click',event=>{const button=event.target.closest('.openGarminRecord');if(!button)return;const row=(window.__garminBrowserRows||[])[Number(button.dataset.index)];if(!row)return;$('recordDetail').innerHTML=prettyRecord(row);$('recordDetail').scrollIntoView({behavior:'smooth',block:'start'});});$('auditLoad').addEventListener('click',loadAudit);$('openActivity').addEventListener('click',openActivity);$('activitySelect').addEventListener('change',()=>{$('activityDetail').innerHTML='';$('activityDetailStatus').textContent='Premi “Apri attività” per caricare i dettagli.';});
   if(token.value)load();
   </script></body></html>`;
 }
