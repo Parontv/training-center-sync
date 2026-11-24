@@ -269,15 +269,15 @@ export default {
           countErrors[table] = String(error?.message || error).slice(0, 250);
         }
       }
-      const lock = await env.DB.prepare(
-        "SELECT lease_until FROM sync_locks WHERE lock_key='garmin_sync'"
-      ).first();
+      const locks = await env.DB.prepare(
+        "SELECT lock_key, owner, lease_until, updated_at FROM sync_locks WHERE lock_key IN ('garmin_backfill','garmin_daily') ORDER BY lock_key"
+      ).all();
       return json({
         ok: true,
         counts,
         countErrors,
         database: { bindingPresent: Boolean(env.DB), countQueriesSuccessful: Object.keys(countErrors).length === 0 },
-        agent: { cronConfiguredInRepository: "*/15 * * * *", lockUntil: lock?.lease_until || null },
+        agent: { backfillCron: "*/5 * * * *", dailyCron: "12:00 Europe/Rome", locks: locks.results || [] },
         mode: nextDate > today ? "historical_backfill_complete" : "historical_backfill",
         backfill: {
           startDate: configuredStart,
@@ -327,7 +327,7 @@ export default {
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) {
         return json({ error: "unauthorized" }, 401);
       }
-      const result = await withSyncLock(env.DB, () => runBackfill(env));
+      const result = await withSyncLock(env.DB, 'garmin_backfill', () => runBackfill(env));
       return json(result, result.busy ? 409 : result.ok ? 200 : 502);
     }
     if (url.pathname === "/sync" && request.method === "POST") {
@@ -335,7 +335,7 @@ export default {
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) {
         return json({ error: "unauthorized" }, 401);
       }
-      const result = await withSyncLock(env.DB, () => runSync(env));
+      const result = await withSyncLock(env.DB, 'garmin_daily', () => runSync(env));
       return json(result, result.busy ? 409 : result.ok ? 200 : 502);
     }
     return json({ error: "not_found" }, 404);
@@ -360,30 +360,30 @@ async function ensureSyncLockSchema(db) {
   `).run();
 }
 
-async function acquireSyncLock(db, owner) {
+async function acquireSyncLock(db, lockKey, owner) {
   await ensureSyncLockSchema(db);
   const result = await db.prepare(`
     INSERT INTO sync_locks (lock_key, owner, lease_until, updated_at)
-    VALUES ('garmin_sync', ?, datetime('now', '+20 minutes'), CURRENT_TIMESTAMP)
+    VALUES (?, ?, datetime('now', '+20 minutes'), CURRENT_TIMESTAMP)
     ON CONFLICT(lock_key) DO UPDATE SET
       owner=excluded.owner,
       lease_until=excluded.lease_until,
       updated_at=CURRENT_TIMESTAMP
     WHERE sync_locks.lease_until < CURRENT_TIMESTAMP
-  `).bind(owner).run();
+  `).bind(lockKey, owner).run();
   return Number(result.meta?.changes || 0) > 0;
 }
 
-async function releaseSyncLock(db, owner) {
-  await db.prepare("DELETE FROM sync_locks WHERE lock_key='garmin_sync' AND owner=?").bind(owner).run();
+async function releaseSyncLock(db, lockKey, owner) {
+  await db.prepare("DELETE FROM sync_locks WHERE lock_key=? AND owner=?").bind(lockKey, owner).run();
 }
 
-async function withSyncLock(db, task) {
+async function withSyncLock(db, lockKey, task) {
   if (!db) return { ok: false, error: "D1 binding DB is missing" };
   const owner = crypto.randomUUID();
-  if (!await acquireSyncLock(db, owner)) return { ok: false, busy: true, error: "A Garmin sync is already running. Check /status shortly." };
+  if (!await acquireSyncLock(db, lockKey, owner)) return { ok: false, busy: true, error: `A ${lockKey} run is already running. Check /status shortly.` };
   try { return await task(); }
-  finally { await releaseSyncLock(db, owner).catch(error => console.error("Could not release manual sync lock:", error)); }
+  finally { await releaseSyncLock(db, lockKey, owner).catch(error => console.error(`Could not release ${lockKey} lock:`, error)); }
 }
 
 function isoDateDaysAgo(days) {
@@ -557,8 +557,8 @@ async function runScheduledSync(env) {
   const owner = crypto.randomUUID();
   try {
     if (!env.DB) throw new Error("D1 binding DB is missing");
-    if (!await acquireSyncLock(env.DB, owner)) {
-      console.log("Garmin sync skipped: another run holds the D1 lock.");
+    if (!await acquireSyncLock(env.DB, 'garmin_backfill', owner)) {
+      console.log("Garmin backfill skipped: another backfill run holds its D1 lock.");
       return { ok: true, skipped: true, reason: "sync_already_running" };
     }
     if (!env.GARMIN_PERSONAL_API_KEY) throw new Error("Worker Secret GARMIN_PERSONAL_API_KEY is missing");
@@ -579,7 +579,7 @@ async function runScheduledSync(env) {
     console.error("Scheduled Garmin sync failed:", error);
     return { ok: false, mode: "scheduled_sync", error: String(error?.message || error).slice(0, 500) };
   } finally {
-    if (env.DB) await releaseSyncLock(env.DB, owner).catch(error => console.error("Could not release Garmin sync lock:", error));
+    if (env.DB) await releaseSyncLock(env.DB, 'garmin_backfill', owner).catch(error => console.error("Could not release Garmin backfill lock:", error));
   }
 }
 
@@ -610,8 +610,8 @@ async function runScheduledDailySync(event, env) {
   const owner = crypto.randomUUID();
   try {
     if (!env.DB) throw new Error("D1 binding DB is missing");
-    if (!await acquireSyncLock(env.DB, owner)) {
-      console.log("Daily Garmin sync skipped: another run holds the D1 lock.");
+    if (!await acquireSyncLock(env.DB, 'garmin_daily', owner)) {
+      console.log("Daily Garmin sync skipped: another daily run holds its D1 lock.");
       return { ok: true, skipped: true, reason: "sync_already_running", targetDate: yesterday };
     }
     if (!env.GARMIN_PERSONAL_API_KEY) throw new Error("Worker Secret GARMIN_PERSONAL_API_KEY is missing");
@@ -623,7 +623,7 @@ async function runScheduledDailySync(event, env) {
     console.error("Daily Garmin previous-day sync failed:", error);
     return { ok: false, mode: "daily_previous_day", targetDate: yesterday, error: String(error?.message || error).slice(0, 500) };
   } finally {
-    if (env.DB) await releaseSyncLock(env.DB, owner).catch(error => console.error("Could not release daily Garmin sync lock:", error));
+    if (env.DB) await releaseSyncLock(env.DB, 'garmin_daily', owner).catch(error => console.error("Could not release daily Garmin sync lock:", error));
   }
 }
 
