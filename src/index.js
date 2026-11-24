@@ -406,7 +406,7 @@ $('run').addEventListener('click',async()=>{
         counts,
         countErrors,
         database: { bindingPresent: Boolean(env.DB), countQueriesSuccessful: Object.keys(countErrors).length === 0 },
-        agent: { backfillCron: "*/5 * * * *", dailyCron: "12:00 Europe/Rome", locks: locks.results || [] },
+        agent: { backfillCron: "*/3 * * * *", dailyCron: "12:00 Europe/Rome", locks: locks.results || [] },
         mode: nextDate > today ? "historical_backfill_complete" : "historical_backfill",
         backfill: {
           startDate: configuredStart,
