@@ -161,6 +161,40 @@ export default {
     if (url.pathname === "/dashboard" && request.method === "GET") {
       return new Response(dashboardHtml(), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
     }
+    if (url.pathname === "/dashboard-browser" && request.method === "GET") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== "Bearer " + expected) return json({ error: "unauthorized" }, 401);
+      const source = (url.searchParams.get("source") || "garmin_records").trim();
+      const category = (url.searchParams.get("category") || "").trim();
+      const date = (url.searchParams.get("date") || "").trim();
+      const search = (url.searchParams.get("search") || "").trim().slice(0, 100);
+      const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 50), 1), 100);
+      const offset = Math.max(Number(url.searchParams.get("offset") || 0), 0);
+      const sources = {
+        garmin_records: { from: "garmin_records", id: "dataset || ':' || record_key || ':' || COALESCE(record_date, '') || ':' || retrieved_at", date: "record_date", category: "dataset", label: "record_key", raw: "raw_json", retrieved: "retrieved_at", extra: "source_endpoint" },
+        daily_records: { from: "daily_records", id: "dataset || ':' || record_date", date: "record_date", category: "dataset", label: "dataset", raw: "raw_json", retrieved: "updated_at", extra: "'daily_records'" },
+        activities: { from: "activities", id: "activity_id", date: "start_time_local", category: "activity_type", label: "activity_name", raw: "raw_json", retrieved: "last_seen_at", extra: "activity_id" },
+        activity_details: { from: "activity_details", id: "activity_id", date: "''", category: "source_endpoint", label: "activity_id", raw: "raw_json", retrieved: "retrieved_at", extra: "source_endpoint" },
+        sync_runs: { from: "sync_runs", id: "CAST(id AS TEXT)", date: "started_at", category: "sync_type", label: "CAST(id AS TEXT)", raw: "json_object('id',id,'sync_type',sync_type,'status',status,'activities_seen',activities_seen,'daily_records_seen',daily_records_seen,'message',message)", retrieved: "finished_at", extra: "status" },
+        sync_state: { from: "sync_state", id: "state_key", date: "updated_at", category: "'sync_state'", label: "state_key", raw: "json_object('state_key',state_key,'state_value',state_value,'updated_at',updated_at)", retrieved: "updated_at", extra: "state_key" },
+        sync_locks: { from: "sync_locks", id: "lock_key", date: "updated_at", category: "'sync_locks'", label: "lock_key", raw: "json_object('lock_key',lock_key,'owner',owner,'lease_until',lease_until,'updated_at',updated_at)", retrieved: "updated_at", extra: "lock_key" }
+      };
+      const spec = sources[source];
+      if (!spec) return json({ error: "Sorgente non supportata." }, 400);
+      if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) return json({ error: "Data non valida." }, 400);
+      try {
+        const clauses = [], binds = [];
+        if (category) { clauses.push(spec.category + "=?"); binds.push(category); }
+        if (date) { clauses.push("substr(" + spec.date + ",1,10)=?"); binds.push(date); }
+        if (search) { clauses.push("(" + spec.label + " LIKE ? OR " + spec.id + " LIKE ? OR " + spec.raw + " LIKE ?)"); binds.push("%"+search+"%", "%"+search+"%", "%"+search+"%"); }
+        const where = clauses.length ? " WHERE " + clauses.join(" AND ") : "";
+        const count = await env.DB.prepare("SELECT COUNT(*) AS total FROM " + spec.from + where).bind(...binds).first();
+        const sql = "SELECT " + spec.id + " AS row_id, " + spec.date + " AS record_date, " + spec.category + " AS category, " + spec.label + " AS label, " + spec.raw + " AS raw_json, " + spec.retrieved + " AS retrieved_at, " + spec.extra + " AS source_info FROM " + spec.from + where + " ORDER BY " + spec.date + " DESC LIMIT ? OFFSET ?";
+        const result = await env.DB.prepare(sql).bind(...binds, limit, offset).all();
+        const categories = await env.DB.prepare("SELECT DISTINCT " + spec.category + " AS value FROM " + spec.from + " WHERE " + spec.category + " IS NOT NULL AND " + spec.category + " != '' ORDER BY value LIMIT 500").all();
+        return json({ ok: true, source, total: Number(count?.total || 0), limit, offset, hasMore: offset + (result.results || []).length < Number(count?.total || 0), rows: result.results || [], categories: (categories.results || []).map(x => x.value) });
+      } catch (error) { return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500); }
+    }
     if (url.pathname === "/dashboard-record-dates" && request.method === "GET") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
@@ -979,11 +1013,13 @@ function dashboardHtml() {
   </details>
 
   <details class="menu">
-    <summary>Esplora il database Garmin <span class="pill">ricerca per categoria e data</span></summary>
+    <summary>Esplora tutto il database D1 <span class="pill">navigazione completa</span></summary>
     <div class="inside">
-      <p class="hint">Scegli una categoria e, se vuoi, una data. La dashboard mostra i valori riconoscibili in forma leggibile e mantiene sempre disponibile il JSON originale.</p>
-      <div class="controls"><select id="recordDataset"><option value="">1 · Seleziona categoria…</option></select><select id="recordDate" disabled><option value="">2 · Seleziona data…</option></select><button id="searchRecords" disabled>Carica record</button></div>
-      <div id="recordStatus" class="status">Scegli una categoria, poi una data e infine apri il singolo record.</div><div id="recordResults"></div><div id="recordDetail"></div>
+      <p class="hint">Naviga tra tutte le tabelle, filtra per categoria, data o testo, apri qualsiasi riga e consulta i campi e il JSON originale. Usa Avanti/Indietro per scorrere l'intero archivio.</p>
+      <div class="controls"><select id="browserSource"><option value="garmin_records">Garmin records</option><option value="daily_records">Daily records</option><option value="activities">Attività</option><option value="activity_details">Dettagli attività</option><option value="sync_runs">Esecuzioni sync</option><option value="sync_state">Stato backfill</option><option value="sync_locks">Lock sincronizzazione</option></select><select id="browserCategory"><option value="">Tutte le categorie</option></select><input id="browserDate" type="date"><input id="browserSearch" placeholder="Cerca ID, nome o testo"><button id="browserSearchButton">Cerca</button></div>
+      <div id="browserStatus" class="status">Seleziona una tabella e premi Cerca.</div><div id="browserRows"></div>
+      <div class="controls"><button id="browserPrev" disabled>← Indietro</button><span id="browserPage" class="hint">Pagina 1</span><button id="browserNext" disabled>Avanti →</button></div>
+      <div id="browserDetail"></div>
     </div>
   </details>
 
@@ -1057,6 +1093,29 @@ function dashboardHtml() {
       $('status').textContent='Archivio aggiornato '+new Date(d.generatedAt).toLocaleString('it-IT')+' · dati letti direttamente da D1.';
     }catch(e){$('status').textContent='Errore: '+e.message}finally{$('load').disabled=false}
   }
+  let browserOffset=0,browserTotal=0,browserRows=[];
+  async function browseDatabase(reset=true){
+    const t=token.value.trim();if(!t){$('browserStatus').textContent='Inserisci il token di accesso.';return}
+    if(reset)browserOffset=0;
+    const source=$('browserSource').value,category=$('browserCategory').value,day=$('browserDate').value,search=$('browserSearch').value.trim();
+    $('browserSearchButton').disabled=true;$('browserStatus').textContent='Lettura archivio D1…';$('browserDetail').innerHTML='';
+    try{
+      const q=new URLSearchParams({source,limit:'50',offset:String(browserOffset)});if(category)q.set('category',category);if(day)q.set('date',day);if(search)q.set('search',search);
+      const r=await fetch('/dashboard-browser?'+q.toString(),{headers:{Authorization:'Bearer '+t},cache:'no-store'});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||('HTTP '+r.status));
+      browserRows=d.rows||[];browserTotal=d.total||0;
+      const cat=$('browserCategory'),old=cat.value;cat.innerHTML='<option value="">Tutte le categorie</option>'+(d.categories||[]).map(x=>'<option value="'+esc(x)+'">'+esc(x)+'</option>').join('');if(old)cat.value=old;
+      $('browserStatus').textContent=fmt(browserTotal)+' record in '+source+' · visualizzati '+(browserOffset+1)+'–'+(browserOffset+browserRows.length);
+      $('browserRows').innerHTML=browserRows.length?'<div class="scroll"><table><thead><tr><th>Data</th><th>Categoria</th><th>Nome / ID</th><th>Acquisito</th><th></th></tr></thead><tbody>'+browserRows.map((x,i)=>'<tr><td>'+esc(date(x.record_date))+'</td><td>'+esc(x.category||'—')+'</td><td>'+esc(x.label||x.row_id)+'</td><td>'+esc(x.retrieved_at||'—')+'</td><td><button type="button" class="browserOpen" data-index="'+i+'">Apri</button></td></tr>').join('')+'</tbody></table></div>':'<p class="hint">Nessun record trovato con questi filtri.</p>';
+      $('browserPrev').disabled=browserOffset===0;$('browserNext').disabled=browserOffset+browserRows.length>=browserTotal;$('browserPage').textContent='Pagina '+(Math.floor(browserOffset/50)+1)+' · '+fmt(browserTotal)+' record';
+    }catch(e){$('browserStatus').textContent='Errore: '+e.message}finally{$('browserSearchButton').disabled=false}
+  }
+  function openBrowserRow(index){
+    const row=browserRows[index];if(!row)return;let parsed;try{parsed=JSON.parse(row.raw_json||'null')}catch(e){parsed=row.raw_json||'JSON non disponibile'}
+    const fields=[];flatten(parsed,'',fields);
+    const cards=fields.map(x=>'<div class="valuecard"><small>'+esc(x.key)+'</small><strong style="font-size:14px">'+esc(x.value)+'</strong></div>').join('');
+    $('browserDetail').innerHTML='<div class="panel" style="margin-top:12px"><div class="top"><b>'+esc(row.category||'Record')+' · '+esc(row.label||row.row_id)+'</b><span class="pill">D1 · sola lettura</span></div><p class="hint">ID: '+esc(row.row_id)+' · data: '+esc(row.record_date||'—')+' · acquisito: '+esc(row.retrieved_at||'—')+' · fonte: '+esc(row.source_info||'—')+'</p><h3>Campi leggibili</h3><div class="cards">'+(cards||'<p class="hint">Nessun campo leggibile.</p>')+'</div><details class="submenu" open><summary>JSON originale completo</summary><div class="inside"><pre class="raw">'+esc(typeof parsed==='string'?parsed:JSON.stringify(parsed,null,2))+'</pre></div></details></div>';
+    $('browserDetail').scrollIntoView({behavior:'smooth',block:'start'});
+  }
   async function loadRecordDates(){
     const t=token.value.trim(),dataset=$('recordDataset').value,select=$('recordDate');
     select.disabled=true;$('searchRecords').disabled=true;select.innerHTML='<option value="">Caricamento date…</option>';$('recordResults').innerHTML='';$('recordDetail').innerHTML='';
@@ -1120,7 +1179,15 @@ function dashboardHtml() {
       $('auditStatus').textContent='Controllate '+fmt(d.runs.length)+' esecuzioni recenti. Questo riepilogo attribuisce i record tramite il timestamp di acquisizione: è un controllo indicativo, non un log completo delle chiamate Garmin.';
     }catch(e){$('auditStatus').textContent='Errore nel controllo: '+e.message}finally{$('auditLoad').disabled=false}
   }
-  $('load').addEventListener('click',load);$('searchRecords').addEventListener('click',searchRecords);$('recordDataset').addEventListener('change',loadRecordDates);$('recordDate').addEventListener('change',()=>{$('searchRecords').disabled=!$('recordDate').value;$('recordResults').innerHTML='';$('recordDetail').innerHTML='';});$('recordResults').addEventListener('click',event=>{const button=event.target.closest('.openGarminRecord');if(!button)return;const row=(window.__garminBrowserRows||[])[Number(button.dataset.index)];if(!row)return;$('recordDetail').innerHTML=prettyRecord(row);$('recordDetail').scrollIntoView({behavior:'smooth',block:'start'});});$('auditLoad').addEventListener('click',loadAudit);$('openActivity').addEventListener('click',openActivity);$('activitySelect').addEventListener('change',()=>{$('activityDetail').innerHTML='';$('activityDetailStatus').textContent='Premi “Apri attività” per caricare i dettagli.';});
-  if(token.value)load();
+  $('load').addEventListener('click',load);
+  $('browserSearchButton').addEventListener('click',()=>browseDatabase(true));
+  $('browserSource').addEventListener('change',()=>{$('browserCategory').innerHTML='<option value="">Tutte le categorie</option>';browseDatabase(true)});
+  $('browserCategory').addEventListener('change',()=>browseDatabase(true));
+  $('browserPrev').addEventListener('click',()=>{browserOffset=Math.max(0,browserOffset-50);browseDatabase(false)});
+  $('browserNext').addEventListener('click',()=>{browserOffset+=50;browseDatabase(false)});
+  $('browserRows').addEventListener('click',event=>{const b=event.target.closest('.browserOpen');if(b)openBrowserRow(Number(b.dataset.index))});
+  $('browserSearch').addEventListener('keydown',event=>{if(event.key==='Enter')browseDatabase(true)});
+  $('searchRecords').addEventListener('click',searchRecords);$('recordDataset').addEventListener('change',loadRecordDates);$('recordDate').addEventListener('change',()=>{$('searchRecords').disabled=!$('recordDate').value;$('recordResults').innerHTML='';$('recordDetail').innerHTML='';});$('recordResults').addEventListener('click',event=>{const button=event.target.closest('.openGarminRecord');if(!button)return;const row=(window.__garminBrowserRows||[])[Number(button.dataset.index)];if(!row)return;$('recordDetail').innerHTML=prettyRecord(row);$('recordDetail').scrollIntoView({behavior:'smooth',block:'start'});});$('auditLoad').addEventListener('click',loadAudit);$('openActivity').addEventListener('click',openActivity);$('activitySelect').addEventListener('change',()=>{$('activityDetail').innerHTML='';$('activityDetailStatus').textContent='Premi “Apri attività” per caricare i dettagli.';});
+  if(token.value){load();browseDatabase();}
   </script></body></html>`;
 }
