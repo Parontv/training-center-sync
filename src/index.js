@@ -197,7 +197,7 @@ export default {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
       try {
-        const runs = await env.DB.prepare("SELECT id, started_at, finished_at, status, activities_seen, daily_records_seen, message FROM sync_runs ORDER BY id DESC LIMIT 30").all();
+        const runs = await env.DB.prepare("SELECT id, started_at, finished_at, status, sync_type, activities_seen, daily_records_seen, message FROM sync_runs ORDER BY id DESC LIMIT 30").all();
         const audit = [];
         for (const run of (runs.results || [])) {
           const datasets = await env.DB.prepare(`
@@ -335,7 +335,7 @@ export default {
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) {
         return json({ error: "unauthorized" }, 401);
       }
-      const result = await withSyncLock(env.DB, 'garmin_daily', () => runSync(env));
+      const result = await withSyncLock(env.DB, 'garmin_daily', () => runSync(env, null, null, { syncType: "manual" }));
       return json(result, result.busy ? 409 : result.ok ? 200 : 502);
     }
     return json({ error: "not_found" }, 404);
@@ -616,7 +616,7 @@ async function runScheduledDailySync(event, env) {
     }
     if (!env.GARMIN_PERSONAL_API_KEY) throw new Error("Worker Secret GARMIN_PERSONAL_API_KEY is missing");
     const token = await getBearerToken(env.GARMIN_PERSONAL_API_KEY);
-    const result = await runSync(env, { startDate: yesterday, endDate: yesterday }, token, { refreshDateScoped: true });
+    const result = await runSync(env, { startDate: yesterday, endDate: yesterday }, token, { refreshDateScoped: true, syncType: "daily" });
     console.log("Daily Garmin previous-day sync completed.", { todayRome, targetDate: yesterday, result });
     return { ...result, mode: "daily_previous_day", targetDate: yesterday, todayRome };
   } catch (error) {
@@ -645,7 +645,7 @@ async function runBackfill(env, tokenOverride = null) {
     if (startDate > today) return { ok: true, complete: true, nextDate: startDate };
     const proposedEnd = addDays(startDate, 2);
     const endDate = proposedEnd > today ? today : proposedEnd;
-    const result = await runSync(env, { startDate, endDate }, tokenOverride);
+    const result = await runSync(env, { startDate, endDate }, tokenOverride, { syncType: "backfill" });
     if (!result.ok || result.partial) {
       return { ...result, backfill: true, cursorAdvanced: false, nextDate: startDate };
     }
@@ -692,8 +692,13 @@ async function ensureCoreSchema(db) {
     status TEXT NOT NULL,
     activities_seen INTEGER NOT NULL DEFAULT 0,
     daily_records_seen INTEGER NOT NULL DEFAULT 0,
-    message TEXT
+    message TEXT,
+    sync_type TEXT NOT NULL DEFAULT 'legacy'
   )`).run();
+  const runColumns = await db.prepare("PRAGMA table_info(sync_runs)").all();
+  if (!(runColumns.results || []).some(column => column.name === "sync_type")) {
+    await db.prepare("ALTER TABLE sync_runs ADD COLUMN sync_type TEXT NOT NULL DEFAULT 'legacy'").run();
+  }
 }
 
 async function runSync(env, rangeOverride = null, tokenOverride = null, options = {}) {
@@ -704,8 +709,8 @@ async function runSync(env, rangeOverride = null, tokenOverride = null, options 
     if (!env.GARMIN_PERSONAL_API_KEY) throw new Error("Worker Secret GARMIN_PERSONAL_API_KEY is missing");
     await ensureCoreSchema(env.DB);
     const insertRun = await env.DB.prepare(
-      "INSERT INTO sync_runs (started_at, status) VALUES (?, 'running')"
-    ).bind(startedAt).run();
+      "INSERT INTO sync_runs (started_at, status, sync_type) VALUES (?, 'running', ?)"
+    ).bind(startedAt, options.syncType || "manual").run();
     runId = insertRun.meta.last_row_id;
 
     await env.DB.prepare(`
@@ -1017,7 +1022,7 @@ function dashboardHtml() {
       $('auditRows').innerHTML=(d.runs||[]).map(run=>{
         const ds=run.datasets||[],written=ds.reduce((n,x)=>n+Number(x.records_written||0),0);
         const rows=ds.length?'<div class="scroll"><table><thead><tr><th>Categoria</th><th>Record scritti/aggiornati</th><th>Vuoti</th><th>Intervallo date</th></tr></thead><tbody>'+ds.map(x=>'<tr><td>'+esc(x.dataset)+'</td><td>'+fmt(x.records_written)+'</td><td>'+fmt(x.empty_records)+'</td><td>'+esc(date(x.first_date))+' → '+esc(date(x.last_date))+'</td></tr>').join('')+'</tbody></table></div>':'<p class="hint">Nessun record Garmin attribuito a questa finestra temporale.</p>';
-        return '<details class="submenu"><summary>Run #'+fmt(run.id)+' · '+esc(run.started_at)+' · '+esc(run.status)+' · '+fmt(written)+' record</summary><div class="inside"><p class="hint">Attività: '+fmt(run.activities_seen)+' · record giornalieri: '+fmt(run.daily_records_seen)+' · fine: '+esc(run.finished_at||'in corso')+'</p>'+rows+(run.message?'<pre class="raw">'+esc(run.message)+'</pre>':'')+'</div></details>';
+        return '<details class="submenu"><summary>Run #'+fmt(run.id)+' · '+esc(run.sync_type||'legacy')+' · '+esc(run.started_at)+' · '+esc(run.status)+' · '+fmt(written)+' record</summary><div class="inside"><p class="hint">Attività: '+fmt(run.activities_seen)+' · record giornalieri: '+fmt(run.daily_records_seen)+' · fine: '+esc(run.finished_at||'in corso')+'</p>'+rows+(run.message?'<pre class="raw">'+esc(run.message)+'</pre>':'')+'</div></details>';
       }).join('')||'<p class="hint">Nessuna esecuzione registrata.</p>';
       $('auditStatus').textContent='Controllate '+fmt(d.runs.length)+' esecuzioni recenti. Questo riepilogo attribuisce i record tramite il timestamp di acquisizione: è un controllo indicativo, non un log completo delle chiamate Garmin.';
     }catch(e){$('auditStatus').textContent='Errore nel controllo: '+e.message}finally{$('auditLoad').disabled=false}
