@@ -357,6 +357,39 @@ export default {
         latestRun: latest || null
       });
     }
+    if (url.pathname === "/excel-export" && request.method === "GET") {
+      // Dedicated read-only endpoint for the local Training Center Excel workbook.
+      // Configure EXCEL_READ_TOKEN as a separate Cloudflare Worker secret.
+      const expected = env.EXCEL_READ_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== "Bearer " + expected) {
+        return json({ error: "unauthorized" }, 401);
+      }
+      const dataset = url.searchParams.get("dataset") || "garmin_records";
+      const allowed = {
+        garmin_records: "SELECT dataset, record_key, record_date, source_endpoint, raw_json, retrieved_at FROM garmin_records ORDER BY record_date, dataset, record_key LIMIT ? OFFSET ?",
+        activities: "SELECT activity_id, start_time_local, activity_type, activity_name, distance_m, duration_s, calories, average_hr, max_hr, raw_json, first_seen_at, last_seen_at FROM activities ORDER BY start_time_local, activity_id LIMIT ? OFFSET ?",
+        activity_details: "SELECT activity_id, source_endpoint, raw_json, retrieved_at FROM activity_details ORDER BY activity_id LIMIT ? OFFSET ?",
+        daily_records: "SELECT record_date, dataset, raw_json, updated_at FROM daily_records ORDER BY record_date, dataset LIMIT ? OFFSET ?"
+      };
+      if (!Object.prototype.hasOwnProperty.call(allowed, dataset)) {
+        return json({ error: "unsupported_dataset", allowed: Object.keys(allowed) }, 400);
+      }
+      const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 250), 1), 500);
+      const offset = Math.max(Number(url.searchParams.get("offset") || 0), 0);
+      if (!Number.isSafeInteger(limit) || !Number.isSafeInteger(offset)) {
+        return json({ error: "invalid_pagination" }, 400);
+      }
+      try {
+        const result = await env.DB.prepare(allowed[dataset]).bind(limit + 1, offset).all();
+        const rows = result.results || [];
+        const hasMore = rows.length > limit;
+        const page = hasMore ? rows.slice(0, limit) : rows;
+        return json({ ok: true, dataset, count: page.length, limit, offset,
+          nextOffset: hasMore ? offset + limit : null, rows: page });
+      } catch (error) {
+        return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500);
+      }
+    }
     if (url.pathname === "/export" && request.method === "GET") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) {
