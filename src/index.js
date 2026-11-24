@@ -155,6 +155,21 @@ export default {
     if (url.pathname === "/dashboard" && request.method === "GET") {
       return new Response(dashboardHtml(), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
     }
+    if (url.pathname === "/dashboard-record" && request.method === "GET") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
+      const date = url.searchParams.get("date") || "";
+      if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(date)) return json({ error: "Data non valida. Usa YYYY-MM-DD." }, 400);
+      try {
+        const [steps, daily] = await Promise.all([
+          env.DB.prepare("SELECT dataset, record_date, raw_json, retrieved_at FROM garmin_records WHERE dataset='steps' AND record_date=? ORDER BY retrieved_at DESC").bind(date).all(),
+          env.DB.prepare("SELECT dataset, record_date, raw_json, updated_at FROM daily_records WHERE dataset='steps' AND record_date=?").bind(date).all()
+        ]);
+        return json({ ok: true, date, steps: steps.results || [], daily: daily.results || [] });
+      } catch (error) {
+        return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500);
+      }
+    }
     if (url.pathname === "/dashboard-audit" && request.method === "GET") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
@@ -852,6 +867,7 @@ function dashboardHtml() {
   <section class="panel"><h2>Copertura dei dati per categoria</h2><div class="muted" style="font-size:13px;margin-bottom:12px">Numero di record presenti in D1 e intervallo temporale disponibile. I record vuoti sono conteggiati separatamente, non interpretati come misurazioni.</div><div class="scroll"><table><thead><tr><th>Dataset</th><th>Record</th><th>Copertura</th><th>Dal</th><th>Al</th><th>Vuoti</th></tr></thead><tbody id="datasets"><tr><td colspan="6">In attesa dei dati</td></tr></tbody></table></div></section>
   <section class="panel" style="margin-top:14px"><h2>Esplora i dati Garmin</h2><div class="muted" style="font-size:13px;margin-bottom:12px">Apri i menu per consultare i singoli record salvati in D1.</div>
     <details class="explorer"><summary>Attività sportive registrate <span id="activityCount" class="pill">—</span></summary><div class="scroll"><table><thead><tr><th>Data</th><th>Attività</th><th>Distanza</th><th>Durata</th><th>Calorie</th><th>FC media</th><th>FC max</th></tr></thead><tbody id="allActivityRows"><tr><td colspan="7">In attesa dei dati</td></tr></tbody></table></div></details>
+    <details class="explorer"><summary>Consulta i passi di un giorno</summary><div style="padding:12px"><div style="display:flex;gap:8px;flex-wrap:wrap"><input id="stepDate" type="date" value="2015-01-15"><button id="searchSteps" type="button">Cerca data</button></div><div id="stepLookupStatus" class="status">Scegli un giorno e premi Cerca data.</div><div id="stepLookupResult"></div></div></details>
     <details class="explorer"><summary>Passi giornalieri <span id="stepsCount" class="pill">—</span></summary><div class="scroll"><table><thead><tr><th>Data</th><th>Contenuto Garmin</th></tr></thead><tbody id="stepRows"><tr><td colspan="2">In attesa dei dati</td></tr></tbody></table></div></details>
   </section>
   <div class="cols">
@@ -895,6 +911,28 @@ function dashboardHtml() {
     }catch(e){$('auditStatus').textContent='Errore registro: '+e.message}
     finally{$('auditLoad').disabled=false}
   }
+  async function searchSteps(){
+    const t=token.value.trim(), day=$('stepDate').value;
+    if(!t){$('stepLookupStatus').textContent='Inserisci il token di accesso.';return}
+    if(!day){$('stepLookupStatus').textContent='Seleziona una data.';return}
+    $('searchSteps').disabled=true;$('stepLookupStatus').textContent='Ricerca in D1…';
+    try{
+      const r=await fetch('/dashboard-record?date='+encodeURIComponent(day),{headers:{Authorization:'Bearer '+t},cache:'no-store'});
+      const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||('HTTP '+r.status));
+      const rows=[...(d.steps||[]),...(d.daily||[])];
+      if(!rows.length){$('stepLookupStatus').textContent='Nessun record passi trovato per '+day+'. Questo non prova che i passi siano zero: Garmin potrebbe non aver fornito quel dato.';$('stepLookupResult').innerHTML='';return}
+      const raw=rows.map(x=>x.raw_json).join(' ');
+      let parsed=[];for(const row of rows){try{parsed.push(JSON.parse(row.raw_json))}catch(e){}}
+      const found=[];
+      function walk(v,path){if(!v||typeof v!=='object')return;for(const [k,val] of Object.entries(v)){if(/step|passi/i.test(k)&&typeof val==='number')found.push({key:k,value:val,path:path?path+'.'+k:k});if(val&&typeof val==='object')walk(val,path?path+'.'+k:k)}}
+      parsed.forEach(v=>walk(v,''));
+      const summary=found.length?'<div class="metric" style="margin:10px 0"><small>Valore/i con campo relativo ai passi</small><strong>'+found.map(x=>fmt(x.value)+' <span style="font-size:13px">'+esc(x.key)+'</span>').join('<br>')+'</strong></div>':'<p class="muted">Il JSON non contiene un campo numerico identificabile automaticamente come passi. Consulta il contenuto originale qui sotto.</p>';
+      $('stepLookupStatus').textContent='Trovati '+rows.length+' record per '+day+'.';
+      $('stepLookupResult').innerHTML=summary+rows.map(x=>'<div style="margin-top:10px"><b>'+esc(x.dataset)+' · '+esc(x.record_date)+'</b><pre class="raw">'+esc(JSON.stringify(JSON.parse(x.raw_json||'null'),null,2))+'</pre></div>').join('');
+    }catch(e){$('stepLookupStatus').textContent='Errore: '+e.message}
+    finally{$('searchSteps').disabled=false}
+  }
+  $('searchSteps').addEventListener('click',searchSteps);
   $('auditLoad').addEventListener('click',loadAudit);
   $('load').addEventListener('click',load);if(token.value){load();loadAudit();}
   </script></body></html>`;
