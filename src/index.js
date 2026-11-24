@@ -178,6 +178,23 @@ export default {
         return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500);
       }
     }
+    if (url.pathname === "/dashboard-activity" && request.method === "GET") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
+      const activityId = (url.searchParams.get("activityId") || "").trim();
+      if (!activityId || activityId.length > 100) return json({ error: "ID attività non valido." }, 400);
+      try {
+        const [activity, detail, workouts] = await Promise.all([
+          env.DB.prepare("SELECT * FROM activities WHERE activity_id=?").bind(activityId).first(),
+          env.DB.prepare("SELECT source_endpoint, raw_json, retrieved_at FROM activity_details WHERE activity_id=?").bind(activityId).first(),
+          env.DB.prepare("SELECT dataset, record_date, source_endpoint, raw_json, retrieved_at FROM garmin_records WHERE dataset='activity_workouts' AND record_key=? ORDER BY retrieved_at DESC").bind(activityId).all()
+        ]);
+        if (!activity) return json({ ok: false, error: "Attività non trovata." }, 404);
+        return json({ ok: true, activity, detail: detail || null, workouts: workouts.results || [] });
+      } catch (error) {
+        return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500);
+      }
+    }
     if (url.pathname === "/dashboard-record" && request.method === "GET") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
@@ -220,14 +237,16 @@ export default {
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
       try {
         await ensureCoreSchema(env.DB);
-        const [counts, datasets, activities, daily, steps] = await Promise.all([
+        const [counts, datasets, activities, daily, steps, activityQuality, recordQuality] = await Promise.all([
           env.DB.prepare("SELECT (SELECT COUNT(*) FROM activities) AS activities, (SELECT COUNT(*) FROM activity_details) AS activity_details, (SELECT COUNT(*) FROM daily_records) AS daily_records, (SELECT COUNT(*) FROM garmin_records) AS garmin_records, (SELECT COUNT(*) FROM sync_runs) AS sync_runs").first(),
           env.DB.prepare("SELECT dataset, COUNT(*) AS records, MIN(record_date) AS first_date, MAX(record_date) AS last_date, SUM(CASE WHEN raw_json='[]' OR raw_json='{}' THEN 1 ELSE 0 END) AS empty_records FROM garmin_records GROUP BY dataset ORDER BY dataset").all(),
           env.DB.prepare("SELECT activity_id, start_time_local, activity_type, activity_name, distance_m, duration_s, calories, average_hr, max_hr FROM activities ORDER BY start_time_local DESC LIMIT 500").all(),
           env.DB.prepare("SELECT record_date, dataset, updated_at FROM daily_records ORDER BY record_date DESC, dataset LIMIT 100").all(),
-          env.DB.prepare("SELECT record_date, raw_json FROM garmin_records WHERE dataset='steps' ORDER BY record_date DESC LIMIT 500").all()
+          env.DB.prepare("SELECT record_date, raw_json FROM garmin_records WHERE dataset='steps' ORDER BY record_date DESC LIMIT 500").all(),
+          env.DB.prepare("SELECT COUNT(*) AS total, SUM(CASE WHEN start_time_local IS NULL OR start_time_local='' THEN 1 ELSE 0 END) AS missing_date, SUM(CASE WHEN activity_type IS NULL OR activity_type='' THEN 1 ELSE 0 END) AS missing_type, SUM(CASE WHEN distance_m IS NULL THEN 1 ELSE 0 END) AS missing_distance, SUM(CASE WHEN duration_s IS NULL THEN 1 ELSE 0 END) AS missing_duration, SUM(CASE WHEN average_hr IS NULL THEN 1 ELSE 0 END) AS missing_average_hr, SUM(CASE WHEN max_hr IS NULL THEN 1 ELSE 0 END) AS missing_max_hr, SUM(CASE WHEN json_valid(raw_json)=0 THEN 1 ELSE 0 END) AS invalid_json FROM activities").first(),
+          env.DB.prepare("SELECT COUNT(*) AS total, SUM(CASE WHEN raw_json IS NULL OR TRIM(raw_json)='' OR raw_json IN ('[]','{}','null') THEN 1 ELSE 0 END) AS empty_payloads, SUM(CASE WHEN json_valid(raw_json)=0 THEN 1 ELSE 0 END) AS invalid_json FROM garmin_records").first()
         ]);
-        return json({ ok: true, generatedAt: new Date().toISOString(), counts: counts || {}, datasets: datasets.results || [], activities: activities.results || [], recentDailyRecords: daily.results || [], steps: steps.results || [] });
+        return json({ ok: true, generatedAt: new Date().toISOString(), counts: counts || {}, datasets: datasets.results || [], activities: activities.results || [], recentDailyRecords: daily.results || [], steps: steps.results || [], quality: { activities: activityQuality || {}, garminRecords: recordQuality || {} } });
       } catch (error) {
         return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500);
       }
@@ -943,6 +962,11 @@ function dashboardHtml() {
   </details>
 
   <details class="menu">
+    <summary>Qualità e affidabilità dei dati <span class="pill">controlli automatici</span></summary>
+    <div class="inside"><p class="hint">Controlli strutturali sui dati archiviati. Un campo mancante non significa automaticamente errore: alcuni parametri non sono disponibili per ogni attività o dispositivo.</p><div id="qualitySummary" class="cards"><div class="valuecard">In attesa dei controlli</div></div></div>
+  </details>
+
+  <details class="menu">
     <summary>Esplora il database Garmin <span class="pill">ricerca per categoria e data</span></summary>
     <div class="inside">
       <p class="hint">Scegli una categoria e, se vuoi, una data. La dashboard mostra i valori riconoscibili in forma leggibile e mantiene sempre disponibile il JSON originale.</p>
@@ -953,7 +977,9 @@ function dashboardHtml() {
 
   <details class="menu">
     <summary>Attività sportive <span id="activityCount" class="pill">—</span></summary>
-    <div class="inside"><p class="hint">Ultime attività archiviate. Le distanze sono espresse in chilometri e la durata in ore e minuti.</p><div class="scroll"><table><thead><tr><th>Data</th><th>Attività</th><th>Distanza</th><th>Durata</th><th>Calorie</th><th>FC media</th><th>FC max</th></tr></thead><tbody id="allActivityRows"><tr><td colspan="7">In attesa dei dati</td></tr></tbody></table></div></div>
+    <div class="inside"><p class="hint">Ultime attività archiviate. Le distanze sono espresse in chilometri e la durata in ore e minuti.</p><div class="scroll"><table><thead><tr><th>Data</th><th>Attività</th><th>Distanza</th><th>Durata</th><th>Calorie</th><th>FC media</th><th>FC max</th></tr></thead><tbody id="allActivityRows"><tr><td colspan="7">In attesa dei dati</td></tr></tbody></table></div>
+      <div class="panel" style="margin-top:12px"><h2>Apri una singola attività</h2><p class="hint">Seleziona un'attività dal menu per consultare riepilogo, dettagli Garmin, workout collegati e JSON originale.</p><div class="controls"><select id="activitySelect"><option value="">Seleziona attività…</option></select><button id="openActivity" type="button">Apri attività</button></div><div id="activityDetailStatus" class="status">Nessuna attività selezionata.</div><div id="activityDetail"></div></div>
+    </div>
   </details>
 
   <details class="menu">
@@ -996,7 +1022,24 @@ function dashboardHtml() {
       $('activities').textContent=fmt(d.counts.activities);$('details').textContent=fmt(d.counts.activity_details);$('records').textContent=fmt(d.counts.garmin_records);$('daily').textContent=fmt(d.counts.daily_records);$('runs').textContent=fmt(d.counts.sync_runs);
       $('datasets').innerHTML=d.datasets.map(x=>'<tr><td><b>'+esc(x.dataset)+'</b></td><td>'+fmt(x.records)+'</td><td>'+esc(date(x.first_date))+' → '+esc(date(x.last_date))+'</td><td>'+fmt(x.empty_records)+'</td></tr>').join('')||'<tr><td colspan="4">Nessun dataset</td></tr>';
       const select=$('recordDataset'),previous=select.value;select.innerHTML='<option value="">Seleziona categoria…</option>'+d.datasets.map(x=>'<option value="'+esc(x.dataset)+'">'+esc(x.dataset)+' ('+fmt(x.records)+')</option>').join('');if(previous)select.value=previous;
-      $('activityCount').textContent=fmt(d.activities.length)+' attività';
+      $('activityCount').textContent=fmt(d.counts.activities||d.activities.length)+' attività · '+d.activities.length+' mostrate';
+      const activitySelect=$('activitySelect'),previousActivity=activitySelect.value;
+      activitySelect.innerHTML='<option value="">Seleziona attività…</option>'+d.activities.map(x=>'<option value="'+esc(x.activity_id)+'">'+esc(date(x.start_time_local))+' · '+esc(x.activity_name||x.activity_type||'Attività')+' · '+esc(dist(x.distance_m))+'</option>').join('');
+      if(previousActivity)activitySelect.value=previousActivity;
+      const q=d.quality||{},aq=q.activities||{},gq=q.garminRecords||{};
+      const qualityItems=[
+        ['Attività archiviate',fmt(aq.total)],
+        ['Attività senza data',fmt(aq.missing_date)],
+        ['Attività senza tipo',fmt(aq.missing_type)],
+        ['Attività senza distanza',fmt(aq.missing_distance)],
+        ['Attività senza durata',fmt(aq.missing_duration)],
+        ['Attività senza FC media',fmt(aq.missing_average_hr)],
+        ['Attività senza FC massima',fmt(aq.missing_max_hr)],
+        ['JSON attività non validi',fmt(aq.invalid_json)],
+        ['Record Garmin vuoti',fmt(gq.empty_payloads)],
+        ['JSON Garmin non validi',fmt(gq.invalid_json)]
+      ];
+      $('qualitySummary').innerHTML=qualityItems.map(x=>'<div class="valuecard"><small>'+esc(x[0])+'</small><strong>'+esc(x[1])+'</strong></div>').join('');
       $('allActivityRows').innerHTML=d.activities.map(x=>'<tr><td>'+esc(date(x.start_time_local))+'</td><td>'+esc(x.activity_name||x.activity_type||'Attività')+'</td><td>'+dist(x.distance_m)+'</td><td>'+dur(x.duration_s)+'</td><td>'+fmt(x.calories)+'</td><td>'+(x.average_hr==null?'—':fmt(x.average_hr)+' bpm')+'</td><td>'+(x.max_hr==null?'—':fmt(x.max_hr)+' bpm')+'</td></tr>').join('')||'<tr><td colspan="7">Nessuna attività registrata</td></tr>';
       $('dailyRows').innerHTML=d.recentDailyRecords.map(x=>'<tr><td>'+esc(date(x.record_date))+'</td><td>'+esc(x.dataset)+'</td><td>'+esc(x.updated_at||'—')+'</td></tr>').join('')||'<tr><td colspan="3">Nessun record</td></tr>';
       $('status').textContent='Archivio aggiornato '+new Date(d.generatedAt).toLocaleString('it-IT')+' · dati letti direttamente da D1.';
@@ -1014,6 +1057,30 @@ function dashboardHtml() {
       $('recordResults').innerHTML=(d.rows||[]).map(prettyRecord).join('')||'<p class="hint">Nessun record trovato. L’assenza di record non equivale a una misurazione pari a zero.</p>';
     }catch(e){$('recordStatus').textContent='Errore: '+e.message}finally{$('searchRecords').disabled=false}
   }
+  async function openActivity(){
+    const t=token.value.trim(),activityId=$('activitySelect').value;
+    if(!t){$('activityDetailStatus').textContent='Inserisci il token di accesso.';return}
+    if(!activityId){$('activityDetailStatus').textContent='Seleziona prima un’attività.';return}
+    $('openActivity').disabled=true;$('activityDetailStatus').textContent='Lettura dell’attività da D1…';$('activityDetail').innerHTML='';
+    try{
+      const q=new URLSearchParams({activityId});
+      const r=await fetch('/dashboard-activity?'+q.toString(),{headers:{Authorization:'Bearer '+t},cache:'no-store'});
+      const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||('HTTP '+r.status));
+      const a=d.activity;
+      const summary=[['ID Garmin',a.activity_id],['Tipo',a.activity_type],['Data',a.start_time_local],['Distanza',dist(a.distance_m)],['Durata',dur(a.duration_s)],['Calorie',a.calories==null?'—':fmt(a.calories)],['FC media',a.average_hr==null?'—':fmt(a.average_hr)+' bpm'],['FC massima',a.max_hr==null?'—':fmt(a.max_hr)+' bpm'],['Primo inserimento',a.first_seen_at],['Ultimo aggiornamento',a.last_seen_at]];
+      const cards=summary.map(x=>'<div class="valuecard"><small>'+esc(x[0])+'</small><strong style="font-size:15px">'+esc(x[1]??'—')+'</strong></div>').join('');
+      const rawBlock=(title,raw,endpoint,when)=>{
+        if(!raw)return '<p class="hint">'+esc(title)+': non disponibile in D1.</p>';
+        let parsed;try{parsed=JSON.parse(raw)}catch(e){parsed=raw}
+        return '<details class="submenu"><summary>'+esc(title)+'</summary><div class="inside"><p class="hint">Endpoint: '+esc(endpoint||'non registrato')+' · acquisito: '+esc(when||'—')+'</p><pre class="raw">'+esc(typeof parsed==='string'?parsed:JSON.stringify(parsed,null,2))+'</pre></div></details>';
+      };
+      $('activityDetail').innerHTML='<div class="cards">'+cards+'</div>'+rawBlock('JSON riepilogo attività Garmin',a.raw_json,'activities table',a.last_seen_at)+
+        (d.detail?rawBlock('Dettaglio attività Garmin',d.detail.raw_json,d.detail.source_endpoint,d.detail.retrieved_at):'<p class="hint">Dettaglio esteso non ancora presente in activity_details.</p>')+
+        (d.workouts.length?d.workouts.map((w,i)=>rawBlock('Workout collegato '+(i+1),w.raw_json,w.source_endpoint,w.retrieved_at)).join(''):'<p class="hint">Nessun workout collegato archiviato.</p>');
+      $('activityDetailStatus').textContent='Attività caricata da D1 · ID '+a.activity_id;
+    }catch(e){$('activityDetailStatus').textContent='Errore: '+e.message}
+    finally{$('openActivity').disabled=false}
+  }
   async function loadAudit(){
     const t=token.value.trim();if(!t){$('auditStatus').textContent='Inserisci il token di accesso.';return}
     $('auditLoad').disabled=true;$('auditStatus').textContent='Verifica delle ultime esecuzioni…';
@@ -1027,7 +1094,7 @@ function dashboardHtml() {
       $('auditStatus').textContent='Controllate '+fmt(d.runs.length)+' esecuzioni recenti. Questo riepilogo attribuisce i record tramite il timestamp di acquisizione: è un controllo indicativo, non un log completo delle chiamate Garmin.';
     }catch(e){$('auditStatus').textContent='Errore nel controllo: '+e.message}finally{$('auditLoad').disabled=false}
   }
-  $('load').addEventListener('click',load);$('searchRecords').addEventListener('click',searchRecords);$('auditLoad').addEventListener('click',loadAudit);
+  $('load').addEventListener('click',load);$('searchRecords').addEventListener('click',searchRecords);$('auditLoad').addEventListener('click',loadAudit);$('openActivity').addEventListener('click',openActivity);$('activitySelect').addEventListener('change',()=>{$('activityDetail').innerHTML='';$('activityDetailStatus').textContent='Premi “Apri attività” per caricare i dettagli.';});
   if(token.value)load();
   </script></body></html>`;
 }
