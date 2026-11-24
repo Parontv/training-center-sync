@@ -161,6 +161,37 @@ export default {
     if (url.pathname === "/dashboard" && request.method === "GET") {
       return new Response(dashboardHtml(), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
     }
+    if (url.pathname === "/dashboard-browser" && request.method === "GET") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== "Bearer " + expected) return json({ error: "unauthorized" }, 401);
+      const source = (url.searchParams.get("source") || "garmin_records").trim();
+      const category = (url.searchParams.get("category") || "").trim();
+      const date = (url.searchParams.get("date") || "").trim();
+      const search = (url.searchParams.get("search") || "").trim().slice(0, 100);
+      const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 50), 1), 100);
+      const offset = Math.max(Number(url.searchParams.get("offset") || 0), 0);
+      const sources = {
+        garmin_records: { from: "garmin_records", id: "dataset || ':' || record_key || ':' || COALESCE(record_date, '') || ':' || retrieved_at", date: "record_date", category: "dataset", label: "record_key", raw: "raw_json", retrieved: "retrieved_at", extra: "source_endpoint" },
+        daily_records: { from: "daily_records", id: "dataset || ':' || record_date", date: "record_date", category: "dataset", label: "dataset", raw: "raw_json", retrieved: "updated_at", extra: "'daily_records'" },
+        activities: { from: "activities", id: "activity_id", date: "start_time_local", category: "activity_type", label: "activity_name", raw: "raw_json", retrieved: "last_seen_at", extra: "activity_id" },
+        activity_details: { from: "activity_details", id: "activity_id", date: "''", category: "source_endpoint", label: "activity_id", raw: "raw_json", retrieved: "retrieved_at", extra: "source_endpoint" }
+      };
+      const spec = sources[source];
+      if (!spec) return json({ error: "Sorgente non supportata." }, 400);
+      if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) return json({ error: "Data non valida." }, 400);
+      try {
+        const clauses = [], binds = [];
+        if (category) { clauses.push(spec.category + "=?"); binds.push(category); }
+        if (date) { clauses.push("substr(" + spec.date + ",1,10)=?"); binds.push(date); }
+        if (search) { clauses.push("(" + spec.label + " LIKE ? OR " + spec.id + " LIKE ? OR " + spec.raw + " LIKE ?)"); binds.push("%"+search+"%", "%"+search+"%", "%"+search+"%"); }
+        const where = clauses.length ? " WHERE " + clauses.join(" AND ") : "";
+        const count = await env.DB.prepare("SELECT COUNT(*) AS total FROM " + spec.from + where).bind(...binds).first();
+        const sql = "SELECT " + spec.id + " AS row_id, " + spec.date + " AS record_date, " + spec.category + " AS category, " + spec.label + " AS label, " + spec.raw + " AS raw_json, " + spec.retrieved + " AS retrieved_at, " + spec.extra + " AS source_info FROM " + spec.from + where + " ORDER BY " + spec.date + " DESC LIMIT ? OFFSET ?";
+        const result = await env.DB.prepare(sql).bind(...binds, limit, offset).all();
+        const categories = await env.DB.prepare("SELECT DISTINCT " + spec.category + " AS value FROM " + spec.from + " WHERE " + spec.category + " IS NOT NULL AND " + spec.category + " != '' ORDER BY value LIMIT 500").all();
+        return json({ ok: true, source, total: Number(count?.total || 0), limit, offset, hasMore: offset + (result.results || []).length < Number(count?.total || 0), rows: result.results || [], categories: (categories.results || []).map(x => x.value) });
+      } catch (error) { return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500); }
+    }
     if (url.pathname === "/dashboard-record-dates" && request.method === "GET") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
