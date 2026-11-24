@@ -178,6 +178,23 @@ export default {
         return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500);
       }
     }
+    if (url.pathname === "/dashboard-activity" && request.method === "GET") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
+      const activityId = (url.searchParams.get("activityId") || "").trim();
+      if (!activityId || activityId.length > 100) return json({ error: "ID attività non valido." }, 400);
+      try {
+        const [activity, detail, workouts] = await Promise.all([
+          env.DB.prepare("SELECT * FROM activities WHERE activity_id=?").bind(activityId).first(),
+          env.DB.prepare("SELECT source_endpoint, raw_json, retrieved_at FROM activity_details WHERE activity_id=?").bind(activityId).first(),
+          env.DB.prepare("SELECT dataset, record_date, source_endpoint, raw_json, retrieved_at FROM garmin_records WHERE dataset='activity_workouts' AND record_key=? ORDER BY retrieved_at DESC").bind(activityId).all()
+        ]);
+        if (!activity) return json({ ok: false, error: "Attività non trovata." }, 404);
+        return json({ ok: true, activity, detail: detail || null, workouts: workouts.results || [] });
+      } catch (error) {
+        return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500);
+      }
+    }
     if (url.pathname === "/dashboard-record" && request.method === "GET") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
@@ -220,14 +237,16 @@ export default {
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
       try {
         await ensureCoreSchema(env.DB);
-        const [counts, datasets, activities, daily, steps] = await Promise.all([
+        const [counts, datasets, activities, daily, steps, activityQuality, recordQuality] = await Promise.all([
           env.DB.prepare("SELECT (SELECT COUNT(*) FROM activities) AS activities, (SELECT COUNT(*) FROM activity_details) AS activity_details, (SELECT COUNT(*) FROM daily_records) AS daily_records, (SELECT COUNT(*) FROM garmin_records) AS garmin_records, (SELECT COUNT(*) FROM sync_runs) AS sync_runs").first(),
           env.DB.prepare("SELECT dataset, COUNT(*) AS records, MIN(record_date) AS first_date, MAX(record_date) AS last_date, SUM(CASE WHEN raw_json='[]' OR raw_json='{}' THEN 1 ELSE 0 END) AS empty_records FROM garmin_records GROUP BY dataset ORDER BY dataset").all(),
           env.DB.prepare("SELECT activity_id, start_time_local, activity_type, activity_name, distance_m, duration_s, calories, average_hr, max_hr FROM activities ORDER BY start_time_local DESC LIMIT 500").all(),
           env.DB.prepare("SELECT record_date, dataset, updated_at FROM daily_records ORDER BY record_date DESC, dataset LIMIT 100").all(),
-          env.DB.prepare("SELECT record_date, raw_json FROM garmin_records WHERE dataset='steps' ORDER BY record_date DESC LIMIT 500").all()
+          env.DB.prepare("SELECT record_date, raw_json FROM garmin_records WHERE dataset='steps' ORDER BY record_date DESC LIMIT 500").all(),
+          env.DB.prepare("SELECT COUNT(*) AS total, SUM(CASE WHEN start_time_local IS NULL OR start_time_local='' THEN 1 ELSE 0 END) AS missing_date, SUM(CASE WHEN activity_type IS NULL OR activity_type='' THEN 1 ELSE 0 END) AS missing_type, SUM(CASE WHEN distance_m IS NULL THEN 1 ELSE 0 END) AS missing_distance, SUM(CASE WHEN duration_s IS NULL THEN 1 ELSE 0 END) AS missing_duration, SUM(CASE WHEN average_hr IS NULL THEN 1 ELSE 0 END) AS missing_average_hr, SUM(CASE WHEN max_hr IS NULL THEN 1 ELSE 0 END) AS missing_max_hr, SUM(CASE WHEN json_valid(raw_json)=0 THEN 1 ELSE 0 END) AS invalid_json FROM activities").first(),
+          env.DB.prepare("SELECT COUNT(*) AS total, SUM(CASE WHEN raw_json IS NULL OR TRIM(raw_json)='' OR raw_json IN ('[]','{}','null') THEN 1 ELSE 0 END) AS empty_payloads, SUM(CASE WHEN json_valid(raw_json)=0 THEN 1 ELSE 0 END) AS invalid_json FROM garmin_records").first()
         ]);
-        return json({ ok: true, generatedAt: new Date().toISOString(), counts: counts || {}, datasets: datasets.results || [], activities: activities.results || [], recentDailyRecords: daily.results || [], steps: steps.results || [] });
+        return json({ ok: true, generatedAt: new Date().toISOString(), counts: counts || {}, datasets: datasets.results || [], activities: activities.results || [], recentDailyRecords: daily.results || [], steps: steps.results || [], quality: { activities: activityQuality || {}, garminRecords: recordQuality || {} } });
       } catch (error) {
         return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500);
       }
