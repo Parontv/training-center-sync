@@ -1010,11 +1010,13 @@ function dashboardHtml() {
   </details>
 
   <details class="menu">
-    <summary>Esplora il database Garmin <span class="pill">ricerca per categoria e data</span></summary>
+    <summary>Esplora tutto il database D1 <span class="pill">navigazione completa</span></summary>
     <div class="inside">
-      <p class="hint">Scegli una categoria e, se vuoi, una data. La dashboard mostra i valori riconoscibili in forma leggibile e mantiene sempre disponibile il JSON originale.</p>
-      <div class="controls"><select id="recordDataset"><option value="">1 · Seleziona categoria…</option></select><select id="recordDate" disabled><option value="">2 · Seleziona data…</option></select><button id="searchRecords" disabled>Carica record</button></div>
-      <div id="recordStatus" class="status">Scegli una categoria, poi una data e infine apri il singolo record.</div><div id="recordResults"></div><div id="recordDetail"></div>
+      <p class="hint">Naviga tra tutte le tabelle, filtra per categoria, data o testo, apri qualsiasi riga e consulta i campi e il JSON originale. Usa Avanti/Indietro per scorrere l'intero archivio.</p>
+      <div class="controls"><select id="browserSource"><option value="garmin_records">Garmin records</option><option value="daily_records">Daily records</option><option value="activities">Attività</option><option value="activity_details">Dettagli attività</option></select><select id="browserCategory"><option value="">Tutte le categorie</option></select><input id="browserDate" type="date"><input id="browserSearch" placeholder="Cerca ID, nome o testo"><button id="browserSearchButton">Cerca</button></div>
+      <div id="browserStatus" class="status">Seleziona una tabella e premi Cerca.</div><div id="browserRows"></div>
+      <div class="controls"><button id="browserPrev" disabled>← Indietro</button><span id="browserPage" class="hint">Pagina 1</span><button id="browserNext" disabled>Avanti →</button></div>
+      <div id="browserDetail"></div>
     </div>
   </details>
 
