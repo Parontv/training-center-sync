@@ -174,7 +174,10 @@ export default {
         garmin_records: { from: "garmin_records", id: "dataset || ':' || record_key || ':' || COALESCE(record_date, '') || ':' || retrieved_at", date: "record_date", category: "dataset", label: "record_key", raw: "raw_json", retrieved: "retrieved_at", extra: "source_endpoint" },
         daily_records: { from: "daily_records", id: "dataset || ':' || record_date", date: "record_date", category: "dataset", label: "dataset", raw: "raw_json", retrieved: "updated_at", extra: "'daily_records'" },
         activities: { from: "activities", id: "activity_id", date: "start_time_local", category: "activity_type", label: "activity_name", raw: "raw_json", retrieved: "last_seen_at", extra: "activity_id" },
-        activity_details: { from: "activity_details", id: "activity_id", date: "''", category: "source_endpoint", label: "activity_id", raw: "raw_json", retrieved: "retrieved_at", extra: "source_endpoint" }
+        activity_details: { from: "activity_details", id: "activity_id", date: "''", category: "source_endpoint", label: "activity_id", raw: "raw_json", retrieved: "retrieved_at", extra: "source_endpoint" },
+        sync_runs: { from: "sync_runs", id: "CAST(id AS TEXT)", date: "started_at", category: "sync_type", label: "CAST(id AS TEXT)", raw: "json_object('id',id,'sync_type',sync_type,'status',status,'activities_seen',activities_seen,'daily_records_seen',daily_records_seen,'message',message)", retrieved: "finished_at", extra: "status" },
+        sync_state: { from: "sync_state", id: "state_key", date: "updated_at", category: "'sync_state'", label: "state_key", raw: "json_object('state_key',state_key,'state_value',state_value,'updated_at',updated_at)", retrieved: "updated_at", extra: "state_key" },
+        sync_locks: { from: "sync_locks", id: "lock_key", date: "updated_at", category: "'sync_locks'", label: "lock_key", raw: "json_object('lock_key',lock_key,'owner',owner,'lease_until',lease_until,'updated_at',updated_at)", retrieved: "updated_at", extra: "lock_key" }
       };
       const spec = sources[source];
       if (!spec) return json({ error: "Sorgente non supportata." }, 400);
@@ -1013,7 +1016,7 @@ function dashboardHtml() {
     <summary>Esplora tutto il database D1 <span class="pill">navigazione completa</span></summary>
     <div class="inside">
       <p class="hint">Naviga tra tutte le tabelle, filtra per categoria, data o testo, apri qualsiasi riga e consulta i campi e il JSON originale. Usa Avanti/Indietro per scorrere l'intero archivio.</p>
-      <div class="controls"><select id="browserSource"><option value="garmin_records">Garmin records</option><option value="daily_records">Daily records</option><option value="activities">Attività</option><option value="activity_details">Dettagli attività</option></select><select id="browserCategory"><option value="">Tutte le categorie</option></select><input id="browserDate" type="date"><input id="browserSearch" placeholder="Cerca ID, nome o testo"><button id="browserSearchButton">Cerca</button></div>
+      <div class="controls"><select id="browserSource"><option value="garmin_records">Garmin records</option><option value="daily_records">Daily records</option><option value="activities">Attività</option><option value="activity_details">Dettagli attività</option><option value="sync_runs">Esecuzioni sync</option><option value="sync_state">Stato backfill</option><option value="sync_locks">Lock sincronizzazione</option></select><select id="browserCategory"><option value="">Tutte le categorie</option></select><input id="browserDate" type="date"><input id="browserSearch" placeholder="Cerca ID, nome o testo"><button id="browserSearchButton">Cerca</button></div>
       <div id="browserStatus" class="status">Seleziona una tabella e premi Cerca.</div><div id="browserRows"></div>
       <div class="controls"><button id="browserPrev" disabled>← Indietro</button><span id="browserPage" class="hint">Pagina 1</span><button id="browserNext" disabled>Avanti →</button></div>
       <div id="browserDetail"></div>
@@ -1185,6 +1188,6 @@ function dashboardHtml() {
   $('browserRows').addEventListener('click',event=>{const b=event.target.closest('.browserOpen');if(b)openBrowserRow(Number(b.dataset.index))});
   $('browserSearch').addEventListener('keydown',event=>{if(event.key==='Enter')browseDatabase(true)});
   $('searchRecords').addEventListener('click',searchRecords);$('recordDataset').addEventListener('change',loadRecordDates);$('recordDate').addEventListener('change',()=>{$('searchRecords').disabled=!$('recordDate').value;$('recordResults').innerHTML='';$('recordDetail').innerHTML='';});$('recordResults').addEventListener('click',event=>{const button=event.target.closest('.openGarminRecord');if(!button)return;const row=(window.__garminBrowserRows||[])[Number(button.dataset.index)];if(!row)return;$('recordDetail').innerHTML=prettyRecord(row);$('recordDetail').scrollIntoView({behavior:'smooth',block:'start'});});$('auditLoad').addEventListener('click',loadAudit);$('openActivity').addEventListener('click',openActivity);$('activitySelect').addEventListener('change',()=>{$('activityDetail').innerHTML='';$('activityDetailStatus').textContent='Premi “Apri attività” per caricare i dettagli.';});
-  if(token.value)load();
+  if(token.value){load();browseDatabase();}
   </script></body></html>`;
 }
