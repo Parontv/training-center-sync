@@ -2,8 +2,14 @@ const GARMIN_BASE = "https://personal.connectapi.garmin.com";
 const TOKEN_PATH = "/personalapitoken-service/personal-api/personal-api-key/token";
 
 export default {
-  async scheduled(_event, env, ctx) {
-    ctx.waitUntil(runScheduledSync(env));
+  async scheduled(event, env, ctx) {
+    if (event.cron === "*/5 * * * *") {
+      ctx.waitUntil(runScheduledSync(env));
+      return;
+    }
+    if (event.cron === "0 10 * * *" || event.cron === "0 11 * * *") {
+      ctx.waitUntil(runScheduledDailySync(event, env));
+    }
   },
 
   async fetch(request, env, ctx) {
@@ -574,6 +580,50 @@ async function runScheduledSync(env) {
     return { ok: false, mode: "scheduled_sync", error: String(error?.message || error).slice(0, 500) };
   } finally {
     if (env.DB) await releaseSyncLock(env.DB, owner).catch(error => console.error("Could not release Garmin sync lock:", error));
+  }
+}
+
+async function runScheduledDailySync(event, env) {
+  const romeHour = Number(new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Rome",
+    hour: "2-digit",
+    hourCycle: "h23"
+  }).format(new Date()));
+  // Cloudflare Cron uses UTC. Two guarded triggers keep the run at noon in Italy
+  // across winter time (CET) and summer time (CEST).
+  if (romeHour !== 12) {
+    console.log("Daily Garmin sync skipped: this UTC trigger is outside 12:00 Europe/Rome.", { cron: event.cron, romeHour });
+    return { ok: true, skipped: true, reason: "not_noon_in_europe_rome" };
+  }
+
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Rome",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).formatToParts(new Date());
+  const values = Object.fromEntries(parts.map(part => [part.type, part.value]));
+  const todayRome = `${values.year}-${values.month}-${values.day}`;
+  const yesterday = new Date(Date.UTC(Number(values.year), Number(values.month) - 1, Number(values.day) - 1))
+    .toISOString().slice(0, 10);
+
+  const owner = crypto.randomUUID();
+  try {
+    if (!env.DB) throw new Error("D1 binding DB is missing");
+    if (!await acquireSyncLock(env.DB, owner)) {
+      console.log("Daily Garmin sync skipped: another run holds the D1 lock.");
+      return { ok: true, skipped: true, reason: "sync_already_running", targetDate: yesterday };
+    }
+    if (!env.GARMIN_PERSONAL_API_KEY) throw new Error("Worker Secret GARMIN_PERSONAL_API_KEY is missing");
+    const token = await getBearerToken(env.GARMIN_PERSONAL_API_KEY);
+    const result = await runSync(env, { startDate: yesterday, endDate: yesterday }, token);
+    console.log("Daily Garmin previous-day sync completed.", { todayRome, targetDate: yesterday, result });
+    return { ...result, mode: "daily_previous_day", targetDate: yesterday, todayRome };
+  } catch (error) {
+    console.error("Daily Garmin previous-day sync failed:", error);
+    return { ok: false, mode: "daily_previous_day", targetDate: yesterday, error: String(error?.message || error).slice(0, 500) };
+  } finally {
+    if (env.DB) await releaseSyncLock(env.DB, owner).catch(error => console.error("Could not release daily Garmin sync lock:", error));
   }
 }
 
