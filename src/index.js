@@ -160,13 +160,14 @@ export default {
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
       try {
         await ensureCoreSchema(env.DB);
-        const [counts, datasets, activities, daily] = await Promise.all([
+        const [counts, datasets, activities, daily, steps] = await Promise.all([
           env.DB.prepare("SELECT (SELECT COUNT(*) FROM activities) AS activities, (SELECT COUNT(*) FROM activity_details) AS activity_details, (SELECT COUNT(*) FROM daily_records) AS daily_records, (SELECT COUNT(*) FROM garmin_records) AS garmin_records, (SELECT COUNT(*) FROM sync_runs) AS sync_runs").first(),
           env.DB.prepare("SELECT dataset, COUNT(*) AS records, MIN(record_date) AS first_date, MAX(record_date) AS last_date, SUM(CASE WHEN raw_json='[]' OR raw_json='{}' THEN 1 ELSE 0 END) AS empty_records FROM garmin_records GROUP BY dataset ORDER BY dataset").all(),
-          env.DB.prepare("SELECT activity_id, start_time_local, activity_type, activity_name, distance_m, duration_s, calories, average_hr, max_hr FROM activities ORDER BY start_time_local DESC LIMIT 100").all(),
-          env.DB.prepare("SELECT record_date, dataset, updated_at FROM daily_records ORDER BY record_date DESC, dataset LIMIT 100").all()
+          env.DB.prepare("SELECT activity_id, start_time_local, activity_type, activity_name, distance_m, duration_s, calories, average_hr, max_hr FROM activities ORDER BY start_time_local DESC LIMIT 500").all(),
+          env.DB.prepare("SELECT record_date, dataset, updated_at FROM daily_records ORDER BY record_date DESC, dataset LIMIT 100").all(),
+          env.DB.prepare("SELECT record_date, raw_json FROM garmin_records WHERE dataset='steps' ORDER BY record_date DESC LIMIT 500").all()
         ]);
-        return json({ ok: true, generatedAt: new Date().toISOString(), counts: counts || {}, datasets: datasets.results || [], activities: activities.results || [], recentDailyRecords: daily.results || [] });
+        return json({ ok: true, generatedAt: new Date().toISOString(), counts: counts || {}, datasets: datasets.results || [], activities: activities.results || [], recentDailyRecords: daily.results || [], steps: steps.results || [] });
       } catch (error) {
         return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500);
       }
@@ -811,6 +812,7 @@ function dashboardHtml() {
   .cols{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin-top:14px}.scroll{overflow:auto;max-height:520px}
   table{width:100%;border-collapse:collapse;white-space:nowrap;font-size:13px}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line)}th{color:var(--muted);position:sticky;top:0;background:var(--panel)}
   .bar{height:7px;background:#26344d;border-radius:8px;overflow:hidden;min-width:90px}.bar i{display:block;height:100%;background:var(--accent)}
+  details.explorer{border:1px solid var(--line);border-radius:10px;margin-top:10px;background:#101a2d}details.explorer summary{cursor:pointer;list-style:none;padding:13px;font-weight:650;display:flex;justify-content:space-between;align-items:center}details.explorer summary::-webkit-details-marker{display:none}details.explorer summary:after{content:"＋";color:var(--accent)}details.explorer[open] summary:after{content:"−"}details.explorer .scroll{padding:0 10px 10px}pre.raw{white-space:pre-wrap;overflow-wrap:anywhere;max-width:680px;max-height:180px;overflow:auto;margin:4px 0;color:#c5d5ef;font-size:12px}
   .status{margin:10px 0;color:var(--muted);font-size:13px}.pill{border:1px solid var(--line);border-radius:99px;padding:4px 8px;font-size:12px;color:#b8d1ff}
   @media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cols{grid-template-columns:1fr}main{padding:16px 12px 40px}.metric strong{font-size:22px}}
   </style></head><body><main>
@@ -825,6 +827,10 @@ function dashboardHtml() {
     <div class="metric"><small>Esecuzioni import</small><strong id="runs">—</strong></div>
   </section>
   <section class="panel"><h2>Copertura dei dati per categoria</h2><div class="muted" style="font-size:13px;margin-bottom:12px">Numero di record presenti in D1 e intervallo temporale disponibile. I record vuoti sono conteggiati separatamente, non interpretati come misurazioni.</div><div class="scroll"><table><thead><tr><th>Dataset</th><th>Record</th><th>Copertura</th><th>Dal</th><th>Al</th><th>Vuoti</th></tr></thead><tbody id="datasets"><tr><td colspan="6">In attesa dei dati</td></tr></tbody></table></div></section>
+  <section class="panel" style="margin-top:14px"><h2>Esplora i dati Garmin</h2><div class="muted" style="font-size:13px;margin-bottom:12px">Apri i menu per consultare i singoli record salvati in D1.</div>
+    <details class="explorer"><summary>Attività sportive registrate <span id="activityCount" class="pill">—</span></summary><div class="scroll"><table><thead><tr><th>Data</th><th>Attività</th><th>Distanza</th><th>Durata</th><th>Calorie</th><th>FC media</th><th>FC max</th></tr></thead><tbody id="allActivityRows"><tr><td colspan="7">In attesa dei dati</td></tr></tbody></table></div></details>
+    <details class="explorer"><summary>Passi giornalieri <span id="stepsCount" class="pill">—</span></summary><div class="scroll"><table><thead><tr><th>Data</th><th>Contenuto Garmin</th></tr></thead><tbody id="stepRows"><tr><td colspan="2">In attesa dei dati</td></tr></tbody></table></div></details>
+  </section>
   <div class="cols">
     <section class="panel"><h2>Ultime attività</h2><div class="scroll"><table><thead><tr><th>Data</th><th>Attività</th><th>Distanza</th><th>Durata</th><th>FC media</th></tr></thead><tbody id="activityRows"><tr><td colspan="5">In attesa dei dati</td></tr></tbody></table></div></section>
     <section class="panel"><h2>Ultimi record giornalieri</h2><div class="scroll"><table><thead><tr><th>Data</th><th>Dataset</th><th>Aggiornato</th></tr></thead><tbody id="dailyRows"><tr><td colspan="3">In attesa dei dati</td></tr></tbody></table></div></section>
@@ -845,6 +851,10 @@ function dashboardHtml() {
   $('datasets').innerHTML=d.datasets.map(x=>'<tr><td><b>'+esc(x.dataset)+'</b></td><td>'+fmt(x.records)+'</td><td><div class="bar"><i style="width:'+Math.max(2,Number(x.records||0)/max*100)+'%"></i></div></td><td>'+date(x.first_date)+'</td><td>'+date(x.last_date)+'</td><td>'+fmt(x.empty_records)+'</td></tr>').join('')||'<tr><td colspan="6">Nessun dataset</td></tr>';
   $('activityRows').innerHTML=d.activities.map(x=>'<tr><td>'+esc(date(x.start_time_local))+'</td><td>'+esc(x.activity_name||x.activity_type||'Attività')+'</td><td>'+dist(x.distance_m)+'</td><td>'+dur(x.duration_s)+'</td><td>'+(x.average_hr==null?'—':fmt(x.average_hr)+' bpm')+'</td></tr>').join('')||'<tr><td colspan="5">Nessuna attività registrata</td></tr>';
   $('dailyRows').innerHTML=d.recentDailyRecords.map(x=>'<tr><td>'+esc(date(x.record_date))+'</td><td>'+esc(x.dataset)+'</td><td>'+esc(x.updated_at||'—')+'</td></tr>').join('')||'<tr><td colspan="3">Nessun record</td></tr>';
+  $('activityCount').textContent=fmt(d.activities.length)+' record';
+  $('allActivityRows').innerHTML=d.activities.map(x=>'<tr><td>'+esc(date(x.start_time_local))+'</td><td>'+esc(x.activity_name||x.activity_type||'Attività')+'</td><td>'+dist(x.distance_m)+'</td><td>'+dur(x.duration_s)+'</td><td>'+fmt(x.calories)+'</td><td>'+(x.average_hr==null?'—':fmt(x.average_hr)+' bpm')+'</td><td>'+(x.max_hr==null?'—':fmt(x.max_hr)+' bpm')+'</td></tr>').join('')||'<tr><td colspan="7">Nessuna attività registrata</td></tr>';
+  $('stepsCount').textContent=fmt(d.steps.length)+' record';
+  $('stepRows').innerHTML=d.steps.map(x=>'<tr><td>'+esc(date(x.record_date))+'</td><td><pre class="raw">'+esc(JSON.stringify(JSON.parse(x.raw_json||'null'),null,2))+'</pre></td></tr>').join('')||'<tr><td colspan="2">Nessun dato passi registrato</td></tr>';
   $('status').textContent='Aggiornato '+new Date(d.generatedAt).toLocaleString('it-IT')+' · dati letti direttamente da D1.';
   }catch(e){$('status').textContent='Errore: '+e.message}finally{$('load').disabled=false}}
   $('load').addEventListener('click',load);if(token.value)load();
