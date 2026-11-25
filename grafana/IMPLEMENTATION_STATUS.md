@@ -40,3 +40,10 @@ To safely map the original 143 queries, the live field-path audit and actual Gra
 2. Convert daily aggregate panels first, retaining original panel metadata.
 3. Work through intraday streams, then activity details/GPS.
 4. Test the dashboard import and visual comparison in Grafana.
+
+
+## Additional implementation artifacts (2026-11-25)
+- `grafana/dashboards/garmin-infinity-panel-phases.json`: ordered conversion phase plan grouped by panel family.
+- `grafana/dashboards/garmin-infinity-field-mapping-template.json`: 143-target explicit mapping template, all mappings unverified by default; includes guardrails against converting unverified paths.
+- Integrity checker remains available; execution must be run in a repository checkout with the dashboard, semantic audit, and queue files.
+- No live Grafana/Worker testing was performed in this session. These commits are repository-side implementation and scaffolding, not a finished importable dashboard.
