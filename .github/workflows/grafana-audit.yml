@@ -1,0 +1,34 @@
+name: Garmin Grafana conversion audits
+
+on:
+  push:
+    branches:
+      - feat/grafana-automated-builder
+    paths:
+      - "grafana/**"
+      - ".github/workflows/grafana-audit.yml"
+  pull_request:
+    paths:
+      - "grafana/**"
+      - ".github/workflows/grafana-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Unit tests
+        run: python -m unittest discover -s grafana/scripts -p "test-*.py" -v
+      - name: Conversion integrity
+        run: python grafana/scripts/audit-conversion-integrity.py grafana/dashboards/garmin-original-clone.json grafana/dashboards/garmin-influx-target-semantic-audit.json grafana/dashboards/garmin-infinity-conversion-queue.json
+      - name: Panel preservation audit
+        run: python grafana/scripts/panel-preservation-audit.py grafana/dashboards/garmin-original-clone.json grafana/dashboards/garmin-influx-target-semantic-audit.json grafana/dashboards/garmin-infinity-field-mapping-template.json
+      - name: Guarded manifest builder smoke test
+        run: python grafana/scripts/build-verified-query-manifest.py grafana/dashboards/garmin-infinity-field-mapping-template.json /tmp/verified-query-manifest.json
