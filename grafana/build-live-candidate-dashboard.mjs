@@ -12,5 +12,5 @@ for(const m of numeric.slice(0,48)){
 }
 const dash={id:null,uid:'garmin-live-candidate',title:preview?'Garmin · VISUAL PREVIEW (illustrative)':'Garmin · Live metric candidates',tags:['garmin','generated','candidate','review-required',...(preview?['preview-only']:[])],schemaVersion:39,version:1,refresh:'15m',timezone:'browser',time:{from:'now-90d',to:'now'},annotations:{list:[]},panels};
 fs.mkdirSync('grafana/generated',{recursive:true});
-fs.writeFileSync('grafana/generated/garmin-live-candidate.json',JSON.stringify(dash,null,2)+'\\n');
+fs.writeFileSync('grafana/generated/garmin-live-candidate.json',JSON.stringify(dash,null,2)+'\n');
 console.log('Generated '+panels.length+' numeric candidate panels; not semantically verified.');
