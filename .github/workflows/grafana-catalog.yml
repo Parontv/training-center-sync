@@ -46,5 +46,7 @@ jobs:
         run: node grafana/test-live-audit-helper.mjs
       - name: Verify browser-side schema audit
         run: node grafana/test-run-audit.mjs
+      - name: Check automated schema discovery workflow privacy
+        run: node grafana/test-schema-discovery-workflow.mjs
       - name: Verify reference panel inventory
         run: node grafana/test-reference-inventory.mjs
