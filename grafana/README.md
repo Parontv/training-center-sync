@@ -6,6 +6,7 @@ This branch is a safe scaffold for dashboards as code against the Training Cente
 PR #8 in this repository already contains the initial dashboard assets:
 - `grafana/dashboards/training-center-master.json` — Garmin Master overview
 - `grafana/dashboards/training-center-overview.json` — Garmin Overview
+- `grafana/dashboards/training-center-activity.json` — Activity/archive dashboard focused on the known `/dashboard-data` activity fields
 - setup guidance for Grafana Cloud + Infinity
 
 Those assets have been carried forward into PR #10 with their UIDs and panel IDs preserved. **Do not replace them with a parallel dashboard or reset their UIDs/panel IDs.** PR #10's generated `training-center-d1-catalog.json` is an interim schema/catalog helper, not the target user dashboard.
@@ -52,3 +53,8 @@ This is the shortest path to a live dashboard, without deploying or changing D1:
 7. Set the dashboard refresh to 5 minutes and check the counters and tables. If a panel is empty, inspect the Infinity query response and selector before changing any dataset fields.
 
 **Stop if secure token storage is unavailable.** Do not put the token into dashboard JSON, screenshots, URLs, browser bookmarks, or commits.
+
+
+## Activity dashboard asset
+
+`training-center-activity.json` is a focused dashboard built only from the selectors already used in the existing `/dashboard-data` panel contract: archive counts, activities, dataset coverage and activity-quality summaries. It is an asset awaiting secure datasource authentication and UI validation; do not treat it as live-verified.
