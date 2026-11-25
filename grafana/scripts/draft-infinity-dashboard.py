@@ -25,7 +25,12 @@ def main():
   for target in panel.get("targets",[]):
    key=(panel.get("id"),target.get("ref")); m=entries.get(key)
    if m and m.get("verified") is True and m.get("fieldPath") and m.get("sourceDataset") and m.get("source") in {"daily_records","garmin_records"} and m.get("aggregation") in {"avg","min","max","sum"}:
-    limit=m.get("limit",366)\n    if not isinstance(limit,int) or isinstance(limit,bool) or limit<1 or limit>5000:\n     target["draftOnly"]=True; target["draftStatus"]="UNVERIFIED - invalid mapping limit"; target["query"]="UNVERIFIED"; continue\n    params={"source":m["source"],"dataset":m["sourceDataset"],"field_path":m["fieldPath"],"aggregation":m["aggregation"],"limit":limit}\n    if m.get("from"): params["from"]=m["from"]\n    if m.get("to"): params["to"]=m["to"]
+    limit=m.get("limit",366)
+    if not isinstance(limit,int) or isinstance(limit,bool) or limit<1 or limit>5000:
+     target["draftOnly"]=True; target["draftStatus"]="UNVERIFIED - invalid mapping limit"; target["query"]="UNVERIFIED"; continue
+    params={"source":m["source"],"dataset":m["sourceDataset"],"field_path":m["fieldPath"],"aggregation":m["aggregation"],"limit":limit}
+    if m.get("from"): params["from"]=m["from"]
+    if m.get("to"): params["to"]=m["to"]
     target["datasource"]={"type":"yesoreyeram-infinity-datasource","uid":"REPLACE_WITH_INFINITY_UID"}
     target["type"]="json"; target["source"]="url"
     target["url"]="REPLACE_WITH_WORKER_ORIGIN/dashboard-metrics?"+urlencode(params)
@@ -39,6 +44,7 @@ def main():
     target["draftOnly"]=True; target["draftStatus"]="UNVERIFIED - query intentionally not configured"; target["query"]="UNVERIFIED"
  panel_count=len(draft.get("panels",[]))
  draft["draftConversionSummary"]={"sourcePanelCount":panel_count,"verifiedMappingsConfigured":count_verified,"mappingCount":len(entries),"warning":"Draft scaffold only; confirm endpoint, Infinity parser, units, dates and rendering before import."}
- Path(out_path).write_text(json.dumps(draft,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
+ Path(out_path).write_text(json.dumps(draft,indent=2,ensure_ascii=False)+"
+",encoding="utf-8")
  print(f"PASS: draft generated preserving {panel_count} panels; {count_verified} verified mappings configured")
 if __name__=="__main__":main()
