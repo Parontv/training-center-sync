@@ -41,37 +41,35 @@ To safely map the original 143 queries, the live field-path audit and actual Gra
 3. Work through intraday streams, then activity details/GPS.
 4. Test the dashboard import and visual comparison in Grafana.
 
-
 ## Additional implementation artifacts (2026-11-25)
 - `grafana/dashboards/garmin-infinity-panel-phases.json`: ordered conversion phase plan grouped by panel family.
 - `grafana/dashboards/garmin-infinity-field-mapping-template.json`: 143-target explicit mapping template, all mappings unverified by default; includes guardrails against converting unverified paths.
-- Integrity checker remains available; execution must be run in a repository checkout with the dashboard, semantic audit, and queue files.
-- No live Grafana/Worker testing was performed in this session. These commits are repository-side implementation and scaffolding, not a finished importable dashboard.
+- No live Grafana/Worker testing was performed in this session.
 
-
-## Guarded manifest builder (2026-11-25)
+## Guarded manifest builder
 - Added `grafana/scripts/build-verified-query-manifest.py`: emits a query manifest only for explicitly verified mappings with concrete dataset, field path, source dataset, and supported aggregation; unverified rows are skipped and duplicate keys/errors are rejected.
-- Added unit tests for skipping unverified entries, inclusion of valid verified mappings, missing field rejection, and duplicate-key rejection.
-- Tests were authored but local execution was not independently verified in this environment. They validate the manifest builder logic only when run; they do not validate live Garmin schema or Grafana rendering.
+- Added unit tests for its guardrails; local execution not independently verified in this environment.
 
+## Panel preservation tooling
+- `grafana/scripts/panel-preservation-audit.py` audits source panel count, target coverage, and panel metadata.
+- A regression test covers panel count and unique IDs.
 
-## Panel preservation tooling (2026-11-25)
-- Added `grafana/scripts/panel-preservation-audit.py`, which audits 62 panels, 143 semantic targets and exact key coverage in the mapping template, and inventories panel types, layout positions, transformations, datasource and options/field configuration presence.
-- Added a regression test for panel count and unique IDs.
-- The tool is intended to run against the source dashboard, semantic audit and mapping template; live query verification is still outstanding.
+## Infinity draft dashboard generator
+- `grafana/scripts/draft-infinity-dashboard.py` creates a draft while preserving panel metadata and keeping unverified targets inert.
+- The generator now builds a parameterized `/dashboard-metrics` URL for mappings explicitly marked verified, including source, dataset, field path, aggregation and limit. URL encoding is handled by Python's standard library.
+- It includes date/value/sample column selectors and labels the target as a draft pending live Infinity validation.
+- Added `grafana/scripts/test-verified-target-url.py` to verify the request parameters, preservation of original target metadata, and fail-closed behavior when mappings are incomplete.
+- CI now invokes this regression. CI execution is pending observation; no test result is claimed.
 
-
-## Infinity draft dashboard generator (2026-11-25)
-- Added `grafana/scripts/draft-infinity-dashboard.py`: creates a dashboard draft preserving the original panel structure and metadata, uses Infinity placeholders only for explicitly verified mappings, and marks unverified target queries as intentionally unconfigured.
-- Added two synthetic tests for preservation/unverified behavior and verified mapping scaffolding.
-- Generated output is explicitly a DRAFT, not a ready-to-import operational dashboard; Infinity request format and live paths still require validation.
-
-
-## CI automation added (2026-11-25)
-- Added `.github/workflows/grafana-audit.yml` on branch `feat/grafana-automated-builder` to run the synthetic test scripts, conversion integrity audit, panel-preservation audit, and guarded manifest-builder smoke check on relevant pushes/PRs and manual dispatch.
-- CI execution has not yet been observed; this commit configures the workflow, it does not claim test success. Live schema and Grafana UI gates remain outstanding.
-
+## CI automation
+- `.github/workflows/grafana-audit.yml` runs synthetic regressions, conversion integrity, panel preservation, and guarded manifest-builder smoke check on relevant pushes/PRs and manual dispatch.
+- CI execution has not yet been observed.
 
 ## Source-dashboard preservation regression
-- Added `grafana/scripts/test-real-dashboard-draft-preservation.py`, which generates a draft from the actual 62-panel source dashboard and checks panel IDs, titles, types, layout, options, field config, transformations, links, descriptions, and target refs remain unchanged.
-- Wired this regression into the GitHub Actions workflow. Execution is pending CI; not claimed passed.
+- `grafana/scripts/test-real-dashboard-draft-preservation.py` generates from the actual 62-panel source dashboard and checks panel IDs, titles, types, layout, options, field config, transformations, links, descriptions, and target refs.
+- Wired into CI. Execution pending.
+
+## Latest implementation
+- Draft generator now constructs encoded Worker metric URLs for verified mappings instead of leaving the endpoint URL parameterless.
+- Regression test and CI invocation added in the latest commits.
+- Live schema validation, datasource auth configuration, Infinity rendering and visual comparison still require external access. Repository-side work continues independently.
