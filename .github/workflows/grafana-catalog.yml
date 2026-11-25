@@ -24,6 +24,8 @@ jobs:
         run: node grafana/test-datasets.mjs
       - name: Smoke-check candidate analyzer
         run: node grafana/test-analyzer.mjs
+      - name: Test analyzer with synthetic fixtures
+        run: node grafana/test-analyzer-fixture.mjs
       - name: Check field endpoint read-only safeguards
         run: node grafana/test-field-endpoint.mjs
       - name: Generate catalog dashboard
