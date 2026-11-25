@@ -52,7 +52,7 @@ To safely map the original 143 queries, the live field-path audit and actual Gra
 ## Guarded manifest builder (2026-11-25)
 - Added `grafana/scripts/build-verified-query-manifest.py`: emits a query manifest only for explicitly verified mappings with concrete dataset, field path, source dataset, and supported aggregation; unverified rows are skipped and duplicate keys/errors are rejected.
 - Added unit tests for skipping unverified entries, inclusion of valid verified mappings, missing field rejection, and duplicate-key rejection.
-- Local execution: all 4 tests passed. This validates the manifest builder logic only; it does not validate live Garmin schema or Grafana rendering.
+- Tests were authored but local execution was not independently verified in this environment. They validate the manifest builder logic only when run; they do not validate live Garmin schema or Grafana rendering.
 
 
 ## Panel preservation tooling (2026-11-25)
