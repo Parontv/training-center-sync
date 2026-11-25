@@ -4,7 +4,8 @@
 Verified mappings are wired to the read-only Worker metric endpoint. Unverified
 mappings remain explicitly inert. This is a draft and requires live validation.
 """
-import json,sys,copy\nfrom datetime import date
+import json,sys,copy
+from datetime import date
 from pathlib import Path
 from urllib.parse import urlencode
 
@@ -28,6 +29,13 @@ def main():
     limit=m.get("limit",366)
     if not isinstance(limit,int) or isinstance(limit,bool) or limit<1 or limit>5000:
      target["draftOnly"]=True; target["draftStatus"]="UNVERIFIED - invalid mapping limit"; target["query"]="UNVERIFIED"; continue
+    date_bounds=[m.get("from"),m.get("to")]
+    try:
+     for bound in date_bounds:
+      if bound is not None: date.fromisoformat(bound)
+     if m.get("from") and m.get("to") and m["from"]>m["to"]: raise ValueError("from after to")
+    except (TypeError,ValueError):
+     target["draftOnly"]=True; target["draftStatus"]="UNVERIFIED - invalid date bounds"; target["query"]="UNVERIFIED"; continue
     params={"source":m["source"],"dataset":m["sourceDataset"],"field_path":m["fieldPath"],"aggregation":m["aggregation"],"limit":limit}
     if m.get("from"): params["from"]=m["from"]
     if m.get("to"): params["to"]=m["to"]
