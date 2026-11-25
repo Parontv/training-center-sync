@@ -28,9 +28,9 @@ assert.ok(!raw.includes('INSERT INTO'));assert.ok(!raw.includes('UPDATE '));asse
 const validationLines=src.split('\n').filter(line=>line.includes('intervallo date non valido'));
 assert.equal(validationLines.length,2,'both analytics endpoints must contain date validation');
 assert.ok(validationLines.every(line=>line.includes('isValidIsoDate(from)')&&line.includes('isValidIsoDate(to)')), 'both endpoints must use strict calendar-date validation');
-assert.ok(src.includes('function isValidIsoDate(value)'), 'strict ISO calendar-date helper must exist');
-assert.ok(src.includes('.test(value)')&&src.includes('value.split("-").map(Number)'), 'helper must validate ISO format and calendar components');
-assert.ok(src.includes('date.getUTCFullYear() === year')&&src.includes('date.getUTCMonth() === month - 1')&&src.includes('date.getUTCDate() === day'), 'date helper must reject impossible calendar dates');
+assert.ok(src.includes('import { isValidIsoDate } from "./date-validation.js";'), 'Worker must use shared strict date validator');
+assert.ok(src.includes('isValidIsoDate(from)')&&src.includes('isValidIsoDate(to)'), 'Worker must call strict validator');
+
 assert.ok(e.includes('includes(source)'), 'source allowlist must remain');
 assert.ok(e.includes('includes(aggregation)'), 'aggregation allowlist must remain');
 assert.ok(e.includes('from > to'), 'date range order must be validated');
