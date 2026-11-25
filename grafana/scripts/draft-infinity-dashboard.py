@@ -13,7 +13,8 @@ def load(p): return json.loads(Path(p).read_text(encoding="utf-8"))
 def main():
  if len(sys.argv)!=4:
   print("Usage: draft-infinity-dashboard.py <source-dashboard.json> <mapping.json> <output.json>");sys.exit(2)
- src,mapping,out=map(load,sys.argv[1:])
+ source_path,mapping_path,out_path=sys.argv[1:]
+ src=load(source_path); mapping=load(mapping_path)
  entries={(m.get("panelId"),m.get("ref")):m for m in mapping.get("mappings",[])}
  draft=copy.deepcopy(src)
  draft["title"]=(src.get("title") or "Garmin Stats")+" - Infinity conversion DRAFT"
@@ -38,6 +39,6 @@ def main():
     target["draftOnly"]=True; target["draftStatus"]="UNVERIFIED - query intentionally not configured"; target["query"]="UNVERIFIED"
  panel_count=len(draft.get("panels",[]))
  draft["draftConversionSummary"]={"sourcePanelCount":panel_count,"verifiedMappingsConfigured":count_verified,"mappingCount":len(entries),"warning":"Draft scaffold only; confirm endpoint, Infinity parser, units, dates and rendering before import."}
- Path(out).write_text(json.dumps(draft,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
+ Path(out_path).write_text(json.dumps(draft,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
  print(f"PASS: draft generated preserving {panel_count} panels; {count_verified} verified mappings configured")
 if __name__=="__main__":main()
