@@ -39,6 +39,20 @@ class VerifiedTargetUrlTests(unittest.TestCase):
    self.assertEqual(params["from"],["2026-01-01"])
    self.assertEqual(params["to"],["2026-03-31"])
 
+ def test_invalid_date_bounds_remain_inert(self):
+  cases=[{"from":"2026-02-30"},{"from":"not-a-date"},{"from":"2026-03-31","to":"2026-01-01"}]
+  for bounds in cases:
+   src={"panels":[{"id":11,"targets":[{"ref":"A"}]}]}
+   mapping={"mappings":[{"panelId":11,"ref":"A","verified":True,"source":"daily_records","sourceDataset":"DailyStats","fieldPath":"$.steps","aggregation":"sum",**bounds}]}
+   with tempfile.TemporaryDirectory() as td:
+    a,b,c=[Path(td)/x for x in ("src.json","map.json","out.json")]
+    a.write_text(json.dumps(src));b.write_text(json.dumps(mapping))
+    run=subprocess.run([sys.executable,str(SCRIPT),str(a),str(b),str(c)],capture_output=True,text=True)
+    self.assertEqual(run.returncode,0,run.stderr)
+    target=json.loads(c.read_text())["panels"][0]["targets"][0]
+    self.assertIn("invalid date bounds",target["draftStatus"])
+    self.assertEqual(target["query"],"UNVERIFIED")
+
  def test_incomplete_verified_mapping_remains_inert(self):
   src={"panels":[{"id":1,"targets":[{"ref":"A"}]}]}
   mapping={"mappings":[{"panelId":1,"ref":"A","verified":True,"source":"daily_records","sourceDataset":"x","aggregation":"avg"}]}
