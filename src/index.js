@@ -1,13 +1,7 @@
+import { isValidIsoDate } from "./date-validation.js";
 const GARMIN_BASE = "https://personal.connectapi.garmin.com";
 const TOKEN_PATH = "/personalapitoken-service/personal-api/personal-api-key/token";
 
-function isValidIsoDate(value) {
-  if (!value) return true;
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
-  const [year, month, day] = value.split("-").map(Number);
-  const date = new Date(Date.UTC(year, month - 1, day));
-  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
-}
 
 export default {
   async scheduled(event, env, ctx) {
