@@ -36,4 +36,5 @@ jobs:
         run: node grafana/test-live-audit-helper.mjs
       - name: Verify browser-side schema audit
         run: node grafana/test-run-audit.mjs
-      - name: Verify reference panel inventory\n        run: node grafana/test-reference-inventory.mjs\n
+      - name: Verify reference panel inventory
+        run: node grafana/test-reference-inventory.mjs
