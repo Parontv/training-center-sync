@@ -4,8 +4,9 @@ Updated 25 November 2026.
 
 ## Latest validation work
 - The analyzer fixture test failed in run 214 due to the output file ending in a literal `\\n` sequence rather than a newline.
-- Fixed the analyzer output newline in commit `335d75f`.
-- The failure log belongs to the earlier commit; validation for the fix is pending confirmation. The workflow-run connector currently cannot confirm push-triggered runs.
+- Fixed the analyzer output newline in commit `335d75f`; the synthetic fixture test parses the generated JSON and checks that private sample values are excluded.
+- CI workflow now targets Node 24 (commit `32b1ae3`).
+- Latest push-triggered CI cannot be confirmed through the available GitHub Actions connector; do not treat this as a passing run.
 
 ## Confirmed
 - PR #10 is open, draft, and mergeable; no merge was performed.
