@@ -1,0 +1,14 @@
+apiVersion: 1
+datasources:
+  - name: Training Center D1
+    uid: training-center-d1
+    type: yesoreyeram-infinity-datasource
+    access: proxy
+    isDefault: false
+    editable: true
+    jsonData:
+      globalQueryOptions:
+        timeInterval: 1d
+      httpHeaderName1: Authorization
+    secureJsonData:
+      httpHeaderValue1: Bearer ${SYNC_BEARER_TOKEN}
