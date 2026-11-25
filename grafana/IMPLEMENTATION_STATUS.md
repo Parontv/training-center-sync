@@ -78,3 +78,5 @@ To safely map the original 143 queries, the live field-path audit and actual Gra
 ## Query bounds configuration (2026-11-25)
 - Verified mapping draft URLs now accept mapping-specific `limit` (default 366, bounded 1-5000) and optional `from`/`to` date bounds, matching the documented Worker contract.
 - Regression coverage added for custom limit/date bounds. CI result pending.
+
+\n## Date-bound validation hardening (2026-11-25)\n- Draft generator rejects invalid ISO calendar dates and reversed `from`/`to` ranges, keeping such mappings inert. Regression tests added; CI execution pending observation.\n
