@@ -1,51 +1,35 @@
 # Garmin Metrics API contract for Grafana
 
 ## Read-only principle
-These contracts are proposed for implementation only after schema/coverage validation. They are not live endpoints yet. Existing `/dashboard-data` currently supplies dataset inventory, activity summaries, recent daily records, steps samples and quality metrics.
+The Worker endpoints in this branch are read-only and are not deployed. The existing `/dashboard-data` endpoint currently provides summary/catalog data, not full historical analytics.
 
-## Proposed endpoint
-`GET /dashboard-metrics?metric=<metric>&from=<YYYY-MM-DD>&to=<YYYY-MM-DD>&interval=<day|week>`
-Authorization: Bearer `SYNC_BEARER_TOKEN`
+## Implemented in the branch: raw field values
+`GET /dashboard-field-values?source=daily_records|garmin_records&dataset=<dataset>&field_path=<JSON fullkey>&from=<YYYY-MM-DD>&to=<YYYY-MM-DD>&limit=<1-5000>`
 
-### Response shape
-```json
-{
-  "ok": true,
-  "metric": "hrv",
-  "unit": "ms",
-  "points": [
-    {"date":"2026-01-01","value":42}
-  ],
-  "coverage": {"records":123,"missing":0}
-}
-```
+- Bearer authentication via `SYNC_BEARER_TOKEN`.
+- Source tables are allowlisted.
+- Dataset, field path and date filters are bound parameters.
+- Limit is bounded; invalid numeric limit values fall back safely.
+- Returns scalar raw values, date/type and count.
+- Does not infer units or semantics.
 
-## Candidate metric contracts
-- `sleep`: duration, stages, score; normalize minutes/hours only after field audit.
-- `hrv`: daily value and available baseline/status.
-- `weight`: weight values and dates, no fabricated interpolation.
-- `resting_hr`: daily resting HR.
-- `steps`: daily steps.
-- `stress`: daily stress summary.
-- `training_load`: load/readiness/recovery fields where available.
-- `respiration`, `spo2`, `body_composition`: secondary after coverage audit.
+## Implemented in the branch: numeric time series
+`GET /dashboard-metrics?source=daily_records|garmin_records&dataset=<dataset>&field_path=<JSON fullkey>&from=<date>&to=<date>&aggregation=avg|min|max|sum&limit=<bounded>`
 
-## Required safeguards
-- Read-only SQL and allowlisted metric definitions.
-- Validate date ranges and interval.
-- Return normalized numeric points with explicit units and missing values omitted.
-- Bounded payload; aggregate in D1 where possible.
-- No user-supplied SQL or field path.
-- Never infer data that is missing; expose coverage.
-- Dashboard panels must use these normalized contracts rather than raw JSON dumps.
+- Bearer authentication and allowlisted sources.
+- Parameterized dataset, field path and date filters.
+- Numeric values only.
+- Per-date aggregate and sample count.
+- Unit intentionally null until verified.
+- Bounded query and read-only SQL.
 
-## Status
-Proposal only. Do not consider this endpoint implemented until code, tests and deployment are complete.
+## Safety and interpretation
+- These endpoints are not deployed.
+- Never expose a user-supplied SQL query.
+- The field path is a query parameter, not SQL.
+- Do not assume field names imply correct units or meaning.
+- Verify coverage, type, date range, missingness and semantics against private live schema audit data before dashboard panels use them.
+- Keep live audit files private; they may contain personal Garmin data.
 
-
-## Implemented raw-field read endpoint
-`GET /dashboard-field-values?source=daily_records|garmin_records&dataset=<dataset>&field_path=<path>&from=<YYYY-MM-DD>&to=<YYYY-MM-DD>&limit=<1-5000>` is implemented in the PR branch. It requires bearer authentication, parameterizes dataset/field path/date bounds, restricts source tables to two known tables, and is read-only. It returns raw scalar values with dates/type and does not infer units. This endpoint is not deployed until the PR is merged and the Worker deployment is authorized.
-
-
-## Generic numeric series endpoint (implemented in PR branch)
-`GET /dashboard-metrics?source=daily_records|garmin_records&dataset=<dataset>&field_path=<JSON fullkey>&from=<date>&to=<date>&aggregation=avg|min|max|sum&limit=<bounded>` returns date/value points and sample coverage. Numeric scalar fields only. It is read-only and parameterized; field path, dataset, source and date bounds are supplied as query parameters. `unit` remains null intentionally until field semantics are confirmed. This endpoint is not deployed.
+## Superseded proposal
+The earlier metric-name/interval contract and example response in prior revisions were proposals only. They are not the implemented API shape.
