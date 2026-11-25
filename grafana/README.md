@@ -37,3 +37,18 @@ node grafana/build-dashboards.mjs
 
 ## Limitations and safety
 The catalog helper is not a live metrics dashboard. Live schema audit requires the Worker bearer token; no authenticated live audit was performed by this development session. No deployment, publishing, D1 mutation, or Garmin sync change is authorized here.
+
+
+## Fast path: first visible dashboard (manual Grafana step)
+
+This is the shortest path to a live dashboard, without deploying or changing D1:
+
+1. In Grafana Cloud, open **Connections → Data sources → Infinity** (or the existing `training-center-d1` datasource).
+2. Confirm datasource UID is exactly `training-center-d1`. If it already exists, edit it rather than creating another.
+3. Set the base URL to `https://training-center-sync.listaconcerti.workers.dev` if the datasource supports a base URL. The dashboard panels currently use the full read-only `/dashboard-data` URL.
+4. Configure the HTTP Authorization header as a **secure/custom header**: name `Authorization`, value `Bearer <SYNC_BEARER_TOKEN>`. Store it in the datasource's secure configuration, never in panel URLs or dashboard JSON.
+5. Use datasource **Save & test**. A successful connection alone is not sufficient; confirm an Infinity query returns JSON from the Worker.
+6. Import `training-center-master.json` and `training-center-overview.json` from this repository branch, or open the dashboard import flow and paste the JSON content. Keep the datasource UID mapping at `training-center-d1`.
+7. Set the dashboard refresh to 5 minutes and check the counters and tables. If a panel is empty, inspect the Infinity query response and selector before changing any dataset fields.
+
+**Stop if secure token storage is unavailable.** Do not put the token into dashboard JSON, screenshots, URLs, browser bookmarks, or commits.
