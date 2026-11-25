@@ -35,5 +35,7 @@ jobs:
         run: python grafana/scripts/audit-conversion-integrity.py grafana/dashboards/garmin-original-clone.json grafana/dashboards/garmin-influx-target-semantic-audit.json grafana/dashboards/garmin-infinity-conversion-queue.json
       - name: Panel preservation audit
         run: python grafana/scripts/panel-preservation-audit.py grafana/dashboards/garmin-original-clone.json grafana/dashboards/garmin-influx-target-semantic-audit.json grafana/dashboards/garmin-infinity-field-mapping-template.json
+      - name: Build stable target inventory
+        run: python grafana/scripts/inventory-original-targets.py grafana/dashboards/garmin-original-clone.json grafana/dashboards/garmin-influx-target-semantic-audit.json /tmp/target-inventory.json
       - name: Guarded manifest builder smoke test
         run: python grafana/scripts/build-verified-query-manifest.py grafana/dashboards/garmin-infinity-field-mapping-template.json /tmp/verified-query-manifest.json
