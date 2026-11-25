@@ -70,3 +70,8 @@ To safely map the original 143 queries, the live field-path audit and actual Gra
 ## CI automation added (2026-11-25)
 - Added `.github/workflows/grafana-audit.yml` on branch `feat/grafana-automated-builder` to run the synthetic test scripts, conversion integrity audit, panel-preservation audit, and guarded manifest-builder smoke check on relevant pushes/PRs and manual dispatch.
 - CI execution has not yet been observed; this commit configures the workflow, it does not claim test success. Live schema and Grafana UI gates remain outstanding.
+
+
+## Source-dashboard preservation regression
+- Added `grafana/scripts/test-real-dashboard-draft-preservation.py`, which generates a draft from the actual 62-panel source dashboard and checks panel IDs, titles, types, layout, options, field config, transformations, links, descriptions, and target refs remain unchanged.
+- Wired this regression into the GitHub Actions workflow. Execution is pending CI; not claimed passed.
