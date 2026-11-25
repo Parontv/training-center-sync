@@ -53,3 +53,9 @@ To safely map the original 143 queries, the live field-path audit and actual Gra
 - Added `grafana/scripts/build-verified-query-manifest.py`: emits a query manifest only for explicitly verified mappings with concrete dataset, field path, source dataset, and supported aggregation; unverified rows are skipped and duplicate keys/errors are rejected.
 - Added unit tests for skipping unverified entries, inclusion of valid verified mappings, missing field rejection, and duplicate-key rejection.
 - Local execution: all 4 tests passed. This validates the manifest builder logic only; it does not validate live Garmin schema or Grafana rendering.
+
+
+## Panel preservation tooling (2026-11-25)
+- Added `grafana/scripts/panel-preservation-audit.py`, which audits 62 panels, 143 semantic targets and exact key coverage in the mapping template, and inventories panel types, layout positions, transformations, datasource and options/field configuration presence.
+- Added a regression test for panel count and unique IDs.
+- The tool is intended to run against the source dashboard, semantic audit and mapping template; live query verification is still outstanding.
