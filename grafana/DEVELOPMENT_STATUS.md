@@ -75,3 +75,8 @@ Repository work continues despite UI/schema blockers. Use code, existing dashboa
 - The isolated test still failed: the generator was emitting a literal backslash-n after the JSON rather than a newline, invalidating JSON parsing.
 - Fixed the generator output terminator to emit a real newline; the test now runs generator output in a temporary path.
 - CI verification for this latest commit is pending.
+
+
+## Dashboard structural validation expansion — 25 November 2026
+- Added recursive checks to existing-dashboard validation for panel titles, positive dimensions, nonnegative positions, 24-column grid fit, unique target ref IDs, and selector/refId presence.
+- CI will validate these invariants against both preserved dashboards; no live dashboard changes made.
