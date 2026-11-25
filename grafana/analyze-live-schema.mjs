@@ -27,7 +27,7 @@ for(const [source,list] of [['garmin_records',a.garmin_records||[]],['daily_reco
    const valueType=String(f.value_type??f.type??'unknown').toLowerCase();
    const numeric=numericTypes.has(valueType);
    const occurrence=Number(f.occurrences??f.count??0);
-   rows.push({dataset:f.dataset??null,field_path:f.field_path??null,value_type:valueType,occurrences:occurrence,records_with_field:f.records_with_field??f.recordsWithField??null,source,candidate_metrics:matches,review_priority:numeric?'NUMERIC_REVIEW':'SEMANTIC_REVIEW',numeric_series_candidate:numeric,verification_status:'UNVERIFIED',review_note:numeric?'Numeric field: inspect unit, date semantics and aggregation before charting.':'Non-numeric or unknown type: review semantics before charting.'});
+   rows.push({dataset:f.dataset??null,field_path:f.field_path??null,value_type:valueType,occurrences:occurrence,records_with_field:f.records_with_field??f.recordsWithField??null,source,candidate_metrics:matches,review_priority:numeric?'NUMERIC_REVIEW':'SEMANTIC_REVIEW',numeric_series_candidate:numeric,verification_status:'UNVERIFIED',review_note:numeric?'Numeric field: inspect unit, date semantics and aggregation before charting.':'Non-numeric or unknown type: review semantic meaning, units, date semantics and coverage before charting.'});
   }
  }
 }
