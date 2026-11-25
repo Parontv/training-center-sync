@@ -4,7 +4,7 @@
 Verified mappings are wired to the read-only Worker metric endpoint. Unverified
 mappings remain explicitly inert. This is a draft and requires live validation.
 """
-import json,sys,copy
+import json,sys,copy\nfrom datetime import date
 from pathlib import Path
 from urllib.parse import urlencode
 
