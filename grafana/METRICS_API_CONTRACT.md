@@ -48,4 +48,4 @@ Proposal only. Do not consider this endpoint implemented until code, tests and d
 
 
 ## Generic numeric series endpoint (implemented in PR branch)
-`GET /dashboard-metrics?source=daily_records|garmin_records&dataset=<dataset>&field_path=<JSON fullkey>&from=<date>&to=<date>&aggregation=avg|min|max|sum|latest&limit=<bounded>` returns date/value points and sample coverage. Numeric scalar fields only. It is read-only and parameterized; field path, dataset, source and date bounds are supplied as query parameters. `unit` remains null intentionally until field semantics are confirmed. This endpoint is not deployed.
+`GET /dashboard-metrics?source=daily_records|garmin_records&dataset=<dataset>&field_path=<JSON fullkey>&from=<date>&to=<date>&aggregation=avg|min|max|sum&limit=<bounded>` returns date/value points and sample coverage. Numeric scalar fields only. It is read-only and parameterized; field path, dataset, source and date bounds are supplied as query parameters. `unit` remains null intentionally until field semantics are confirmed. This endpoint is not deployed.
