@@ -1,0 +1,26 @@
+name: Grafana dashboard catalog
+on:
+  pull_request:
+    paths:
+      - 'grafana/**'
+  push:
+    branches:
+      - 'feat/grafana-automated-builder'
+    paths:
+      - 'grafana/**'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Validate dataset manifest
+        run: node grafana/test-datasets.mjs
+      - name: Generate catalog dashboard
+        run: node grafana/build-dashboards.mjs
+      - name: Validate generated dashboard JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('grafana/dashboards/training-center-d1-catalog.json','utf8'))"
