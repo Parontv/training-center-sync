@@ -38,6 +38,8 @@ jobs:
         run: node -e "JSON.parse(require('fs').readFileSync('grafana/dashboards/training-center-d1-catalog.json','utf8'))"
       - name: Verify reused dashboard integrity
         run: node grafana/test-existing-dashboards.mjs
+      - name: Check dashboard-data panel selectors
+        run: node grafana/test-dashboard-data-contract.mjs
       - name: Verify live audit helper safety
         run: node grafana/test-live-audit-helper.mjs
       - name: Verify browser-side schema audit
