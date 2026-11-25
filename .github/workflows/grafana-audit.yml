@@ -24,8 +24,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Unit tests
-        run: python -m unittest discover -s grafana/scripts -p "test-*.py" -v
+      - name: Execute synthetic regression tests
+        run: |
+          python grafana/scripts/test-build-verified-query-manifest.py
+          python grafana/scripts/test-panel-preservation-audit.py
+          python grafana/scripts/test-draft-infinity-dashboard.py
       - name: Conversion integrity
         run: python grafana/scripts/audit-conversion-integrity.py grafana/dashboards/garmin-original-clone.json grafana/dashboards/garmin-influx-target-semantic-audit.json grafana/dashboards/garmin-infinity-conversion-queue.json
       - name: Panel preservation audit
