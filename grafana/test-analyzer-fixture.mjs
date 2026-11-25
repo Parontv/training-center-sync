@@ -14,7 +14,8 @@ try{
  assert.ok(parsed.metrics.some(x=>x.source==='garmin_records'&&x.candidate_metrics.includes('sleep')));
  assert.ok(parsed.metrics.some(x=>x.source==='daily_records'&&x.candidate_metrics.includes('hrv')));
  assert.ok(parsed.warning.includes('Heuristic'));
- assert.ok(!JSON.stringify(parsed).includes('PRIVATE_SLEEP_SAMPLE'),'analyzer output must omit raw samples');\n assert.ok(parsed.metrics.every(x=>!Object.hasOwn(x,'sample')&&!Object.hasOwn(x,'example')),'output must be metadata-only');
+ assert.ok(!JSON.stringify(parsed).includes('PRIVATE_SLEEP_SAMPLE'),'analyzer output must omit raw samples');
+ assert.ok(parsed.metrics.every(x=>!Object.hasOwn(x,'sample')&&!Object.hasOwn(x,'example')),'output must be metadata-only');
  assert.ok(!parsed.metrics.some(x=>x.dataset==='misc'),'non-metric dataset should not be classified');
  const empty=path.join(tmp,'empty.json');fs.writeFileSync(empty,JSON.stringify({garmin_records:[],daily_records:[]}));
  const out2=path.join(tmp,'empty-candidates.json');
