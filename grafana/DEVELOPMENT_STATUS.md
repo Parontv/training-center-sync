@@ -2,9 +2,14 @@
 
 Updated 25 November 2026.
 
+## Latest validation work
+- The analyzer fixture test failed in run 214 due to the output file ending in a literal `\\n` sequence rather than a newline.
+- Fixed the analyzer output newline in commit `335d75f`.
+- The failure log belongs to the earlier commit; validation for the fix is pending confirmation. The workflow-run connector currently cannot confirm push-triggered runs.
+
 ## Confirmed
 - PR #10 is open, draft, and mergeable; no merge was performed.
-- Latest branch validation run **45684081657 (run 187)** succeeded.
+- Earlier validation run **45684081657 (run 187)** succeeded; it predates the latest analyzer changes.
 - Existing Master and Overview dashboards are retained with stable UIDs and panel IDs.
 - The reference dashboard inventory was inspected and documented as inspiration, not copied query logic.
 - Added `grafana/REFERENCE_ADAPTATION_PLAN.md` to prioritize adapting the existing dashboards using the reference concepts.
