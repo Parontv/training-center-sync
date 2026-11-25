@@ -2,12 +2,20 @@
 
 This branch is a safe scaffold for dashboards as code against the Training Center read-only Worker API.
 
+## Existing dashboard assets (must be reused)
+PR #8 in this repository already contains the initial dashboard assets:
+- `grafana/dashboards/training-center-master.json` — Garmin Master overview
+- `grafana/dashboards/training-center-overview.json` — Garmin Overview
+- setup guidance for Grafana Cloud + Infinity
+
+Those assets are currently part of PR #8 and must be brought forward/reconciled before publishing this branch. **Do not replace them with a parallel dashboard or reset their UIDs/panel IDs.** PR #10's generated `training-center-d1-catalog.json` is an interim schema/catalog helper, not the target user dashboard.
+
 ## Current state
 - `datasets.json`: candidate Garmin metric catalogue; actual CORE inclusion must be verified against live D1 coverage.
-- `build-dashboards.mjs`: creates a catalog dashboard JSON from the manifest.
-- `test-datasets.mjs`: sanity checks manifest.
-- CI validates the manifest and generated dashboard JSON.
-- `METRICS_API_CONTRACT.md`: proposal for normalized metrics endpoints.
+- `build-dashboards.mjs`: creates a catalog helper dashboard from the manifest.
+- `test-datasets.mjs`: sanity checks manifest and generated helper JSON.
+- CI validates the manifest, analyzer safeguards, endpoints' static safeguards and generated JSON.
+- `METRICS_API_CONTRACT.md`: contract notes for read-only metric endpoints.
 
 ## Generate
 ```bash
@@ -15,11 +23,13 @@ node grafana/test-datasets.mjs
 node grafana/build-dashboards.mjs
 ```
 
-## Important limitations
-This catalogue is not yet a live metric dashboard. The live D1 schema endpoint requires the Worker bearer token; that authenticated live audit has not been run by this development session. The generator deliberately does not invent series or field paths. Publishing to Grafana is also not enabled.
+## Next integration steps
+1. Reconcile/import the PR #8 dashboard JSON into this branch (preserving UIDs and panel IDs).
+2. Audit live D1 schema/coverage with authenticated read-only `/dashboard-schema`.
+3. Map verified field paths to normalized endpoints; avoid assumptions about units or semantics.
+4. Add real time-series panels to the existing Master dashboard, with dedicated detail dashboards only where justified.
+5. Test Infinity backend query behavior and verify dashboard JSON.
+6. Publishing remains disabled until the Grafana stack and scoped API token are explicitly verified.
 
-## Next milestones
-1. Validate dataset field paths and coverage from live `/dashboard-schema`.
-2. Build a strict allowlisted read-only normalized API for confirmed datasets.
-3. Generate real time-series panels with units and missing-data handling.
-4. Validate Grafana Infinity queries and dashboard API publishing.
+## Limitations and safety
+The catalog helper is not a live metrics dashboard. Live schema audit requires the Worker bearer token; no authenticated live audit was performed by this development session. No deployment, publishing, D1 mutation, or Garmin sync change is authorized here.
