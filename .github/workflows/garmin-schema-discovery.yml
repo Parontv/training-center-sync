@@ -1,0 +1,41 @@
+name: Garmin schema discovery (read-only)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 5 1 * *'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/grafana-automated-builder
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Fetch private schema audit (read-only)
+        env:
+          SYNC_BEARER_TOKEN: ${{ secrets.SYNC_BEARER_TOKEN }}
+          WORKER_BASE: ${{ vars.WORKER_BASE }}
+        run: |
+          if [ -z "$SYNC_BEARER_TOKEN" ]; then echo "Missing repository secret SYNC_BEARER_TOKEN"; exit 2; fi
+          node grafana/fetch-live-schema.mjs
+      - name: Generate sanitized candidate catalogue
+        env:
+          CANDIDATES_OUTPUT: grafana/schema-candidates-sanitized.json
+        run: node grafana/analyze-live-schema.mjs grafana/live-schema-audit.json
+      - name: Upload sanitized candidate catalogue only
+        uses: actions/upload-artifact@v4
+        with:
+          name: garmin-schema-candidates
+          path: grafana/schema-candidates-sanitized.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Delete private audit
+        if: always()
+        run: rm -f grafana/live-schema-audit.json
