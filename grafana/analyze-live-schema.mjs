@@ -32,5 +32,5 @@ for(const [source,list] of [['garmin_records',a.garmin_records||[]],['daily_reco
  }
 }
 const out={generatedAt:a.generatedAt||null,warning:'Heuristic field candidates. Semantics, units, dates, and coverage require verification. Raw sample values are omitted.', summary:{totalCandidates:rows.length,numericCandidates:rows.filter(x=>x.numeric_series_candidate).length,semanticReview:rows.filter(x=>!x.numeric_series_candidate).length},metrics:rows};
-const dest=process.env.CANDIDATES_OUTPUT||'grafana/metric-candidates.json';fs.writeFileSync(dest,JSON.stringify(out,null,2)+'\\n');
+const dest=process.env.CANDIDATES_OUTPUT||'grafana/metric-candidates.json';fs.writeFileSync(dest,JSON.stringify(out,null,2)+'\n');
 console.log('Candidate map saved to '+dest+' (metadata only; keep private).');
