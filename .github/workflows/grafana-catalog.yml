@@ -20,7 +20,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Syntax-check Worker source\n        run: node --check src/index.js\n      - name: Validate dataset manifest
+      - name: Syntax-check Worker source
+        run: node --check src/index.js
+      - name: Validate dataset manifest
         run: node grafana/test-datasets.mjs
       - name: Smoke-check candidate analyzer
         run: node grafana/test-analyzer.mjs
