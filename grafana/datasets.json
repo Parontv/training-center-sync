@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "source": "Cloudflare D1 storico_garmin",
+  "readOnly": true,
+  "datasets": [
+    {"key":"sleep","label":"Sleep","status":"CORE","dashboard":"Recovery","metrics":["duration","sleep stages","score"],"notes":"Include only available and sufficiently populated fields."},
+    {"key":"hrv","label":"HRV","status":"CORE","dashboard":"Recovery","metrics":["daily HRV","baseline","trend"]},
+    {"key":"weight","label":"Weight","status":"CORE","dashboard":"Body","metrics":["weight","trend","rolling average"]},
+    {"key":"resting_hr","label":"Resting heart rate","status":"CORE","dashboard":"Recovery","metrics":["resting heart rate","trend"]},
+    {"key":"steps","label":"Steps","status":"CORE","dashboard":"Activity","metrics":["daily steps","weekly totals"]},
+    {"key":"stress","label":"Stress","status":"CORE","dashboard":"Recovery","metrics":["daily stress","trend"]},
+    {"key":"training_load","label":"Training load / recovery","status":"CORE","dashboard":"Training","metrics":["load","readiness","recovery indicators"]},
+    {"key":"respiration","label":"Respiration","status":"SECONDARY","dashboard":"Recovery","metrics":["sleep/day respiration"]},
+    {"key":"spo2","label":"SpO2","status":"SECONDARY","dashboard":"Recovery","metrics":["overnight/spot readings"]},
+    {"key":"body_composition","label":"Body composition","status":"SECONDARY","dashboard":"Body","metrics":["available body-composition metrics"]},
+    {"key":"hydration","label":"Hydration","status":"EXPERIMENTAL","dashboard":"Body","metrics":["intake"],"notes":"Include only after validating coverage and usefulness."},
+    {"key":"activities","label":"Activities","status":"CORE","dashboard":"Training","metrics":["distance","duration","pace","heart rate","calories","sport"]},
+    {"key":"activity_details","label":"Activity details","status":"SECONDARY","dashboard":"Training","metrics":["per-activity detailed streams and metrics"]}
+  ],
+  "rubric":{"coverage":"date range and completeness","quality":"missing/invalid payloads","actionability":"training, recovery, progress insight","performance":"payload and aggregation cost","privacy":"avoid unnecessary sensitive exposure"},
+  "status":["CORE","SECONDARY","EXPERIMENTAL","OMIT"]
+}
