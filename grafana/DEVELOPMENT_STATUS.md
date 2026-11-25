@@ -31,6 +31,12 @@ Updated 25 November 2026.
 - Added `grafana/test-readonly-endpoint-contract.mjs` static route/gate and dashboard credential-safety check; wired into CI. Test execution/CI result remains unverified.
 - Live schema and coverage cannot be inspected in this chat without authenticated access to the Worker or a private audit export; no raw personal data was requested or committed.
 
+## Automation-first operating direction
+- Minimize recurring user actions. Avoid asking the user to export/copy/paste audit JSON, token values, or screenshots except for unavoidable one-time credential/UI setup or genuine blockers.
+- Preferred design: one-time Grafana Infinity datasource configuration with securely stored Worker bearer credential; then dashboards generated from verified schema/metric catalogue and updates via GitHub Actions.
+- Investigate whether a safe sanitized schema/catalog endpoint can reduce even the one-time audit workflow. Never expose raw samples or private Garmin data publicly; never remove auth to simplify.
+- Prefer a generated dashboard artifact and validation workflow over hand-building panels. Treat Grafana publishing as separate approval-bound action.
+
 ## Next actions
 1. Prioritize matching reference panels to available archive fields.
 2. Validate field paths/types/units/date coverage through private schema audit or alternative evidence.
