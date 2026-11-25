@@ -29,6 +29,7 @@ jobs:
           python grafana/scripts/test-build-verified-query-manifest.py
           python grafana/scripts/test-panel-preservation-audit.py
           python grafana/scripts/test-draft-infinity-dashboard.py
+          python grafana/scripts/test-verified-target-url.py
           python grafana/scripts/test-real-dashboard-draft-preservation.py
       - name: Conversion integrity
         run: python grafana/scripts/audit-conversion-integrity.py grafana/dashboards/garmin-original-clone.json grafana/dashboards/garmin-influx-target-semantic-audit.json grafana/dashboards/garmin-infinity-conversion-queue.json
