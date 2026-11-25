@@ -1,0 +1,13 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';
+const manifest=JSON.parse(fs.readFileSync('grafana/datasets.json','utf8'));
+await import('./generate-panel-plan.mjs');
+const plan=JSON.parse(fs.readFileSync('grafana/panel-implementation-plan.json','utf8'));
+assert.equal(plan.state,'SCHEMA_VERIFICATION_REQUIRED');
+assert.equal(plan.dataset_gate.length,manifest.datasets.length);
+assert.ok(plan.dataset_gate.every(x=>x.verification==='UNVERIFIED'));
+assert.ok(plan.dataset_gate.every(x=>x.panel_policy.includes('verified')));
+assert.equal(plan.dashboard_workstreams.length,5);
+assert.ok(plan.dashboard_workstreams.some(x=>x.state==='EXISTING_ASSETS_PRESERVED'));
+assert.ok(plan.privacy.includes('metadata-only'));
+assert.ok(plan.approval_boundary.includes('No dashboard publishing'));
+console.log('Panel implementation plan safety and determinism checks passed.');
