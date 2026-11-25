@@ -13,7 +13,13 @@ try{
  assert.equal(parsed.metrics.length,3,'unmatched fields should be omitted from heuristic candidates');
  assert.ok(parsed.metrics.some(x=>x.source==='garmin_records'&&x.candidate_metrics.includes('sleep')));
  assert.ok(parsed.metrics.some(x=>x.source==='daily_records'&&x.candidate_metrics.includes('hrv')));
- assert.ok(parsed.warning.includes('Heuristic'));\n assert.equal(parsed.summary.totalCandidates,3);\n assert.equal(parsed.summary.numericCandidates,2);\n assert.ok(parsed.metrics.every(x=>x.verification_status==='UNVERIFIED'));\n assert.ok(parsed.metrics.filter(x=>x.numeric_series_candidate).every(x=>x.review_priority==='NUMERIC_REVIEW'));\n assert.ok(parsed.metrics.some(x=>!x.numeric_series_candidate&&x.review_priority==='SEMANTIC_REVIEW'));\n assert.ok(parsed.metrics.every(x=>x.review_note.includes('unit')));
+ assert.ok(parsed.warning.includes('Heuristic'));
+ assert.equal(parsed.summary.totalCandidates,3);
+ assert.equal(parsed.summary.numericCandidates,2);
+ assert.ok(parsed.metrics.every(x=>x.verification_status==='UNVERIFIED'));
+ assert.ok(parsed.metrics.filter(x=>x.numeric_series_candidate).every(x=>x.review_priority==='NUMERIC_REVIEW'));
+ assert.ok(parsed.metrics.some(x=>!x.numeric_series_candidate&&x.review_priority==='SEMANTIC_REVIEW'));
+ assert.ok(parsed.metrics.every(x=>x.review_note.includes('unit')));
  assert.ok(!JSON.stringify(parsed).includes('PRIVATE_SLEEP_SAMPLE'),'analyzer output must omit raw samples');
  assert.ok(parsed.metrics.every(x=>!Object.hasOwn(x,'sample')&&!Object.hasOwn(x,'example')),'output must be metadata-only');
  assert.ok(!parsed.metrics.some(x=>x.dataset==='misc'),'non-metric dataset should not be classified');
