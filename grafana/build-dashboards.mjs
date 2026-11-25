@@ -11,7 +11,7 @@ const root=process.cwd();
 const manifest=JSON.parse(fs.readFileSync(path.join(root,'grafana','datasets.json'),'utf8'));
 const dashboardsDir=path.join(root,'grafana','dashboards');
 fs.mkdirSync(dashboardsDir,{recursive:true});
-const datasource={type:'yesoreyeram-infinity-datasource',uid:'TrainingCenter-D1'};
+const datasource={type:'yesoreyeram-infinity-datasource',uid:'training-center-d1'};
 const mkPanel=(id,title,description,gridPos)=>({id,title,description,type:'table',datasource,gridPos,
   targets:[{refId:'A',type:'json',source:'url',url:'$WORKER_BASE/dashboard-data',url_options:{method:'GET'},parser:'backend',format:'table',root_selector:'datasets',columns:[{selector:'dataset',text:'Dataset',type:'string'},{selector:'records',text:'Records',type:'number'},{selector:'first_date',text:'First date',type:'string'},{selector:'last_date',text:'Last date',type:'string'}]}]});
 const warningPanel={id:1,title:'Data coverage not yet verified',type:'text',options:{mode:'markdown',content:'**Catalogue only:** live D1 field coverage has not been audited. This dashboard does not claim these metrics are present.'},gridPos:{x:0,y:0,w:24,h:4}};
