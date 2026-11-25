@@ -15,4 +15,7 @@ for(let i=0;i<files.length;i++){
 }
 const generator=fs.readFileSync('grafana/build-dashboards.mjs','utf8');
 assert.ok(generator.includes("uid:'training-center-d1'"),'generated dashboard datasource UID must match reused dashboard datasource UID');
-const readme=fs.readFileSync('grafana/README.md','utf8');\nassert.ok(readme.includes('Bearer')&&readme.includes('secure/custom HTTP headers'),'datasource auth setup must be documented');\nassert.ok(readme.includes('Do not put the token into dashboard JSON'),'token handling safeguards documented');\nconsole.log('Existing dashboard asset integrity checks passed.');
+const readme=fs.readFileSync('grafana/README.md','utf8');
+assert.ok(readme.includes('Bearer')&&readme.includes('secure/custom HTTP headers'),'datasource auth setup must be documented');
+assert.ok(readme.includes('Do not put the token into dashboard JSON'),'token handling safeguards documented');
+console.log('Existing dashboard asset integrity checks passed.');
