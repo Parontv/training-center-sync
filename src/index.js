@@ -299,6 +299,30 @@ if (url.pathname === "/dashboard-schema" && request.method === "GET") {
         return json({ok:true,readOnly:true,source,dataset,field_path:fieldPath,from:from||null,to:to||null,count:(result.results||[]).length,rows:result.results||[],note:"Valori raw in sola lettura; normalizzazione/unità non dedotte."});
       } catch(error) { return json({ok:false,readOnly:true,error:String(error?.message||error).slice(0,300)},500); }
     }
+    if (url.pathname === "/dashboard-metrics" && request.method === "GET") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== "Bearer " + expected) return json({ error: "unauthorized" }, 401);
+      const source = (url.searchParams.get("source") || "daily_records").trim();
+      const dataset = (url.searchParams.get("dataset") || "").trim();
+      const fieldPath = (url.searchParams.get("field_path") || "").trim();
+      const from = (url.searchParams.get("from") || "").trim();
+      const to = (url.searchParams.get("to") || "").trim();
+      const aggregation = (url.searchParams.get("aggregation") || "avg").trim();
+      const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 366), 1), 2000);
+      if (!["daily_records","garmin_records"].includes(source)) return json({error:"source non valido"},400);
+      if (!dataset || dataset.length > 100 || !fieldPath || fieldPath.length > 500) return json({error:"dataset e field_path obbligatori"},400);
+      if (!["avg","min","max","sum","latest"].includes(aggregation)) return json({error:"aggregazione non valida"},400);
+      if ((from && !/^\\d{4}-\\d{2}-\\d{2}$/.test(from)) || (to && !/^\\d{4}-\\d{2}-\\d{2}$/.test(to)) || (from && to && from > to)) return json({error:"intervallo date non valido"},400);
+      try {
+        const aggSql = aggregation === "latest" ? "MAX(r.retrieved_at)" : aggregation.toUpperCase() + "(CAST(jt.atom AS REAL))";
+        const sql = "SELECT r.record_date AS date, " + aggSql + " AS value, COUNT(*) AS samples FROM " + source + " r, json_tree(r.raw_json) jt WHERE json_valid(r.raw_json) AND r.dataset=? AND r.record_date IS NOT NULL AND jt.fullkey=? AND jt.type IN ('integer','real') " + (from ? "AND r.record_date>=? " : "") + (to ? "AND r.record_date<=? " : "") + "GROUP BY r.record_date ORDER BY r.record_date " + (aggregation === "latest" ? "DESC " : "ASC ") + "LIMIT ?";
+        const params = [dataset,fieldPath];if(from)params.push(from);if(to)params.push(to);params.push(limit);
+        const result=await env.DB.prepare(sql).bind(...params).all();
+        const rows=(result.results||[]).map(row=>({date:row.date,value:row.value,samples:Number(row.samples||0)}));
+        if(aggregation==="latest")rows.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+        return json({ok:true,readOnly:true,metric:dataset,field_path:fieldPath,source,aggregation,from:from||null,to:to||null,unit:null,count:rows.length,points:rows,coverage:{numeric_points:rows.length,samples:rows.reduce((n,x)=>n+x.samples,0)},note:"Aggregazione numerica generica; unità e significato devono essere verificati."});
+      }catch(error){return json({ok:false,readOnly:true,error:String(error?.message||error).slice(0,300)},500);}
+    }
     if (url.pathname === "/dashboard-record-dates" && request.method === "GET") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
