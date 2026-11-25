@@ -7886,27 +7886,6 @@
   "templating": {
     "list": [
       {
-        "allowCustomValue": false,
-        "current": {},
-        "datasource": {
-          "type": "influxdb",
-          "uid": "${DS_GARMIN_STATS}"
-        },
-        "definition": "SHOW TAG VALUES FROM \"ActivityGPS\" WITH KEY = \"ActivitySelector\" WHERE $timeFilter",
-        "description": "List of Activities dropdown",
-        "label": "Activity with GPS",
-        "name": "ActivityGPS",
-        "options": [],
-        "query": {
-          "query": "SHOW TAG VALUES FROM \"ActivityGPS\" WITH KEY = \"ActivitySelector\" WHERE $timeFilter",
-          "refId": "InfluxVariableQueryEditor-VariableQuery"
-        },
-        "refresh": 1,
-        "regex": "",
-        "sort": 4,
-        "type": "query"
-      },
-      {
         "current": {
           "text": "Europe/Budapest",
           "value": "Europe/Budapest"
