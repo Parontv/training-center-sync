@@ -10,6 +10,10 @@ PR #8 in this repository already contains the initial dashboard assets:
 
 Those assets have been carried forward into PR #10 with their UIDs and panel IDs preserved. **Do not replace them with a parallel dashboard or reset their UIDs/panel IDs.** PR #10's generated `training-center-d1-catalog.json` is an interim schema/catalog helper, not the target user dashboard.
 
+## Grafana Infinity datasource authentication
+
+The Worker dashboard API requires a Bearer token, including `/dashboard-data`. Configure the Infinity datasource UID `training-center-d1` with the Worker base URL and an Authorization header (`Bearer <SYNC_BEARER_TOKEN>`) in datasource secure/custom HTTP headers as supported by the installed Infinity version. Do not put the token into dashboard JSON, panel URLs, exported dashboards, screenshots, or commits. Verify the header works with a simple query before importing panels. If the Grafana instance cannot securely store this header, do not expose the dashboard endpoint or deploy dashboards publicly.
+
 ## Current state
 - `datasets.json`: candidate Garmin metric catalogue; actual CORE inclusion must be verified against live D1 coverage.
 - `build-dashboards.mjs`: creates a catalog helper dashboard from the manifest.
@@ -24,7 +28,7 @@ node grafana/build-dashboards.mjs
 ```
 
 ## Next integration steps
-1. Reconcile/import the PR #8 dashboard JSON into this branch (preserving UIDs and panel IDs).
+1. Configure and verify the authenticated Infinity datasource before expecting panels to return data.
 2. Audit live D1 schema/coverage with authenticated read-only `/dashboard-schema`.
 3. Map verified field paths to normalized endpoints; avoid assumptions about units or semantics.
 4. Add real time-series panels to the existing Master dashboard, with dedicated detail dashboards only where justified.
