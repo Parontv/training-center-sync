@@ -25,7 +25,7 @@ assert.ok(raw.includes('Number.isFinite(requestedLimit)'),'raw-field limit must 
 assert.ok(!raw.includes('INSERT INTO'));assert.ok(!raw.includes('UPDATE '));assert.ok(!raw.includes('DELETE FROM'));
 
 // Security/validation regression checks.
-const validationLines=src.split('\\n').filter(line=>line.includes('intervallo date non valido'));
+const validationLines=src.split('\n').filter(line=>line.includes('intervallo date non valido'));
 assert.equal(validationLines.length,2,'both analytics endpoints must contain date validation');
 assert.ok(validationLines.every(line=>line.includes('isValidIsoDate(from)')&&line.includes('isValidIsoDate(to)')), 'both endpoints must use strict calendar-date validation');
 assert.ok(src.includes('function isValidIsoDate(value)'), 'strict ISO calendar-date helper must exist');
