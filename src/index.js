@@ -275,6 +275,30 @@ if (url.pathname === "/dashboard-schema" && request.method === "GET") {
         return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500);
       }
     }
+    if (url.pathname === "/dashboard-field-values" && request.method === "GET") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== "Bearer " + expected) return json({ error: "unauthorized" }, 401);
+      const source = (url.searchParams.get("source") || "").trim();
+      const dataset = (url.searchParams.get("dataset") || "").trim();
+      const fieldPath = (url.searchParams.get("field_path") || "").trim();
+      const from = (url.searchParams.get("from") || "").trim();
+      const to = (url.searchParams.get("to") || "").trim();
+      const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 1000), 1), 5000);
+      if (!["daily_records","garmin_records"].includes(source)) return json({error:"source non valido"},400);
+      if (!dataset || dataset.length > 100 || !fieldPath || fieldPath.length > 500) return json({error:"dataset e field_path obbligatori"},400);
+      if ((from && !/^\\d{4}-\\d{2}-\\d{2}$/.test(from)) || (to && !/^\\d{4}-\\d{2}-\\d{2}$/.test(to)) || (from && to && from > to)) return json({error:"intervallo date non valido"},400);
+      try {
+        const dateCol = source === "daily_records" ? "record_date" : "record_date";
+        const table = source;
+        const sql = "SELECT r.dataset, r.record_date, r.retrieved_at, jt.fullkey AS field_path, jt.type AS value_type, jt.atom AS value FROM " + table + " r, json_tree(r.raw_json) jt WHERE json_valid(r.raw_json) AND r.dataset=? AND jt.fullkey=? " + (from ? "AND r.record_date>=? " : "") + (to ? "AND r.record_date<=? " : "") + "ORDER BY r.record_date ASC, r.retrieved_at ASC LIMIT ?";
+        const params = [dataset, fieldPath];
+        if (from) params.push(from);
+        if (to) params.push(to);
+        params.push(limit);
+        const result = await env.DB.prepare(sql).bind(...params).all();
+        return json({ok:true,readOnly:true,source,dataset,field_path:fieldPath,from:from||null,to:to||null,count:(result.results||[]).length,rows:result.results||[],note:"Valori raw in sola lettura; normalizzazione/unità non dedotte."});
+      } catch(error) { return json({ok:false,readOnly:true,error:String(error?.message||error).slice(0,300)},500); }
+    }
     if (url.pathname === "/dashboard-record-dates" && request.method === "GET") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
