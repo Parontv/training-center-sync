@@ -5,7 +5,7 @@ from pathlib import Path
 ROOT=Path(__file__).parents[1]
 DASH=ROOT/"dashboards"/"garmin-original-clone.json"
 MAPPING=ROOT/"dashboards"/"garmin-infinity-field-mapping-template.json"
-SCRIPT=Path(__file__).with_name("draft-infinity-dashboard.py"
+SCRIPT=Path(__file__).with_name("draft-infinity-dashboard.py")
 class RealDashboardDraftTests(unittest.TestCase):
  def test_draft_preserves_62_panel_identity_and_layout(self):
   src=json.loads(DASH.read_text(encoding="utf-8"))
