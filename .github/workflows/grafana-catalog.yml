@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - 'grafana/**'
-      - 'src/index.js'
+      - 'src/**'
   push:
     branches:
       - 'feat/grafana-automated-builder'
