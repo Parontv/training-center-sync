@@ -73,3 +73,8 @@ To safely map the original 143 queries, the live field-path audit and actual Gra
 - Draft generator now constructs encoded Worker metric URLs for verified mappings instead of leaving the endpoint URL parameterless.
 - Regression test and CI invocation added in the latest commits.
 - Live schema validation, datasource auth configuration, Infinity rendering and visual comparison still require external access. Repository-side work continues independently.
+
+
+## Query bounds configuration (2026-11-25)
+- Verified mapping draft URLs now accept mapping-specific `limit` (default 366, bounded 1-5000) and optional `from`/`to` date bounds, matching the documented Worker contract.
+- Regression coverage added for custom limit/date bounds. CI result pending.
