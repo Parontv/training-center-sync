@@ -9,7 +9,7 @@ PR #8 in this repository contains the initial read-only dashboard assets:
 - `grafana/dashboards/training-center-overview.json` (UID `training-center-overview`)
 - Grafana Cloud/Infinity datasource setup guidance.
 
-These files are in PR #8, not currently in the main branch. PR #10 must reconcile and carry these assets forward before it is considered an integration. Do not create parallel user dashboards or overwrite existing UIDs/panel IDs. The `tc-d1-catalog` generated dashboard is a temporary schema/catalog helper only.
+These assets have been reconciled into PR #10, preserving their UIDs and panel IDs. Do not create parallel user dashboards or overwrite existing UIDs/panel IDs. The `tc-d1-catalog` generated dashboard is a temporary schema/catalog helper only.
 
 ## Architecture and constraints
 - Grafana Cloud -> Infinity backend parser -> authenticated, read-only Worker API -> existing D1 `storico_garmin`.
@@ -38,4 +38,4 @@ Inventory potentially useful data: activities and activity detail, daily wellnes
 - These endpoints are not deployed; no live dashboard publishing is enabled.
 
 ## Immediate work
-Reconcile PR #8 assets into this branch, then audit the live schema and begin real panels. Do not treat the generated catalog helper as the final dashboard.
+\n1. Validate CI and static tests, including the reused dashboard integrity and reference-panel inventory.\n2. Run the authenticated live schema audit from `/run` once the branch UI is deployed.\n3. Review the private audit and verify fields, dates, types, units and coverage.\n4. Build real panels against confirmed fields only.\n5. Do not treat the generated catalog helper as the final dashboard.
