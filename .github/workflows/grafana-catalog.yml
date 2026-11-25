@@ -40,6 +40,8 @@ jobs:
         run: node grafana/test-existing-dashboards.mjs
       - name: Check dashboard-data panel selectors
         run: node grafana/test-dashboard-data-contract.mjs
+      - name: Check read-only metrics endpoint contract
+        run: node grafana/test-readonly-endpoint-contract.mjs src/index.js
       - name: Verify live audit helper safety
         run: node grafana/test-live-audit-helper.mjs
       - name: Verify browser-side schema audit
