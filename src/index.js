@@ -24,7 +24,7 @@ export default {
       }
     }
     if (url.pathname === "/run" && request.method === "GET") {
-      return new Response(`<!doctype html><html lang="it"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Center Sync</title><body style="font:16px system-ui;max-width:560px;margin:40px auto;padding:16px;background:#111;color:#eee"><h2>Training Center Sync</h2><p>Inserisci il tuo SYNC_BEARER_TOKEN configurato nei Secrets Cloudflare. Non è la chiave Garmin.</p><input id="token" type="password" autocomplete="off" placeholder="SYNC_BEARER_TOKEN" style="box-sizing:border-box;width:100%;padding:12px;margin:8px 0;background:#222;color:#fff;border:1px solid #555;border-radius:8px"><label style="display:block;margin:4px 0 12px;color:#ccc"><input id="remember" type="checkbox" checked> Ricorda il token su questo dispositivo</label><div id="feedback" role="status" style="padding:10px;margin:8px 0;background:#263238;border-radius:8px;color:#fff">Pagina caricata. Inserisci il token e scegli un’operazione.</div><button id="backfill" style="padding:12px 18px;margin-top:8px">Importa prossimo blocco (3 giorni)</button> <button id="status" style="padding:12px 18px;margin-top:8px">Stato agente</button> <button id="export" style="padding:12px 18px;margin-top:8px">Esporta tutti i dati D1</button> <button id="xlsx" style="padding:12px 18px;margin-top:8px">Genera Excel aggiornato</button><pre id="out" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#222;padding:12px;border-radius:8px"></pre><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+      return new Response(`<!doctype html><html lang="it"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Center Sync</title><body style="font:16px system-ui;max-width:560px;margin:40px auto;padding:16px;background:#111;color:#eee"><h2>Training Center Sync</h2><p>Inserisci il tuo SYNC_BEARER_TOKEN configurato nei Secrets Cloudflare. Non è la chiave Garmin.</p><input id="token" type="password" autocomplete="off" placeholder="SYNC_BEARER_TOKEN" style="box-sizing:border-box;width:100%;padding:12px;margin:8px 0;background:#222;color:#fff;border:1px solid #555;border-radius:8px"><label style="display:block;margin:4px 0 12px;color:#ccc"><input id="remember" type="checkbox" checked> Ricorda il token su questo dispositivo</label><div id="feedback" role="status" style="padding:10px;margin:8px 0;background:#263238;border-radius:8px;color:#fff">Pagina caricata. Inserisci il token e scegli un’operazione.</div><button id="backfill" style="padding:12px 18px;margin-top:8px">Importa prossimo blocco (3 giorni)</button> <button id="status" style="padding:12px 18px;margin-top:8px">Stato agente</button> <button id="export" style="padding:12px 18px;margin-top:8px">Esporta tutti i dati D1</button> <button id="xlsx" style="padding:12px 18px;margin-top:8px">Genera Excel aggiornato</button> <button id="auditGrafana" style="padding:12px 18px;margin-top:8px">Audit schema Grafana</button><pre id="out" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#222;padding:12px;border-radius:8px"></pre><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
 (function () {
   const $ = id => document.getElementById(id);
@@ -67,6 +67,25 @@ export default {
   }
   $('backfill').addEventListener('click', () => request('/backfill', 'POST'));
   $('status').addEventListener('click', () => request('/status', 'GET'));
+  $('auditGrafana').addEventListener('click', async () => {
+    const value = getToken(); if (!value) return;
+    const button = $('auditGrafana'); button.disabled = true;
+    show('Audit schema read-only in corso…');
+    try {
+      const response = await fetch('/dashboard-schema', { headers: { Authorization: 'Bearer ' + value }, cache: 'no-store' });
+      const body = await response.json();
+      if (!response.ok || !body || body.ok === false) throw new Error('HTTP ' + response.status + ': ' + JSON.stringify(body));
+      const audit = { exportedAt: new Date().toISOString(), source: 'training-center-sync /dashboard-schema', warning: 'Schema audit only. Samples may contain personal Garmin data; keep this file private.', schema: body };
+      const blob = new Blob([JSON.stringify(audit, null, 2)], { type: 'application/json' });
+      const downloadUrl = URL.createObjectURL(blob), link = document.createElement('a');
+      link.href = downloadUrl; link.download = 'training-center-live-schema-audit.json';
+      document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(downloadUrl);
+      const g = Array.isArray(body.garmin_records) ? body.garmin_records.length : 0;
+      const d = Array.isArray(body.daily_records) ? body.daily_records.length : 0;
+      show('Audit completato: ' + g + ' campi garmin_records e ' + d + ' campi daily_records. JSON scaricato. Non contiene il token.');
+    } catch (error) { show('Audit non riuscito: ' + String(error)); }
+    finally { button.disabled = false; }
+  });
   async function refreshStatus() {
     const value = token.value.trim();
     if (!value) return;
