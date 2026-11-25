@@ -1,0 +1,16 @@
+{
+  "reference": "https://github.com/arpanghosh8453/garmin-grafana",
+  "referenceDashboard": {"panels": 62, "uid": "feiibsx498gsgb", "title": "Garmin Stats"},
+  "strengthReferenceDashboard": {"panels": 22, "uid": "garmin-strength-training"},
+  "sourceOfTruth": "Cloudflare D1 storico_garmin",
+  "families": [
+    {"key":"activity_overview","priority":1,"metrics":["activity count","sport","distance","duration","calories","average heart rate","maximum heart rate"],"requires":["activities"]},
+    {"key":"daily_steps","priority":1,"metrics":["daily steps","weekly totals"],"requires":["daily_records or garmin_records coverage verified"]},
+    {"key":"recovery","priority":1,"metrics":["sleep duration and stages","sleep score","HRV","resting HR","stress"],"requires":["verified field paths and semantics"]},
+    {"key":"body","priority":2,"metrics":["weight","body composition"],"requires":["verified field paths and units"]},
+    {"key":"performance","priority":2,"metrics":["VO2 max","training load","readiness"],"requires":["verified field paths and semantics"]},
+    {"key":"activity_detail","priority":3,"metrics":["GPS","pace","speed","altitude","cadence","HR stream"],"requires":["activity_details schema and stream coverage"]},
+    {"key":"strength","priority":3,"metrics":["sets","reps","weight","volume","estimated 1RM","HR zones"],"requires":["verified strength records and fields"]}
+  ],
+  "rules":["Never infer units","Never assume a metric is populated","Do not import InfluxQL or PostgreSQL queries directly","Keep Worker endpoints read-only","Preserve existing dashboard UIDs and panel IDs"]
+}
