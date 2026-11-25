@@ -6,14 +6,14 @@ import assert from 'node:assert/strict';
 const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'tc-analyzer-'));
 try{
  const audit=path.join(tmp,'audit.json'),out=path.join(tmp,'candidates.json');
- fs.writeFileSync(audit,JSON.stringify({generatedAt:'test',garmin_records:[{dataset:'sleep',field_path:'$.sleep.duration',value_type:'real',occurrences:3,sample:'PRIVATE_SLEEP_SAMPLE'},{dataset:'misc',field_path:'$.misc.note'}],daily_records:[{dataset:'hrv',field_path:'$.hrv',value_type:'integer',occurrences:2}]}));
+ fs.writeFileSync(audit,JSON.stringify({generatedAt:'test',garmin_records:[{dataset:'sleep',field_path:'$.sleep.duration',value_type:'real',occurrences:3,sample:'PRIVATE_SLEEP_SAMPLE'},{dataset:'misc',field_path:'$.misc.note'}],daily_records:[{dataset:'hrv',field_path:'$.hrv',value_type:'integer',occurrences:2},{dataset:'stress',field_path:'$.stress.level',value_type:'text',occurrences:1}]}));
  const run=spawnSync(process.execPath,['grafana/analyze-live-schema.mjs',audit],{cwd:process.cwd(),env:{...process.env,CANDIDATES_OUTPUT:out},encoding:'utf8'});
  assert.equal(run.status,0,run.stderr||run.stdout);
  const parsed=JSON.parse(fs.readFileSync(out,'utf8'));
- assert.equal(parsed.metrics.length,2,'unmatched fields should be omitted from heuristic candidates');
+ assert.equal(parsed.metrics.length,3,'unmatched fields should be omitted from heuristic candidates');
  assert.ok(parsed.metrics.some(x=>x.source==='garmin_records'&&x.candidate_metrics.includes('sleep')));
  assert.ok(parsed.metrics.some(x=>x.source==='daily_records'&&x.candidate_metrics.includes('hrv')));
- assert.ok(parsed.warning.includes('Heuristic'));\n assert.equal(parsed.summary.totalCandidates,2);\n assert.equal(parsed.summary.numericCandidates,2);\n assert.ok(parsed.metrics.every(x=>x.verification_status==='UNVERIFIED'));\n assert.ok(parsed.metrics.every(x=>x.numeric_series_candidate&&x.review_priority==='NUMERIC_REVIEW'));\n assert.ok(parsed.metrics.every(x=>x.review_note.includes('unit')));
+ assert.ok(parsed.warning.includes('Heuristic'));\n assert.equal(parsed.summary.totalCandidates,3);\n assert.equal(parsed.summary.numericCandidates,2);\n assert.ok(parsed.metrics.every(x=>x.verification_status==='UNVERIFIED'));\n assert.ok(parsed.metrics.filter(x=>x.numeric_series_candidate).every(x=>x.review_priority==='NUMERIC_REVIEW'));\n assert.ok(parsed.metrics.some(x=>!x.numeric_series_candidate&&x.review_priority==='SEMANTIC_REVIEW'));\n assert.ok(parsed.metrics.every(x=>x.review_note.includes('unit')));
  assert.ok(!JSON.stringify(parsed).includes('PRIVATE_SLEEP_SAMPLE'),'analyzer output must omit raw samples');
  assert.ok(parsed.metrics.every(x=>!Object.hasOwn(x,'sample')&&!Object.hasOwn(x,'example')),'output must be metadata-only');
  assert.ok(!parsed.metrics.some(x=>x.dataset==='misc'),'non-metric dataset should not be classified');
