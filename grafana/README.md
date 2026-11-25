@@ -17,7 +17,7 @@ Those assets are currently part of PR #8 and must be brought forward/reconciled 
 - CI validates the manifest, analyzer safeguards, endpoints' static safeguards and generated JSON.
 - `METRICS_API_CONTRACT.md`: contract notes for read-only metric endpoints.
 
-## Generate
+## Live schema audit from the existing `/run` page\n\nAfter this branch is deployed (deployment is not done by this PR), open `/run` in the browser that already stores the bearer token and press **Audit schema Grafana**. It makes an authenticated read-only GET to `/dashboard-schema` and downloads a private JSON audit. No token copy/paste is required in the terminal. Keep the downloaded report private.\n\n## Generate
 ```bash
 node grafana/test-datasets.mjs
 node grafana/build-dashboards.mjs
