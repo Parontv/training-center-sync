@@ -56,3 +56,9 @@ Updated 25 November 2026.
 
 ## Blocker policy
 Repository work continues despite UI/schema blockers. Use code, existing dashboard evidence, exports and fixtures; isolate blocked checks; request only the smallest user intervention. Never claim UI verification or CI passing without evidence.
+
+
+## Panel implementation planning checkpoint — 25 November 2026
+- Added a deterministic, metadata-only panel implementation plan generator from the dataset manifest and reference panel inventory.
+- It groups future work into Master, Activity, Recovery, Body and Training workstreams and explicitly keeps all metric mappings UNVERIFIED until field paths, units, date semantics and coverage are confirmed.
+- This avoids generating misleading metric panels from guessed Garmin fields; the plan is an automation scaffold, not a live dashboard or schema evidence.
