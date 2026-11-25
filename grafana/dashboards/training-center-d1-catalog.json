@@ -1,0 +1,225 @@
+{
+  "id": null,
+  "uid": "tc-d1-catalog",
+  "title": "Training Center · D1 Data Catalog",
+  "tags": [
+    "training-center",
+    "garmin",
+    "d1",
+    "generated"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "15m",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Sleep · CORE",
+      "description": "duration, sleep stages, score",
+      "type": "text",
+      "options": {
+        "mode": "markdown",
+        "content": "**Status:** CORE\n\n**Dashboard:** Recovery\n\nInclude only available and sufficiently populated fields."
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 5
+      }
+    },
+    {
+      "id": 2,
+      "title": "HRV · CORE",
+      "description": "daily HRV, baseline, trend",
+      "type": "text",
+      "options": {
+        "mode": "markdown",
+        "content": "**Status:** CORE\n\n**Dashboard:** Recovery\n\n"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 5
+      }
+    },
+    {
+      "id": 3,
+      "title": "Weight · CORE",
+      "description": "weight, trend, rolling average",
+      "type": "text",
+      "options": {
+        "mode": "markdown",
+        "content": "**Status:** CORE\n\n**Dashboard:** Body\n\n"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 5,
+        "w": 12,
+        "h": 5
+      }
+    },
+    {
+      "id": 4,
+      "title": "Resting heart rate · CORE",
+      "description": "resting heart rate, trend",
+      "type": "text",
+      "options": {
+        "mode": "markdown",
+        "content": "**Status:** CORE\n\n**Dashboard:** Recovery\n\n"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 5,
+        "w": 12,
+        "h": 5
+      }
+    },
+    {
+      "id": 5,
+      "title": "Steps · CORE",
+      "description": "daily steps, weekly totals",
+      "type": "text",
+      "options": {
+        "mode": "markdown",
+        "content": "**Status:** CORE\n\n**Dashboard:** Activity\n\n"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 10,
+        "w": 12,
+        "h": 5
+      }
+    },
+    {
+      "id": 6,
+      "title": "Stress · CORE",
+      "description": "daily stress, trend",
+      "type": "text",
+      "options": {
+        "mode": "markdown",
+        "content": "**Status:** CORE\n\n**Dashboard:** Recovery\n\n"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 10,
+        "w": 12,
+        "h": 5
+      }
+    },
+    {
+      "id": 7,
+      "title": "Training load / recovery · CORE",
+      "description": "load, readiness, recovery indicators",
+      "type": "text",
+      "options": {
+        "mode": "markdown",
+        "content": "**Status:** CORE\n\n**Dashboard:** Training\n\n"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 15,
+        "w": 12,
+        "h": 5
+      }
+    },
+    {
+      "id": 8,
+      "title": "Respiration · SECONDARY",
+      "description": "sleep/day respiration",
+      "type": "text",
+      "options": {
+        "mode": "markdown",
+        "content": "**Status:** SECONDARY\n\n**Dashboard:** Recovery\n\n"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 15,
+        "w": 12,
+        "h": 5
+      }
+    },
+    {
+      "id": 9,
+      "title": "SpO2 · SECONDARY",
+      "description": "overnight/spot readings",
+      "type": "text",
+      "options": {
+        "mode": "markdown",
+        "content": "**Status:** SECONDARY\n\n**Dashboard:** Recovery\n\n"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 20,
+        "w": 12,
+        "h": 5
+      }
+    },
+    {
+      "id": 10,
+      "title": "Body composition · SECONDARY",
+      "description": "available body-composition metrics",
+      "type": "text",
+      "options": {
+        "mode": "markdown",
+        "content": "**Status:** SECONDARY\n\n**Dashboard:** Body\n\n"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 20,
+        "w": 12,
+        "h": 5
+      }
+    },
+    {
+      "id": 11,
+      "title": "Hydration · EXPERIMENTAL",
+      "description": "intake",
+      "type": "text",
+      "options": {
+        "mode": "markdown",
+        "content": "**Status:** EXPERIMENTAL\n\n**Dashboard:** Body\n\nInclude only after validating coverage and usefulness."
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 25,
+        "w": 12,
+        "h": 5
+      }
+    },
+    {
+      "id": 12,
+      "title": "Activities · CORE",
+      "description": "distance, duration, pace, heart rate, calories, sport",
+      "type": "text",
+      "options": {
+        "mode": "markdown",
+        "content": "**Status:** CORE\n\n**Dashboard:** Training\n\n"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 25,
+        "w": 12,
+        "h": 5
+      }
+    },
+    {
+      "id": 13,
+      "title": "Activity details · SECONDARY",
+      "description": "per-activity detailed streams and metrics",
+      "type": "text",
+      "options": {
+        "mode": "markdown",
+        "content": "**Status:** SECONDARY\n\n**Dashboard:** Training\n\n"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 30,
+        "w": 12,
+        "h": 5
+      }
+    }
+  ]
+}
