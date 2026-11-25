@@ -1,13 +1,15 @@
-name: Grafana dashboard catalog
+name: Grafana dashboard catalog and analytics validation
 on:
   pull_request:
     paths:
       - 'grafana/**'
+      - 'src/index.js'
   push:
     branches:
       - 'feat/grafana-automated-builder'
     paths:
       - 'grafana/**'
+      - 'src/index.js'
 permissions:
   contents: read
 jobs:
@@ -20,7 +22,11 @@ jobs:
           node-version: '20'
       - name: Validate dataset manifest
         run: node grafana/test-datasets.mjs
-      - name: Smoke-check candidate analyzer\n        run: node grafana/test-analyzer.mjs\n      - name: Generate catalog dashboard
+      - name: Smoke-check candidate analyzer
+        run: node grafana/test-analyzer.mjs
+      - name: Check field endpoint read-only safeguards
+        run: node grafana/test-field-endpoint.mjs
+      - name: Generate catalog dashboard
         run: node grafana/build-dashboards.mjs
       - name: Validate generated dashboard JSON
         run: node -e "JSON.parse(require('fs').readFileSync('grafana/dashboards/training-center-d1-catalog.json','utf8'))"
