@@ -80,3 +80,5 @@ To safely map the original 143 queries, the live field-path audit and actual Gra
 - Regression coverage added for custom limit/date bounds. CI result pending.
 
 \n## Date-bound validation hardening (2026-11-25)\n- Draft generator rejects invalid ISO calendar dates and reversed `from`/`to` ranges, keeping such mappings inert. Regression tests added; CI execution pending observation.\n
+## Date-bound validation hardening (2026-11-25)
+- Draft generator rejects invalid ISO calendar dates and reversed `from`/`to` ranges, keeping such mappings inert. Regression tests added; CI execution pending observation.
