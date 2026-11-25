@@ -331,7 +331,7 @@ if (url.pathname === "/dashboard-schema" && request.method === "GET") {
       if (!["daily_records","garmin_records"].includes(source)) return json({error:"source non valido"},400);
       if (!dataset || dataset.length > 100 || !fieldPath || fieldPath.length > 500) return json({error:"dataset e field_path obbligatori"},400);
       if (!["avg","min","max","sum"].includes(aggregation)) return json({error:"aggregazione non valida"},400);
-      if ((from && !/^/\\d/g{4}-/\\d/g{2}-/\\d/g{2}$/.test(from)) || (to && !/^/\\d/g{4}-/\\d/g{2}-/\\d/g{2}$/.test(to)) || (from && to && from > to)) return json({error:"intervallo date non valido"},400);
+      if ((from && !/^\d{4}-\d{2}-\d{2}$/.test(from)) || (to && !/^\d{4}-\d{2}-\d{2}$/.test(to)) || (from && to && from > to)) return json({error:"intervallo date non valido"},400);
       try {
         const aggSql = aggregation.toUpperCase() + "(CAST(jt.atom AS REAL))";
         const sql = "SELECT r.record_date AS date, " + aggSql + " AS value, COUNT(*) AS samples FROM " + source + " r, json_tree(r.raw_json) jt WHERE json_valid(r.raw_json) AND r.dataset=? AND r.record_date IS NOT NULL AND jt.fullkey=? AND jt.type IN ('integer','real') " + (from ? "AND r.record_date>=? " : "") + (to ? "AND r.record_date<=? " : "") + "GROUP BY r.record_date ORDER BY r.record_date ASC LIMIT ?";
