@@ -27,7 +27,7 @@ assert.ok(!raw.includes('INSERT INTO'));assert.ok(!raw.includes('UPDATE '));asse
 // Security/validation regression checks.
 assert.ok(e.includes('includes(source)'), 'source allowlist must remain');
 assert.ok(e.includes('includes(aggregation)'), 'aggregation allowlist must remain');
-assert.ok(e.includes(String.raw`!/^\d{4}-\d{2}-\d{2}$`), 'date format validation must remain');
+assert.ok(e.includes('!/^\\d{4}-\\d{2}-\\d{2}$'), 'date format validation must remain');
 assert.ok(e.includes('from > to'), 'date range order must be validated');
 assert.ok(e.includes('Math.trunc(requestedLimit)')&&e.includes('2000'), 'metrics LIMIT must be integer and capped');
 assert.ok(raw.includes('Math.trunc(requestedLimit)')&&raw.includes('5000'), 'raw LIMIT must be integer and capped');
