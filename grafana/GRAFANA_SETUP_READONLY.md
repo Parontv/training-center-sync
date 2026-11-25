@@ -46,3 +46,16 @@ Historical charts require field verification and read-only date-filtered endpoin
 - No sync/backfill operations.
 - No Worker deployment in this guide.
 - Never place tokens in dashboard JSON, panel URLs, commits, screenshots, or public links.
+
+
+## Read-only coverage endpoint (branch-only)
+
+The development branch now includes a coverage metadata endpoint:
+
+```
+GET /dashboard-field-coverage?source=daily_records&dataset=<dataset>&field_path=<exact-json-tree-path>&from=YYYY-MM-DD&to=YYYY-MM-DD
+```
+
+Use the same authenticated bearer token as the existing dashboard read-only API. This endpoint is **not deployed**. Once explicitly authorized and deployed, it can verify field type/occurrence distribution and record-date coverage without returning raw values. Date range and source are validated and query values parameterized. It is intended for a metric-by-metric audit before panel construction.
+
+The endpoint reports dataset-level records/date span and field-level type breakdown, occurrences and distinct dates containing the field. Do not interpret distinct-date counts as row counts if a dataset contains multiple records per day.
