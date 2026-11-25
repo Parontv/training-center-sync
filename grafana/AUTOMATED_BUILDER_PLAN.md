@@ -21,7 +21,7 @@ These assets have been reconciled into PR #10, preserving their UIDs and panel I
 Inventory potentially useful data: activities and activity detail, daily wellness, sleep, HRV, resting HR, weight/body composition where present, stress, respiration, pulse ox, steps, intensity minutes, training load/status/readiness/recovery. Hydration is lower priority. Assign CORE, SECONDARY, EXPERIMENTAL or OMIT based on coverage, quality, actionability, visualizability, privacy and performance.
 
 ## Phases
-1. **Dashboard reconciliation:** bring PR #8 JSON into PR #10 and retain UIDs/panel IDs; document datasource UID differences and resolve consistently.
+1. **Dashboard reconciliation (completed):** PR #8 JSON is carried into PR #10, preserving UIDs/panel IDs; datasource UID consistency is checked.
 2. **Live schema audit:** use authenticated read-only `/dashboard-schema` and keep audit artifacts private.
 3. **Field verification:** review candidate field paths, date coverage, types, missingness and semantics; units must not be guessed.
 4. **Read-only data contracts:** use bounded, parameterized, allowlisted endpoints; no user-supplied SQL; explicitly report missing data and coverage.
@@ -38,4 +38,10 @@ Inventory potentially useful data: activities and activity detail, daily wellnes
 - These endpoints are not deployed; no live dashboard publishing is enabled.
 
 ## Immediate work
-\n1. Validate CI and static tests, including the reused dashboard integrity and reference-panel inventory.\n2. Run the authenticated live schema audit from `/run` once the branch UI is deployed.\n3. Review the private audit and verify fields, dates, types, units and coverage.\n4. Build real panels against confirmed fields only.\n5. Do not treat the generated catalog helper as the final dashboard.
+
+1. CI and local static tests: pending verified execution; synthetic analyzer fixture tests are now included in CI.
+2. Configure and verify secure Bearer authentication in the Grafana Infinity datasource.
+3. Run the authenticated live schema audit from `/run` once the branch UI is deployed.
+4. Review the private audit and verify fields, dates, types, units and coverage.
+5. Build real panels against confirmed fields only.
+6. Do not treat the generated catalog helper as the final dashboard.
