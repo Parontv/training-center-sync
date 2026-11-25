@@ -59,3 +59,9 @@ To safely map the original 143 queries, the live field-path audit and actual Gra
 - Added `grafana/scripts/panel-preservation-audit.py`, which audits 62 panels, 143 semantic targets and exact key coverage in the mapping template, and inventories panel types, layout positions, transformations, datasource and options/field configuration presence.
 - Added a regression test for panel count and unique IDs.
 - The tool is intended to run against the source dashboard, semantic audit and mapping template; live query verification is still outstanding.
+
+
+## Infinity draft dashboard generator (2026-11-25)
+- Added `grafana/scripts/draft-infinity-dashboard.py`: creates a dashboard draft preserving the original panel structure and metadata, uses Infinity placeholders only for explicitly verified mappings, and marks unverified target queries as intentionally unconfigured.
+- Added two synthetic tests for preservation/unverified behavior and verified mapping scaffolding.
+- Generated output is explicitly a DRAFT, not a ready-to-import operational dashboard; Infinity request format and live paths still require validation.
