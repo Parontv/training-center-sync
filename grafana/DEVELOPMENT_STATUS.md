@@ -3,36 +3,35 @@
 Updated 25 November 2026.
 
 ## Execution checkpoint
-- **Block 0 — baseline recovery: DONE.** User screenshot confirms live Grafana access, an activity table (`query giusta`) and FC average/max-per-activity chart. These live panels must be preserved.
-- **Block 1 — repository/CI stabilization: IN PROGRESS.** Added a static dashboard-to-`/dashboard-data` selector contract test (`grafana/test-dashboard-data-contract.mjs`) and wired it into the CI workflow. CI has not yet confirmed this new test; report it as unverified until a run is inspected.
-- Independent work will continue while live schema audit or Grafana UI verification is unavailable.
+- **Block 0 — baseline recovery: DONE.** User screenshot confirms live Grafana access, an activity table and FC average/max-per-activity chart. Preserve these panels.
+- **Block 1 — repository/CI stabilization: IN PROGRESS.** Static dashboard selector contract test added and wired into CI. Latest CI confirmation is unavailable.
+- **Reference replication target: IDENTIFIED.** Inspected the public arpanghosh8453/garmin-grafana main dashboard JSON and inventoried 62 panels. Added grafana/REFERENCE_PANEL_CATALOG.md with grouped replication priorities and translation rules. Reference panels use InfluxDB; queries cannot be transplanted directly to our D1/Worker backend, but visual concepts and panel types can be adapted.
+- Continue autonomous work on independent tasks. Live schema and Grafana UI validation are distinct pending dependencies.
 
-## Live Grafana UI evidence
-- Existing Grafana instance is accessible and the existing `garmin dashboard` opens.
-- The current dashboard visibly renders an activity table and FC average/max-per-activity chart.
-- This does not establish that all PR dashboard assets are deployed, that historical metric endpoints are deployed, or that other panels render.
-- Preserve the live dashboard and existing working queries/panels. Do not start from scratch or overwrite them with the PR scaffold.
+## Live UI evidence
+- Existing Grafana instance accessible; screenshot shows activity table and FC chart rendered.
+- This does not verify all PR dashboards or historical metrics.
 
-## Branch / repository
-- PR #10 remains open, draft and mergeable; no merge performed.
-- Branch: `feat/grafana-automated-builder`.
-- Existing Master and Overview dashboard JSON assets, UIDs and panel IDs are preserved.
-- Branch contains candidate manifest, catalog helper generator, schema analyzer/audit helpers, read-only field/coverage/metrics endpoints and tests.
-- New static selector contract test added to CI workflow; validation run is pending/unverified.
-- Latest CI status cannot currently be confirmed; do not claim passing.
+## Branch / repo
+- PR #10 remains open; no merge performed.
+- Branch: feat/grafana-automated-builder.
+- Master and Overview JSON assets, UIDs and panel IDs preserved.
+- Branch includes candidate manifest, catalog helper, analyzer/audit helpers, read-only metric/coverage/field endpoints, static tests and roadmap.
+- CI status latest: unconfirmed.
+- Reference adaptation inventory commit: 1e310f466ce11af1b215ead8e42c6cfd4f628d32.
 
 ## Protected boundary
-- No production Worker/D1, Garmin sync, backfill, schedules or live publishing changes.
-- Do not invent schema paths, units or semantics.
-- Deployment or publishing requires explicit authorization.
+- No production Worker/D1, sync/backfill, schedule changes or live publishing.
+- Do not invent schema paths, units or metric semantics.
+- Deployment/publishing requires explicit authorization.
 
-## Remaining work
-1. Reconcile live activity table and FC chart with repository JSON; preserve working panels.
-2. Verify datasource authentication/query behavior and dashboard IDs/queries.
-3. Audit real schema, types, coverage, missingness and units.
-4. Build validated panels: Master, Activity, Recovery, Body, Training.
-5. Verify UI rendering, refresh and mobile layout.
-6. Document release and maintenance procedures.
+## Next actions
+1. Prioritize matching reference panels to available archive fields.
+2. Validate field paths/types/units/date coverage through private schema audit or alternative evidence.
+3. Implement Master/activity panel adaptations from confirmed mappings.
+4. Build Recovery/Sleep, Body and long-term trends with verified mappings.
+5. GPS/activity detail charts require valid activity-detail records and remain candidates until evidence exists.
+6. Verify datasource authentication, refresh and mobile rendering in Grafana UI.
 
-## Current limitation and unblock policy
-Repository development can continue, but this session lacks authenticated Grafana UI control and a private live schema audit file. Work on independent code, tests, documentation and safe scaffolding; request only the smallest user action needed for the dependent UI/audit check, then resume.
+## Blocker policy
+Repository work continues despite UI/schema blockers. Use code, existing dashboard evidence, exports and fixtures; isolate blocked checks; request only the smallest user intervention. Never claim UI verification or CI passing without evidence.
