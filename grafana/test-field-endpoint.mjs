@@ -25,6 +25,14 @@ assert.ok(raw.includes('Number.isFinite(requestedLimit)'),'raw-field limit must 
 assert.ok(!raw.includes('INSERT INTO'));assert.ok(!raw.includes('UPDATE '));assert.ok(!raw.includes('DELETE FROM'));
 
 // Security/validation regression checks.
+const dateValidation=/if \(\(from && !\/\\\\d\{4\}-\\\\d\{2\}-\\\\d\{2\}\$\/\.test\(from\)\) \|\| \(to && !\/\\\\d\{4\}-\\\\d\{2\}-\\\\d\{2\}\$\/\.test\(to\)\) \|\| \(from && to && from > to\)\)/;
+const validationLines=src.split('\\n').filter(line=>line.includes('intervallo date non valido'));
+assert.equal(validationLines.length,2,'both analytics endpoints must contain date validation');
+for(const line of validationLines){
+  assert.ok(line.includes('!/^\\\\d{4}-\\\\d{2}-\\\\d{2}$/.test(from)'), 'from date must use a correctly formed YYYY-MM-DD regex');
+  assert.ok(line.includes('!/^\\\\d{4}-\\\\d{2}-\\\\d{2}$/.test(to)'), 'to date must use a correctly formed YYYY-MM-DD regex');
+  assert.ok(!line.includes('/^/'), 'malformed regex literal must not regress');
+}
 assert.ok(e.includes('includes(source)'), 'source allowlist must remain');
 assert.ok(e.includes('includes(aggregation)'), 'aggregation allowlist must remain');
 assert.ok(e.includes('!/^\\d{4}-\\d{2}-\\d{2}$'), 'date format validation must remain');
