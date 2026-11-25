@@ -302,14 +302,13 @@ if (url.pathname === "/dashboard-schema" && request.method === "GET") {
       const fieldPath = (url.searchParams.get("field_path") || "").trim();
       const from = (url.searchParams.get("from") || "").trim();
       const to = (url.searchParams.get("to") || "").trim();
-      const requestedLimit = Number(url.searchParams.get("limit") || 1000);\n      const limit = Math.min(Math.max(Number.isFinite(requestedLimit) ? Math.trunc(requestedLimit) : 1000, 1), 5000);
+      const requestedLimit = Number(url.searchParams.get("limit") || 1000);
+      const limit = Math.min(Math.max(Number.isFinite(requestedLimit) ? Math.trunc(requestedLimit) : 1000, 1), 5000);
       if (!["daily_records","garmin_records"].includes(source)) return json({error:"source non valido"},400);
       if (!dataset || dataset.length > 100 || !fieldPath || fieldPath.length > 500) return json({error:"dataset e field_path obbligatori"},400);
       if ((from && !/^\\d{4}-\\d{2}-\\d{2}$/.test(from)) || (to && !/^\\d{4}-\\d{2}-\\d{2}$/.test(to)) || (from && to && from > to)) return json({error:"intervallo date non valido"},400);
       try {
-        const dateCol = source === "daily_records" ? "record_date" : "record_date";
-        const table = source;
-        const sql = "SELECT r.dataset, r.record_date, r.retrieved_at, jt.fullkey AS field_path, jt.type AS value_type, jt.atom AS value FROM " + table + " r, json_tree(r.raw_json) jt WHERE json_valid(r.raw_json) AND r.dataset=? AND jt.fullkey=? " + (from ? "AND r.record_date>=? " : "") + (to ? "AND r.record_date<=? " : "") + "ORDER BY r.record_date ASC, r.retrieved_at ASC LIMIT ?";
+        const sql = "SELECT r.dataset, r.record_date, r.retrieved_at, jt.fullkey AS field_path, jt.type AS value_type, jt.atom AS value FROM " + source + " r, json_tree(r.raw_json) jt WHERE json_valid(r.raw_json) AND r.dataset=? AND jt.fullkey=? " + (from ? "AND r.record_date>=? " : "") + (to ? "AND r.record_date<=? " : "") + "ORDER BY r.record_date ASC, r.retrieved_at ASC LIMIT ?";
         const params = [dataset, fieldPath];
         if (from) params.push(from);
         if (to) params.push(to);
@@ -327,7 +326,8 @@ if (url.pathname === "/dashboard-schema" && request.method === "GET") {
       const from = (url.searchParams.get("from") || "").trim();
       const to = (url.searchParams.get("to") || "").trim();
       const aggregation = (url.searchParams.get("aggregation") || "avg").trim();
-      const requestedLimit = Number(url.searchParams.get("limit") || 366);\n      const limit = Math.min(Math.max(Number.isFinite(requestedLimit) ? Math.trunc(requestedLimit) : 366, 1), 2000);
+      const requestedLimit = Number(url.searchParams.get("limit") || 366);
+      const limit = Math.min(Math.max(Number.isFinite(requestedLimit) ? Math.trunc(requestedLimit) : 366, 1), 2000);
       if (!["daily_records","garmin_records"].includes(source)) return json({error:"source non valido"},400);
       if (!dataset || dataset.length > 100 || !fieldPath || fieldPath.length > 500) return json({error:"dataset e field_path obbligatori"},400);
       if (!["avg","min","max","sum"].includes(aggregation)) return json({error:"aggregazione non valida"},400);
@@ -338,7 +338,6 @@ if (url.pathname === "/dashboard-schema" && request.method === "GET") {
         const params = [dataset,fieldPath];if(from)params.push(from);if(to)params.push(to);params.push(limit);
         const result=await env.DB.prepare(sql).bind(...params).all();
         const rows=(result.results||[]).map(row=>({date:row.date,value:row.value,samples:Number(row.samples||0)}));
-        if(aggregation==="latest")rows.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
         return json({ok:true,readOnly:true,metric:dataset,field_path:fieldPath,source,aggregation,from:from||null,to:to||null,unit:null,count:rows.length,points:rows,coverage:{numeric_points:rows.length,samples:rows.reduce((n,x)=>n+x.samples,0)},note:"Aggregazione numerica generica; unità e significato devono essere verificati."});
       }catch(error){return json({ok:false,readOnly:true,error:String(error?.message||error).slice(0,300)},500);}
     }
