@@ -7,6 +7,6 @@ assert.ok(start>=0&&end>start);
 const e=src.slice(start,end);
 assert.ok(e.includes('SYNC_BEARER_TOKEN'));assert.ok(e.includes('["daily_records","garmin_records"]'));
 assert.ok(e.includes('json_tree'));assert.ok(e.includes('.bind(...params)'));assert.ok(e.includes('LIMIT ?'));
-assert.ok(e.includes("['avg','min','max','sum','latest']")||e.includes('["avg","min","max","sum","latest"]'));
+assert.ok(e.includes("['avg','min','max','sum']")||e.includes('["avg","min","max","sum"]'));
 assert.ok(!e.includes('INSERT INTO'));assert.ok(!e.includes('UPDATE '));assert.ok(!e.includes('DELETE FROM'));
 console.log('Read-only endpoint static checks passed.');
