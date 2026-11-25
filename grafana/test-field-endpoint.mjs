@@ -1,0 +1,12 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';
+const src=fs.readFileSync('src/index.js','utf8');
+const endpoint=src.slice(src.indexOf('if (url.pathname === "/dashboard-field-values"'),src.indexOf('if (url.pathname === "/dashboard-record-dates"'));
+assert.ok(endpoint.includes('SYNC_BEARER_TOKEN'));
+assert.ok(endpoint.includes('["daily_records","garmin_records"]'));
+assert.ok(endpoint.includes('json_tree'));
+assert.ok(endpoint.includes('.bind(...params)'));
+assert.ok(endpoint.includes('LIMIT ?'));
+assert.ok(!endpoint.includes('INSERT INTO'));
+assert.ok(!endpoint.includes('UPDATE '));
+assert.ok(!endpoint.includes('DELETE FROM'));
+console.log('Read-only field endpoint static checks passed.');
