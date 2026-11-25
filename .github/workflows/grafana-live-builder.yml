@@ -1,0 +1,40 @@
+name: Grafana live dashboard builder
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/grafana-automated-builder
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Fetch live schema securely
+        env:
+          SYNC_BEARER_TOKEN: ${{ secrets.SYNC_BEARER_TOKEN }}
+          WORKER_BASE: ${{ secrets.WORKER_BASE_URL }}
+        run: |
+          test -n "$SYNC_BEARER_TOKEN"
+          BASE="${WORKER_BASE:-https://training-center-sync.listaconcerti.workers.dev}"
+          curl --fail --silent --show-error -H "Authorization: Bearer $SYNC_BEARER_TOKEN" "$BASE/dashboard-schema" -o grafana/live-schema-audit.json
+      - name: Analyze live schema and generate candidate dashboard
+        run: |
+          node grafana/analyze-live-schema.mjs grafana/live-schema-audit.json
+          node grafana/build-live-candidate-dashboard.mjs
+      - name: Run dashboard tests
+        run: |
+          node grafana/test-live-candidate-dashboard.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: garmin-live-dashboard-candidate
+          path: grafana/generated/garmin-live-candidate.json
+          retention-days: 14
