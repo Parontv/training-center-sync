@@ -41,3 +41,7 @@ Authorization: Bearer `SYNC_BEARER_TOKEN`
 
 ## Status
 Proposal only. Do not consider this endpoint implemented until code, tests and deployment are complete.
+
+
+## Implemented raw-field read endpoint
+`GET /dashboard-field-values?source=daily_records|garmin_records&dataset=<dataset>&field_path=<path>&from=<YYYY-MM-DD>&to=<YYYY-MM-DD>&limit=<1-5000>` is implemented in the PR branch. It requires bearer authentication, parameterizes dataset/field path/date bounds, restricts source tables to two known tables, and is read-only. It returns raw scalar values with dates/type and does not infer units. This endpoint is not deployed until the PR is merged and the Worker deployment is authorized.
