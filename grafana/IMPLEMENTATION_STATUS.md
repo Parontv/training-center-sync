@@ -65,3 +65,8 @@ To safely map the original 143 queries, the live field-path audit and actual Gra
 - Added `grafana/scripts/draft-infinity-dashboard.py`: creates a dashboard draft preserving the original panel structure and metadata, uses Infinity placeholders only for explicitly verified mappings, and marks unverified target queries as intentionally unconfigured.
 - Added two synthetic tests for preservation/unverified behavior and verified mapping scaffolding.
 - Generated output is explicitly a DRAFT, not a ready-to-import operational dashboard; Infinity request format and live paths still require validation.
+
+
+## CI automation added (2026-11-25)
+- Added `.github/workflows/grafana-audit.yml` on branch `feat/grafana-automated-builder` to run the synthetic test scripts, conversion integrity audit, panel-preservation audit, and guarded manifest-builder smoke check on relevant pushes/PRs and manual dispatch.
+- CI execution has not yet been observed; this commit configures the workflow, it does not claim test success. Live schema and Grafana UI gates remain outstanding.
