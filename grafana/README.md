@@ -8,7 +8,7 @@ PR #8 in this repository already contains the initial dashboard assets:
 - `grafana/dashboards/training-center-overview.json` — Garmin Overview
 - setup guidance for Grafana Cloud + Infinity
 
-Those assets are currently part of PR #8 and must be brought forward/reconciled before publishing this branch. **Do not replace them with a parallel dashboard or reset their UIDs/panel IDs.** PR #10's generated `training-center-d1-catalog.json` is an interim schema/catalog helper, not the target user dashboard.
+Those assets have been carried forward into PR #10 with their UIDs and panel IDs preserved. **Do not replace them with a parallel dashboard or reset their UIDs/panel IDs.** PR #10's generated `training-center-d1-catalog.json` is an interim schema/catalog helper, not the target user dashboard.
 
 ## Current state
 - `datasets.json`: candidate Garmin metric catalogue; actual CORE inclusion must be verified against live D1 coverage.
