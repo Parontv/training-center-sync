@@ -315,7 +315,7 @@ if (url.pathname === "/dashboard-schema" && request.method === "GET") {
       if ((from && !/^\\d{4}-\\d{2}-\\d{2}$/.test(from)) || (to && !/^\\d{4}-\\d{2}-\\d{2}$/.test(to)) || (from && to && from > to)) return json({error:"intervallo date non valido"},400);
       try {
         const aggSql = aggregation.toUpperCase() + "(CAST(jt.atom AS REAL))";
-        const sql = "SELECT r.record_date AS date, " + aggSql + " AS value, COUNT(*) AS samples FROM " + source + " r, json_tree(r.raw_json) jt WHERE json_valid(r.raw_json) AND r.dataset=? AND r.record_date IS NOT NULL AND jt.fullkey=? AND jt.type IN ('integer','real') " + (from ? "AND r.record_date>=? " : "") + (to ? "AND r.record_date<=? " : "") + "GROUP BY r.record_date ORDER BY r.record_date ASC + "LIMIT ?";
+        const sql = "SELECT r.record_date AS date, " + aggSql + " AS value, COUNT(*) AS samples FROM " + source + " r, json_tree(r.raw_json) jt WHERE json_valid(r.raw_json) AND r.dataset=? AND r.record_date IS NOT NULL AND jt.fullkey=? AND jt.type IN ('integer','real') " + (from ? "AND r.record_date>=? " : "") + (to ? "AND r.record_date<=? " : "") + "GROUP BY r.record_date ORDER BY r.record_date ASC LIMIT ?";
         const params = [dataset,fieldPath];if(from)params.push(from);if(to)params.push(to);params.push(limit);
         const result=await env.DB.prepare(sql).bind(...params).all();
         const rows=(result.results||[]).map(row=>({date:row.date,value:row.value,samples:Number(row.samples||0)}));
