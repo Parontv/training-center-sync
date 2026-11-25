@@ -3,12 +3,12 @@ import fs from 'node:fs';
 const audit=JSON.parse(fs.readFileSync('grafana/live-schema-audit.json','utf8'));
 const candidates=JSON.parse(fs.readFileSync('grafana/metric-candidates.json','utf8'));
 const numeric=(candidates.metrics||[]).filter(m=>m.numeric_series_candidate&&m.source&&m.dataset&&m.field_path);
-const panels=[];
+const base=(process.env.WORKER_BASE_URL||'https://training-center-sync.listaconcerti.workers.dev').replace(/\\/$/,'');\nconst panels=[];
 let id=1;
 for(const m of numeric.slice(0,48)){
  const title=(m.dataset+' · '+m.field_path).replace(/^\$\./,'');
  const params=new URLSearchParams({source:m.source,dataset:m.dataset,field_path:m.field_path,aggregation:'avg',limit:'366'});
- panels.push({id:id++,type:'timeseries',title,description:'AUTO-CANDIDATE: field discovered in live schema. Unit, semantic meaning and aggregation require review.',gridPos:{h:8,w:12,x:((id-2)%2)*12,y:Math.floor((id-2)/2)*8},datasource:{type:'yesoreyeram-infinity-datasource',uid:'training-center-d1'},targets:[{refId:'A',type:'json',source:'url',url:'https://training-center-sync.listaconcerti.workers.dev/dashboard-metrics?'+params.toString(),method:'GET',parser:'backend',format:'table',root_selector:'points',columns:[{selector:'date',text:'date',type:'string'},{selector:'value',text:'value',type:'number'},{selector:'samples',text:'samples',type:'number'}]}]});
+ panels.push({id:id++,type:'timeseries',title,description:'AUTO-CANDIDATE: field discovered in live schema. Unit, semantic meaning and aggregation require review.',gridPos:{h:8,w:12,x:((id-2)%2)*12,y:Math.floor((id-2)/2)*8},datasource:{type:'yesoreyeram-infinity-datasource',uid:'training-center-d1'},targets:[{refId:'A',type:'json',source:'url',url:base+'/dashboard-metrics?'+params.toString(),method:'GET',parser:'backend',format:'table',root_selector:'points',columns:[{selector:'date',text:'date',type:'string'},{selector:'value',text:'value',type:'number'},{selector:'samples',text:'samples',type:'number'}]}]});
 }
 const dash={id:null,uid:'garmin-live-candidate',title:'Garmin · Live metric candidates',tags:['garmin','generated','candidate','review-required'],schemaVersion:39,version:1,refresh:'15m',timezone:'browser',time:{from:'now-90d',to:'now'},annotations:{list:[]},panels};
 fs.mkdirSync('grafana/generated',{recursive:true});
