@@ -33,3 +33,12 @@ The Worker endpoints in this branch are read-only and are not deployed. The exis
 
 ## Superseded proposal
 The earlier metric-name/interval contract and example response in prior revisions were proposals only. They are not the implemented API shape.
+
+## Implemented in the branch: field coverage metadata
+`GET /dashboard-field-coverage?source=daily_records|garmin_records&dataset=<dataset>&field_path=<JSON fullkey>&from=<date>&to=<date>`
+
+- Authenticated, read-only endpoint with strict date validation and source allowlist.
+- Returns bounded metadata: dataset record count/date range and field occurrence/type breakdown with distinct dates containing the field.
+- Parameterized field/dataset/date values; no user SQL.
+- Coverage uses distinct record_date counts, so datasets with multiple rows per date require careful interpretation.
+- Not deployed; static tests only until authorized live verification.
