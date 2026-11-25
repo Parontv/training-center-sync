@@ -69,3 +69,9 @@ Repository work continues despite UI/schema blockers. Use code, existing dashboa
 - Reworked the panel-plan test to run the generator in a temporary directory using PANEL_PLAN_OUTPUT, preventing test side effects and checking the generated plan explicitly.
 - A previous analyzer fixture failure was also repaired; run 262 confirmed that fixture and the remaining checks passed through step 19.
 - The updated panel-plan test is awaiting CI confirmation.
+
+
+## Panel-plan CI debugging — 25 November 2026
+- The isolated test still failed: the generator was emitting a literal backslash-n after the JSON rather than a newline, invalidating JSON parsing.
+- Fixed the generator output terminator to emit a real newline; the test now runs generator output in a temporary path.
+- CI verification for this latest commit is pending.
