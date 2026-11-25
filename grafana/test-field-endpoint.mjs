@@ -40,3 +40,16 @@ assert.ok(e.includes('aggregation.toUpperCase()'), 'aggregate SQL must derive on
 assert.ok(raw.includes('source + " r, json_tree'), 'raw SQL source must derive from allowlisted source');
 
 console.log('Read-only endpoint static checks passed.');
+
+// Coverage endpoint: read-only metadata, bounded sources and date validation.
+const coverageStart=src.indexOf('if (url.pathname === "/dashboard-field-coverage"');
+const coverageEnd=src.indexOf('if (url.pathname === "/dashboard-metrics"',coverageStart);
+assert.ok(coverageStart>=0&&coverageEnd>coverageStart,'field coverage endpoint exists');
+const coverage=src.slice(coverageStart,coverageEnd);
+assert.ok(coverage.includes('SYNC_BEARER_TOKEN'));
+assert.ok(coverage.includes('["daily_records","garmin_records"]'));
+assert.ok(coverage.includes('json_tree')&&coverage.includes('COUNT(DISTINCT r.record_date)'));
+assert.ok(coverage.includes('.bind(...baseParams)')&&coverage.includes('.bind(...fieldParams)'));
+assert.ok(coverage.includes('isValidIsoDate(from)')&&coverage.includes('isValidIsoDate(to)'));
+assert.ok(!coverage.includes('INSERT INTO')&&!coverage.includes('UPDATE ')&&!coverage.includes('DELETE FROM'));
+console.log('Field coverage endpoint static safeguards passed.');
