@@ -27,3 +27,10 @@ This roadmap is intentionally schema-aware: real panels are built only after the
 
 ## Current blocker
 The live schema audit and datasource authentication have not yet been verified. Therefore this roadmap is a design plan, not a claim that the metrics exist or that charts are live.
+
+
+## Validation update (25 November 2026)
+- Latest branch commit `62c637b8e0f9a57404be6a6412a59ed137e85a6c` passed GitHub Actions validation (run 45680367109).
+- All checks completed successfully: Worker syntax, strict dates, dataset manifest, analyzer and fixtures, read-only endpoint safeguards, catalog generation/JSON, existing dashboard integrity, audit helper safeguards, browser audit safeguards, reference inventory.
+- This is static/fixture validation only. It does **not** verify live D1 field coverage, Grafana Infinity authentication, or real dashboard rendering.
+- Next gate remains the authenticated live schema audit. No deployment, merge, publishing, D1 mutation, or sync/backfill changes were made.
