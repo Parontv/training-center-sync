@@ -21,7 +21,7 @@ for(const [source,rows] of groups){
  for(const r of rows){
   const ds=r.dataset||'unknown';
   if(!datasets.has(ds))datasets.set(ds,{dataset:ds,fields:[]});
-  datasets.get(ds).fields.push({path:r.field_path||r.fullkey||r.full_key||null,type:r.type||r.value_type||null,occurrences:r.occurrences??r.count??null,recordsWithField:r.records_with_field??r.recordsWithField??null,sample:r.sample??null});
+  datasets.get(ds).fields.push({path:r.field_path||r.fullkey||r.full_key||null,type:r.value_type||r.type||null,occurrences:r.occurrences??r.count??null,recordsWithField:r.records_with_field??r.recordsWithField??null,sample:r.example??r.sample??null});
  }
  report.sources.push({source,datasets:[...datasets.values()].sort((a,b)=>a.dataset.localeCompare(b.dataset))});
 }
