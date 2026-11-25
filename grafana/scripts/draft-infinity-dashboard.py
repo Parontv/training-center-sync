@@ -25,7 +25,7 @@ def main():
   for target in panel.get("targets",[]):
    key=(panel.get("id"),target.get("ref")); m=entries.get(key)
    if m and m.get("verified") is True and m.get("fieldPath") and m.get("sourceDataset") and m.get("source") in {"daily_records","garmin_records"} and m.get("aggregation") in {"avg","min","max","sum"}:
-    params={"source":m["source"],"dataset":m["sourceDataset"],"field_path":m["fieldPath"],"aggregation":m["aggregation"],"limit":366}
+    limit=m.get("limit",366)\n    if not isinstance(limit,int) or isinstance(limit,bool) or limit<1 or limit>5000:\n     target["draftOnly"]=True; target["draftStatus"]="UNVERIFIED - invalid mapping limit"; target["query"]="UNVERIFIED"; continue\n    params={"source":m["source"],"dataset":m["sourceDataset"],"field_path":m["fieldPath"],"aggregation":m["aggregation"],"limit":limit}\n    if m.get("from"): params["from"]=m["from"]\n    if m.get("to"): params["to"]=m["to"]
     target["datasource"]={"type":"yesoreyeram-infinity-datasource","uid":"REPLACE_WITH_INFINITY_UID"}
     target["type"]="json"; target["source"]="url"
     target["url"]="REPLACE_WITH_WORKER_ORIGIN/dashboard-metrics?"+urlencode(params)
