@@ -35,6 +35,6 @@ def main():
     keys=[r["stableKey"] for r in rows]
     if len(set(keys)) != len(keys): raise SystemExit("Duplicate stable target keys")
     result={"format":"garmin-original-target-inventory-v1","panelCount":len(panels),"targetCount":len(rows),"identityRule":"panelId:targetIndex","targets":rows}
-    Path(sys.argv[3]).write_text(json.dumps(result,indent=2,ensure_ascii=False)+"\\n",encoding="utf-8")
+    Path(sys.argv[3]).write_text(json.dumps(result,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
     print(f"PASS: {len(panels)} panels, {len(rows)} targets, stable keys unique")
 if __name__=="__main__": main()
