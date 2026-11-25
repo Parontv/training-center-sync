@@ -25,6 +25,12 @@ Updated 25 November 2026.
 - Do not invent schema paths, units or metric semantics.
 - Deployment/publishing requires explicit authorization.
 
+## Latest checkpoint — read-only contract groundwork
+- Inspected Worker source routes: `/dashboard-schema`, `/dashboard-field-values`, `/dashboard-field-coverage`, `/dashboard-metrics`, `/dashboard-record-dates`, and `/dashboard-data`; all shown handlers gate with `SYNC_BEARER_TOKEN` and read from D1. Field values/audit can contain private Garmin information and must stay private.
+- Added `grafana/READ_ONLY_METRICS_CONTRACT.md` documenting endpoints, field promotion rules, Infinity datasource verification requirements and protected boundary.
+- Added `grafana/test-readonly-endpoint-contract.mjs` static route/gate and dashboard credential-safety check; wired into CI. Test execution/CI result remains unverified.
+- Live schema and coverage cannot be inspected in this chat without authenticated access to the Worker or a private audit export; no raw personal data was requested or committed.
+
 ## Next actions
 1. Prioritize matching reference panels to available archive fields.
 2. Validate field paths/types/units/date coverage through private schema audit or alternative evidence.
