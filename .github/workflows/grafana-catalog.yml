@@ -52,3 +52,5 @@ jobs:
         run: node grafana/test-schema-discovery-workflow.mjs
       - name: Verify reference panel inventory
         run: node grafana/test-reference-inventory.mjs
+      - name: Verify generated panel implementation plan
+        run: node grafana/test-panel-plan.mjs
