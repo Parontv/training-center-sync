@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+const m=JSON.parse(fs.readFileSync('grafana/datasets.json','utf8'));
+const i=JSON.parse(fs.readFileSync('grafana/mapping-inventory.json','utf8'));
+assert.ok(m.datasets.length>0);assert.equal(i.items.length,m.datasets.length);
+assert.deepEqual(i.items.map(x=>x.key),m.datasets.map(x=>x.key));
+assert.ok(i.items.every(x=>x.status==='UNVERIFIED'));
+const source=fs.readFileSync('src/index.js','utf8');
+for(const route of ['/dashboard-field-values','/dashboard-field-coverage','/dashboard-metrics'])assert.ok(source.includes(route));
+console.log('Inventory alignment and API-route presence checks passed.');
