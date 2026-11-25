@@ -26,8 +26,8 @@ assert.ok(!raw.includes('INSERT INTO'));assert.ok(!raw.includes('UPDATE '));asse
 
 // Security/validation regression checks.
 const validationLines=src.split('\n').filter(line=>line.includes('intervallo date non valido'));
-assert.equal(validationLines.length,2,'both analytics endpoints must contain date validation');
-assert.ok(validationLines.every(line=>line.includes('isValidIsoDate(from)')&&line.includes('isValidIsoDate(to)')), 'both endpoints must use strict calendar-date validation');
+assert.equal(validationLines.length,3,'all three analytics endpoints must contain date validation');
+assert.ok(validationLines.every(line=>line.includes('isValidIsoDate(from)')&&line.includes('isValidIsoDate(to)')), 'all endpoints must use strict calendar-date validation');
 assert.ok(src.includes('import { isValidIsoDate } from "./date-validation.js";'), 'Worker must use shared strict date validator');
 assert.ok(src.includes('isValidIsoDate(from)')&&src.includes('isValidIsoDate(to)'), 'Worker must call strict validator');
 
