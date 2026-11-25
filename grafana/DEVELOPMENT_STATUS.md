@@ -62,3 +62,10 @@ Repository work continues despite UI/schema blockers. Use code, existing dashboa
 - Added a deterministic, metadata-only panel implementation plan generator from the dataset manifest and reference panel inventory.
 - It groups future work into Master, Activity, Recovery, Body and Training workstreams and explicitly keeps all metric mappings UNVERIFIED until field paths, units, date semantics and coverage are confirmed.
 - This avoids generating misleading metric panels from guessed Garmin fields; the plan is an automation scaffold, not a live dashboard or schema evidence.
+
+
+## CI regression repair — 25 November 2026
+- CI run 262 showed all prior catalog, dashboard contract, endpoint safety and inventory checks passing; the panel-plan test alone failed.
+- Reworked the panel-plan test to run the generator in a temporary directory using PANEL_PLAN_OUTPUT, preventing test side effects and checking the generated plan explicitly.
+- A previous analyzer fixture failure was also repaired; run 262 confirmed that fixture and the remaining checks passed through step 19.
+- The updated panel-plan test is awaiting CI confirmation.
