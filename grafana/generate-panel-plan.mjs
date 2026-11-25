@@ -24,5 +24,5 @@ const plan={
   approval_boundary:'No dashboard publishing, Worker deployment, D1 mutation or sync schedule changes.'
 };
 const out=process.env.PANEL_PLAN_OUTPUT||'grafana/panel-implementation-plan.json';
-fs.writeFileSync(out,JSON.stringify(plan,null,2)+'\\n');
+fs.writeFileSync(out,JSON.stringify(plan,null,2)+'\n');
 console.log('Generated safe panel implementation plan: '+out);
