@@ -406,5 +406,6 @@
   "templating": {
     "list": []
   },
-  "links": []
+  "links": [],
+  "description": "Archivio attività e qualità dati. La API /dashboard-data restituisce un elenco recente limitato (500 attività); il time picker Grafana non filtra lato Worker. Per analisi storiche filtrate serve una API read-only dedicata."
 }
