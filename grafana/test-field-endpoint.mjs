@@ -25,7 +25,6 @@ assert.ok(raw.includes('Number.isFinite(requestedLimit)'),'raw-field limit must 
 assert.ok(!raw.includes('INSERT INTO'));assert.ok(!raw.includes('UPDATE '));assert.ok(!raw.includes('DELETE FROM'));
 
 // Security/validation regression checks.
-const dateValidation=/if \(\(from && !\/\\\\d\{4\}-\\\\d\{2\}-\\\\d\{2\}\$\/\.test\(from\)\) \|\| \(to && !\/\\\\d\{4\}-\\\\d\{2\}-\\\\d\{2\}\$\/\.test\(to\)\) \|\| \(from && to && from > to\)\)/;
 const validationLines=src.split('\\n').filter(line=>line.includes('intervallo date non valido'));
 assert.equal(validationLines.length,2,'both analytics endpoints must contain date validation');
 for(const line of validationLines){
