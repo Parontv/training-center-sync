@@ -1,6 +1,6 @@
 import fs from 'node:fs'; import assert from 'node:assert/strict';
-const files=['grafana/dashboards/training-center-master.json','grafana/dashboards/training-center-overview.json'];
-const expected=['training-center-master','training-center-overview'];
+const files=['grafana/dashboards/training-center-master.json','grafana/dashboards/training-center-overview.json','grafana/dashboards/training-center-activity.json'];
+const expected=['training-center-master','training-center-overview','training-center-activity'];
 const trustedBase='https://training-center-sync.listaconcerti.workers.dev/dashboard-data';
 for(let i=0;i<files.length;i++){
  const d=JSON.parse(fs.readFileSync(files[i],'utf8'));
