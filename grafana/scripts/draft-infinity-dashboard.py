@@ -52,6 +52,6 @@ def main():
     target["draftOnly"]=True; target["draftStatus"]="UNVERIFIED - query intentionally not configured"; target["query"]="UNVERIFIED"
  panel_count=len(draft.get("panels",[]))
  draft["draftConversionSummary"]={"sourcePanelCount":panel_count,"verifiedMappingsConfigured":count_verified,"mappingCount":len(entries),"warning":"Draft scaffold only; confirm endpoint, Infinity parser, units, dates and rendering before import."}
- Path(out_path).write_text(json.dumps(draft,indent=2,ensure_ascii=False)+"\\n",encoding="utf-8")
+ Path(out_path).write_text(json.dumps(draft,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
  print(f"PASS: draft generated preserving {panel_count} panels; {count_verified} verified mappings configured")
 if __name__=="__main__":main()
