@@ -319,6 +319,28 @@ if (url.pathname === "/dashboard-schema" && request.method === "GET") {
         return json({ok:true,readOnly:true,source,dataset,field_path:fieldPath,from:from||null,to:to||null,count:(result.results||[]).length,rows:result.results||[],note:"Valori raw in sola lettura; normalizzazione/unità non dedotte."});
       } catch(error) { return json({ok:false,readOnly:true,error:String(error?.message||error).slice(0,300)},500); }
     }
+    if (url.pathname === "/dashboard-field-coverage" && request.method === "GET") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== "Bearer " + expected) return json({ error: "unauthorized" }, 401);
+      const source = (url.searchParams.get("source") || "").trim();
+      const dataset = (url.searchParams.get("dataset") || "").trim();
+      const fieldPath = (url.searchParams.get("field_path") || "").trim();
+      const from = (url.searchParams.get("from") || "").trim();
+      const to = (url.searchParams.get("to") || "").trim();
+      if (!["daily_records","garmin_records"].includes(source)) return json({error:"source non valido"},400);
+      if (!dataset || dataset.length > 100 || !fieldPath || fieldPath.length > 500) return json({error:"dataset e field_path obbligatori"},400);
+      if ((from && !isValidIsoDate(from)) || (to && !isValidIsoDate(to)) || (from && to && from > to)) return json({error:"intervallo date non valido"},400);
+      try {
+        const filters = " r WHERE r.dataset=? " + (from ? "AND r.record_date>=? " : "") + (to ? "AND r.record_date<=? " : "");
+        const baseParams = [dataset]; if(from)baseParams.push(from); if(to)baseParams.push(to);
+        const totalSql = "SELECT COUNT(*) AS total_records, MIN(record_date) AS first_date, MAX(record_date) AS last_date FROM " + source + filters;
+        const total = await env.DB.prepare(totalSql).bind(...baseParams).first();
+        const fieldSql = "SELECT jt.type AS value_type, COUNT(*) AS occurrences, COUNT(DISTINCT r.record_date) AS records_with_field, MIN(r.record_date) AS first_date, MAX(r.record_date) AS last_date FROM " + source + " r, json_tree(r.raw_json) jt WHERE json_valid(r.raw_json) AND r.dataset=? AND jt.fullkey=? " + (from ? "AND r.record_date>=? " : "") + (to ? "AND r.record_date<=? " : "") + "GROUP BY jt.type ORDER BY occurrences DESC";
+        const fieldParams=[dataset,fieldPath];if(from)fieldParams.push(from);if(to)fieldParams.push(to);
+        const field=await env.DB.prepare(fieldSql).bind(...fieldParams).all();
+        return json({ok:true,readOnly:true,source,dataset,field_path:fieldPath,from:from||null,to:to||null,record_scope:{total_records:Number(total?.total_records||0),first_date:total?.first_date||null,last_date:total?.last_date||null},field_coverage:{type_breakdown:field.results||[],records_with_field:(field.results||[]).reduce((n,x)=>Math.max(n,Number(x.records_with_field||0)),0)},note:"Coverage metadata only; records_with_field is distinct record_date and may not represent unique row count when multiple records share a date."});
+      } catch(error) { return json({ok:false,readOnly:true,error:String(error?.message||error).slice(0,300)},500); }
+    }
     if (url.pathname === "/dashboard-metrics" && request.method === "GET") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== "Bearer " + expected) return json({ error: "unauthorized" }, 401);
