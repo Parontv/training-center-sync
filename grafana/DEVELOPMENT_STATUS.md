@@ -2,30 +2,32 @@
 
 Updated 25 November 2026.
 
-## Latest validation work
-- The analyzer fixture test failed in run 214 due to the output file ending in a literal `\\n` sequence rather than a newline.
-- Fixed the analyzer output newline in commit `335d75f`; the synthetic fixture test parses the generated JSON and checks that private sample values are excluded.
-- CI workflow now targets Node 24 (commit `32b1ae3`).
-- Latest push-triggered CI cannot be confirmed through the available GitHub Actions connector; do not treat this as a passing run.
+## Live Grafana UI evidence (user screenshot, 25 Nov)
+- The user's existing Grafana instance is accessible and the existing `garmin dashboard` opens.
+- The current dashboard visibly renders an activity table (panel titled `query giusta`, with activity IDs/names) and an FC average/max-per-activity chart.
+- This is real UI evidence of at least two working panels and a live data connection. It does **not** establish that all dashboards in PR #10 are deployed, that their queries match, or that historical metric endpoints are deployed.
+- Preserve this live dashboard and its existing query/panels. Do not start from scratch or overwrite it with the PR scaffold.
 
-## Confirmed
-- PR #10 is open, draft, and mergeable; no merge was performed.
-- Earlier validation run **45684081657 (run 187)** succeeded; it predates the latest analyzer changes.
-- Existing Master and Overview dashboards are retained with stable UIDs and panel IDs.
-- The reference dashboard inventory was inspected and documented as inspiration, not copied query logic.
-- Added `grafana/REFERENCE_ADAPTATION_PLAN.md` to prioritize adapting the existing dashboards using the reference concepts.
-- Read-only endpoint code and safety tests exist on the branch, but these new endpoints are not deployed.
-- No live schema audit, Infinity authentication test, or chart rendering verification has yet been completed.
+## Branch / repository status
+- PR #10 remains open, draft and mergeable; no merge was performed.
+- Branch: `feat/grafana-automated-builder`; latest known head: `9b1a73d518e8f0906ead4fdb58c67ae08ab19115`.
+- Existing Master and Overview dashboard JSON assets remain preserved with stable UIDs and panel IDs.
+- PR #10 contains a candidate dataset manifest, catalog helper generator, analyzer and private schema audit helpers, branch-only read-only field/coverage/metric endpoints, and tests.
+- The branch-only historical metrics endpoints are not deployed.
+- CI status is mixed/stale: an earlier static run passed, the analyzer newline defect was fixed in commit `335d75f`, and latest push-triggered validation cannot currently be confirmed. Do not claim latest CI passes.
+- A Cloudflare preview build failure was reported for commit `e19dbce`; it is an older build notification and must not be assumed to represent the current branch head without checking logs.
 
-## Development boundary
-The backfill/sync pipeline is out of scope and is not being modified. Production Worker/D1, schedules, deployment and Grafana publishing are not touched.
+## Confirmed development boundary
+- No production Worker/D1, Garmin sync, backfill, schedules or live publishing changes have been made by this branch work.
+- Do not invent schema paths, units or semantics.
+- Do not deploy or publish without explicit authorization.
 
-## Next sequence
-1. Obtain private live schema audit output from the deployed authenticated read-only endpoint (or after an explicitly authorized deployment of branch-only audit UI).
-2. Review coverage, field paths, JSON types, date ranges and unit semantics.
-3. Select a small set of high-value metrics first: activity date/distance/duration/HR, sleep, HRV, resting HR, weight, steps.
-4. Adapt and add panels to the existing dashboards, preserving UIDs and IDs, using the reference inventory as a visual/feature guide.
-5. Validate queries and panels in Grafana UI with secure datasource authentication.
+## Remaining work, prioritized
+1. Reconcile the working live activity table and FC chart with the repository dashboard JSON so existing work is preserved.
+2. Verify Grafana datasource authentication/query behavior and dashboard IDs/queries without replacing the live dashboard.
+3. Use the authenticated private schema audit to confirm fields, types, date coverage, missingness and units.
+4. Build validated historical panels in the existing Master dashboard first; add Recovery, Body and Activity views only when field mappings are confirmed.
+5. Verify rendering and refresh in Grafana UI.
 
-## Blocker
-The development session currently has repository access but not the Grafana UI session nor the bearer token/private audit report. Do not invent field paths or publish/deploy to bypass this blocker.
+## Current access limitation
+Repository development can continue, but this session has no authenticated Grafana UI control or private schema-audit file. The user can provide visual checks in the UI; never ask for or commit bearer tokens.
