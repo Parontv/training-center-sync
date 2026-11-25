@@ -46,7 +46,12 @@ if (!dash.__requires.some(x => x.type === 'datasource' && x.id === 'yesoreyeram-
   dash.__requires.push({ type: 'datasource', id: 'yesoreyeram-infinity-datasource', name: 'Infinity', version: '' });
 }
 if (dash.templating && Array.isArray(dash.templating.list)) {
-  dash.templating.list = dash.templating.list.filter(v => !(v.type === 'datasource' && v.pluginId === 'influxdb'));
+  dash.templating.list = dash.templating.list.filter(v => {
+    if (v.type === 'datasource' && v.pluginId === 'influxdb') return false;
+    if (v.datasource && v.datasource.type === 'influxdb') return false;
+    if (v.query && typeof v.query === 'object' && String(v.query.query || '').includes('SHOW TAG VALUES FROM')) return false;
+    return true;
+  });
 }
 
 for (const p of dash.panels || []) {
