@@ -11,6 +11,7 @@ assert.ok(manifest.datasets.every(d=>d.label&&d.dashboard&&Array.isArray(d.metri
 await import('./build-dashboards.mjs');
 const dashboard=JSON.parse(fs.readFileSync('grafana/dashboards/training-center-d1-catalog.json','utf8'));
 assert.equal(dashboard.uid,'tc-d1-catalog');
-assert.equal(dashboard.panels.length,manifest.datasets.length);
+assert.equal(dashboard.panels.length,manifest.datasets.length+1);
+assert.equal(dashboard.panels[0].title,'Data coverage not yet verified');
 assert.ok(dashboard.panels.every(p=>p.type==='text'&&p.options?.mode==='markdown'));
 console.log('Dataset manifest and generated dashboard checks passed.');
