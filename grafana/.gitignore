@@ -1,0 +1,3 @@
+# Private Garmin schema audit artifacts (may contain personal data)
+grafana/live-schema-audit.json
+grafana/metric-candidates.json
