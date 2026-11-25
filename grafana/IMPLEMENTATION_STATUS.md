@@ -47,3 +47,9 @@ To safely map the original 143 queries, the live field-path audit and actual Gra
 - `grafana/dashboards/garmin-infinity-field-mapping-template.json`: 143-target explicit mapping template, all mappings unverified by default; includes guardrails against converting unverified paths.
 - Integrity checker remains available; execution must be run in a repository checkout with the dashboard, semantic audit, and queue files.
 - No live Grafana/Worker testing was performed in this session. These commits are repository-side implementation and scaffolding, not a finished importable dashboard.
+
+
+## Guarded manifest builder (2026-11-25)
+- Added `grafana/scripts/build-verified-query-manifest.py`: emits a query manifest only for explicitly verified mappings with concrete dataset, field path, source dataset, and supported aggregation; unverified rows are skipped and duplicate keys/errors are rejected.
+- Added unit tests for skipping unverified entries, inclusion of valid verified mappings, missing field rejection, and duplicate-key rejection.
+- Local execution: all 4 tests passed. This validates the manifest builder logic only; it does not validate live Garmin schema or Grafana rendering.
