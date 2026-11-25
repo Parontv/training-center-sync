@@ -29,6 +29,7 @@ const validationLines=src.split('\n').filter(line=>line.includes('intervallo dat
 assert.equal(validationLines.length,2,'both analytics endpoints must contain date validation');
 assert.ok(validationLines.every(line=>line.includes('isValidIsoDate(from)')&&line.includes('isValidIsoDate(to)')), 'both endpoints must use strict calendar-date validation');
 assert.ok(src.includes('function isValidIsoDate(value)'), 'strict ISO calendar-date helper must exist');
+assert.ok(src.includes(String.raw`/^\\d{4}-\\d{2}-\\d{2}$/`), 'helper must use correct ISO date regex');
 assert.ok(src.includes('date.getUTCFullYear() === year')&&src.includes('date.getUTCMonth() === month - 1')&&src.includes('date.getUTCDate() === day'), 'date helper must reject impossible calendar dates');
 assert.ok(e.includes('includes(source)'), 'source allowlist must remain');
 assert.ok(e.includes('includes(aggregation)'), 'aggregation allowlist must remain');
