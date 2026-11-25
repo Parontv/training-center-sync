@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
-const input=process.argv[2]||'grafana/metric-candidates.json';\nconst candidates=JSON.parse(fs.readFileSync(input,'utf8'));\nconst preview=process.env.PREVIEW_MODE==='true';
+const input=process.argv[2]||'grafana/metric-candidates.json'; 
+const candidates=JSON.parse(fs.readFileSync(input,'utf8'));\nconst preview=process.env.PREVIEW_MODE==='true';
 const numeric=(candidates.metrics||[]).filter(m=>m.numeric_series_candidate&&m.source&&m.dataset&&m.field_path);
 const base=(process.env.WORKER_BASE_URL||'https://training-center-sync.listaconcerti.workers.dev').replace(/\\/$/,'');
 const panels=[];
