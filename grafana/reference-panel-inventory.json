@@ -1,0 +1,523 @@
+{
+  "source": "Reference panel inventory, not imported query code",
+  "repo": "https://github.com/arpanghosh8453/garmin-grafana",
+  "dashboards": [
+    {
+      "title": "Garmin Stats",
+      "uid": "feiibsx498gsgb",
+      "panels": [
+        {
+          "id": 14,
+          "title": "Intraday Health Stats",
+          "type": "row",
+          "description": ""
+        },
+        {
+          "id": 25,
+          "title": "Support Me!",
+          "type": "text",
+          "description": ""
+        },
+        {
+          "id": 15,
+          "title": "Heart Rate",
+          "type": "timeseries",
+          "description": ""
+        },
+        {
+          "id": 26,
+          "title": "Last Sync ",
+          "type": "stat",
+          "description": ""
+        },
+        {
+          "id": 21,
+          "title": "Heart Rate Distribution",
+          "type": "histogram",
+          "description": ""
+        },
+        {
+          "id": 29,
+          "title": "Stress",
+          "type": "timeseries",
+          "description": ""
+        },
+        {
+          "id": 28,
+          "title": "Today RHR",
+          "type": "gauge",
+          "description": ""
+        },
+        {
+          "id": 30,
+          "title": "Today's Steps",
+          "type": "gauge",
+          "description": ""
+        },
+        {
+          "id": 16,
+          "title": "Steps Cumulative (24h)",
+          "type": "timeseries",
+          "description": ""
+        },
+        {
+          "id": 31,
+          "title": "Today SpO2",
+          "type": "gauge",
+          "description": ""
+        },
+        {
+          "id": 68,
+          "title": "Steps Hourly (24h)",
+          "type": "state-timeline",
+          "description": ""
+        },
+        {
+          "id": 32,
+          "title": "Last Sleep Hours",
+          "type": "gauge",
+          "description": ""
+        },
+        {
+          "id": 62,
+          "title": "Breathing Rates",
+          "type": "timeseries",
+          "description": ""
+        },
+        {
+          "id": 33,
+          "title": "High Stress Duration",
+          "type": "gauge",
+          "description": ""
+        },
+        {
+          "id": 52,
+          "title": "Sleep Movement Activity",
+          "type": "timeseries",
+          "description": ""
+        },
+        {
+          "id": 36,
+          "title": "Last Sleep",
+          "type": "piechart",
+          "description": ""
+        },
+        {
+          "id": 7,
+          "title": "Sleep Intraday Stats",
+          "type": "timeseries",
+          "description": ""
+        },
+        {
+          "id": 35,
+          "title": "Today Activity",
+          "type": "piechart",
+          "description": ""
+        },
+        {
+          "id": 6,
+          "title": "Sleep Stages",
+          "type": "timeseries",
+          "description": ""
+        },
+        {
+          "id": 43,
+          "title": "Activity HR Zones (mean)",
+          "type": "piechart",
+          "description": ""
+        },
+        {
+          "id": 44,
+          "title": "Activity Calories (mean)",
+          "type": "piechart",
+          "description": ""
+        },
+        {
+          "id": 48,
+          "title": "Activity HR difference (Max-Avg)",
+          "type": "barchart",
+          "description": ""
+        },
+        {
+          "id": 53,
+          "title": "Activity Distance",
+          "type": "barchart",
+          "description": ""
+        },
+        {
+          "id": 54,
+          "title": "Activity Duration",
+          "type": "barchart",
+          "description": ""
+        },
+        {
+          "id": 42,
+          "title": "Recent Activities",
+          "type": "row",
+          "description": ""
+        },
+        {
+          "id": 50,
+          "title": "GPS Track by Velocity",
+          "type": "geomap",
+          "description": ""
+        },
+        {
+          "id": 49,
+          "title": "GPS Track by Heart Rate",
+          "type": "geomap",
+          "description": ""
+        },
+        {
+          "id": 45,
+          "title": "GPS Track Heart Rate",
+          "type": "barchart",
+          "description": ""
+        },
+        {
+          "id": 61,
+          "title": "GPS Track Cadence",
+          "type": "barchart",
+          "description": ""
+        },
+        {
+          "id": 57,
+          "title": "Distance vs HR",
+          "type": "trend",
+          "description": ""
+        },
+        {
+          "id": 55,
+          "title": "Heart Rate vs Pace",
+          "type": "xychart",
+          "description": ""
+        },
+        {
+          "id": 47,
+          "title": "GPS Track pace",
+          "type": "barchart",
+          "description": ""
+        },
+        {
+          "id": 46,
+          "title": "GPS Track Altitude",
+          "type": "barchart",
+          "description": ""
+        },
+        {
+          "id": 38,
+          "title": "Recent Activity",
+          "type": "table",
+          "description": ""
+        },
+        {
+          "id": 41,
+          "title": "Activities",
+          "type": "state-timeline",
+          "description": ""
+        },
+        {
+          "id": 9,
+          "title": "Long term visualization",
+          "type": "row",
+          "description": ""
+        },
+        {
+          "id": 59,
+          "title": "Week at a Glance",
+          "type": "table",
+          "description": ""
+        },
+        {
+          "id": 1,
+          "title": "Daily Steps",
+          "type": "barchart",
+          "description": ""
+        },
+        {
+          "id": 3,
+          "title": "Daily Distance",
+          "type": "barchart",
+          "description": ""
+        },
+        {
+          "id": 10,
+          "title": "Daily Calories",
+          "type": "barchart",
+          "description": ""
+        },
+        {
+          "id": 11,
+          "title": "Daily avg health metrics",
+          "type": "timeseries",
+          "description": ""
+        },
+        {
+          "id": 51,
+          "title": "Daily avg health metrics",
+          "type": "timeseries",
+          "description": ""
+        },
+        {
+          "id": 63,
+          "title": "Race Predictions",
+          "type": "timeseries",
+          "description": ""
+        },
+        {
+          "id": 64,
+          "title": "VO2 Max",
+          "type": "timeseries",
+          "description": ""
+        },
+        {
+          "id": 69,
+          "title": "Heatmap for GPS Activity (within selected time)",
+          "type": "geomap",
+          "description": ""
+        },
+        {
+          "id": 13,
+          "title": "Sleep Stages",
+          "type": "barchart",
+          "description": ""
+        },
+        {
+          "id": 23,
+          "title": "Avg Activity over given duration",
+          "type": "piechart",
+          "description": ""
+        },
+        {
+          "id": 12,
+          "title": "Sleep Score",
+          "type": "barchart",
+          "description": ""
+        },
+        {
+          "id": 17,
+          "title": "Daily Activity Overview",
+          "type": "barchart",
+          "description": ""
+        },
+        {
+          "id": 19,
+          "title": "Body Battery overview",
+          "type": "barchart",
+          "description": ""
+        },
+        {
+          "id": 4,
+          "title": "Daily Intensity Minutes",
+          "type": "barchart",
+          "description": ""
+        },
+        {
+          "id": 18,
+          "title": "Stress overview",
+          "type": "barchart",
+          "description": ""
+        },
+        {
+          "id": 22,
+          "title": "Average Sleep trends",
+          "type": "piechart",
+          "description": ""
+        },
+        {
+          "id": 37,
+          "title": "Body Battery Level Change",
+          "type": "barchart",
+          "description": ""
+        },
+        {
+          "id": 34,
+          "title": "Weight",
+          "type": "timeseries",
+          "description": ""
+        },
+        {
+          "id": 58,
+          "title": "HR Range (Max-Min)",
+          "type": "barchart",
+          "description": ""
+        },
+        {
+          "id": 66,
+          "title": "Month at a Glance (Daily Average)",
+          "type": "state-timeline",
+          "description": ""
+        },
+        {
+          "id": 67,
+          "title": "Month at a Glance (Intraday)",
+          "type": "state-timeline",
+          "description": ""
+        },
+        {
+          "id": 65,
+          "title": "HR Histogram Heatmap",
+          "type": "heatmap",
+          "description": ""
+        },
+        {
+          "id": 20,
+          "title": "Hourly walk heatmap",
+          "type": "marcusolsson-hourly-heatmap-panel",
+          "description": ""
+        },
+        {
+          "id": 27,
+          "title": "Sleep Regularity",
+          "type": "marcusolsson-hourly-heatmap-panel",
+          "description": ""
+        },
+        {
+          "id": 60,
+          "title": "Battery Level (Requires GarminHomeAssistant from ConnectIQ integration)",
+          "type": "timeseries",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "title": "Garmin Strength Training Dashboard",
+      "uid": "garmin-strength-training",
+      "panels": [
+        {
+          "id": 1001,
+          "title": "Overview",
+          "type": "row",
+          "description": ""
+        },
+        {
+          "id": 1002,
+          "title": "Total Volume",
+          "type": "stat",
+          "description": "Sum of Reps x Weight_kg across all sets in range (Weight_kg>0 only; excludes cardio warmups)."
+        },
+        {
+          "id": 1003,
+          "title": "Weighted Sets",
+          "type": "stat",
+          "description": "Count of sets with Weight_kg > 0 in range. This excludes bodyweight/cardio-only entries (e.g. unweighted pull-ups, ROW/INDOOR_ROW warmups) that are logged inside strength activities but carry no load — so this number is lower than the raw row count for the same range. See 'Sets Needing Classification' below for data-quality flags."
+        },
+        {
+          "id": 1004,
+          "title": "Total Reps",
+          "type": "stat",
+          "description": "Sum of reps across weighted sets in range."
+        },
+        {
+          "id": 1005,
+          "title": "Number of Workouts",
+          "type": "stat",
+          "description": "Distinct days with at least one weighted set (one row per training day)."
+        },
+        {
+          "id": 1006,
+          "title": "Avg Volume / Workout",
+          "type": "stat",
+          "description": "Mean per-workout training volume in range."
+        },
+        {
+          "id": 1007,
+          "title": "Progression & Volume",
+          "type": "row",
+          "description": ""
+        },
+        {
+          "id": 1008,
+          "title": "Estimated 1RM Progression (Epley) by Exercise",
+          "type": "timeseries",
+          "description": "Best estimated 1-rep max per exercise per workout day, using the Epley formula Weight_kg * (1 + Reps/30). Filter by $ExerciseCategory / $ExerciseLabel above. This is the single most useful panel for tracking progressive overload."
+        },
+        {
+          "id": 1009,
+          "title": "Training Volume per Workout",
+          "type": "barchart",
+          "description": "Total volume (kg) per workout day (Reps x Weight_kg, summed across all weighted sets that day)."
+        },
+        {
+          "id": 1010,
+          "title": "Personal Records (Top Set & Est. 1RM)",
+          "type": "table",
+          "description": "Heaviest single set and best estimated 1RM (Epley) per exercise in the selected range."
+        },
+        {
+          "id": 1011,
+          "title": "Exercise Balance & Workout Log",
+          "type": "row",
+          "description": ""
+        },
+        {
+          "id": 1012,
+          "title": "Volume by Category",
+          "type": "piechart",
+          "description": "Training volume (kg) split by exercise category — shows muscle-group balance."
+        },
+        {
+          "id": 1013,
+          "title": "Sets by Category",
+          "type": "barchart",
+          "description": "Number of weighted sets per exercise category — complements the volume pie (a category can have many sets but low volume, or vice versa)."
+        },
+        {
+          "id": 1014,
+          "title": "Recent Sets (Workout Detail)",
+          "type": "table",
+          "description": "Most recent individual sets: exercise, reps, weight, and volume."
+        },
+        {
+          "id": 1015,
+          "title": "Workout Summary (per session)",
+          "type": "table",
+          "description": "One row per workout day: total sets, reps, volume, and cumulative active set duration. Not filtered by exercise picker (whole-session view)."
+        },
+        {
+          "id": 1016,
+          "title": "Heart Rate & Effort",
+          "type": "row",
+          "description": ""
+        },
+        {
+          "id": 1017,
+          "title": "HR Zone Time Distribution (Strength Sessions)",
+          "type": "piechart",
+          "description": "Time spent in each heart-rate zone during strength sessions, from StrengthHRZones. ZoneNumber/ZoneLowBoundary are per-activity fields (not tags), so each zone is queried as a separate target filtered by ZoneNumber."
+        },
+        {
+          "id": 1018,
+          "title": "Time Under Tension by Exercise",
+          "type": "barchart",
+          "description": "Total accumulated active-set duration (sum of Duration_s) per exercise in the selected range."
+        },
+        {
+          "id": 1019,
+          "title": "Consistency & Data Quality",
+          "type": "row",
+          "description": ""
+        },
+        {
+          "id": 1020,
+          "title": "Workouts per Week",
+          "type": "barchart",
+          "description": "Count of training days bucketed into weekly bins. fill(0) is intentional here: a week with no workout genuinely has zero, not missing data."
+        },
+        {
+          "id": 1021,
+          "title": "Workout Calendar",
+          "type": "state-timeline",
+          "description": "One cell per calendar day: green = at least one weighted set logged that day, gray = rest day."
+        },
+        {
+          "id": 1022,
+          "title": "Sets Needing Classification (UNKNOWN)",
+          "type": "stat",
+          "description": "Sets Garmin could not classify into an exercise (ExerciseCategory=UNKNOWN). Not dropped from other panels, but flagged here — fix labels in Garmin Connect to improve categorization."
+        }
+      ]
+    }
+  ],
+  "note": "Panel inventory for adapting into verified Training Center D1 fields only."
+}
