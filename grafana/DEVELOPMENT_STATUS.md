@@ -34,12 +34,16 @@ Updated 25 November 2026.
 - CI schema discovery is designed to use the private `SYNC_BEARER_TOKEN` secret and publish only sanitized candidate metadata. It still requires repository secret configuration and a successful workflow execution.
 - Prefer validated dashboard artifacts and automated tests over manual Grafana panel editing.
 
+## Read-only query guidance
+- Added `grafana/READ_ONLY_QUERY_GUIDE.md` documenting `/dashboard-metrics`, date bounds, limits, and the need to validate field paths/units before charting.
+- `/dashboard-metrics` supports date-bounded generic numeric aggregation, but explicitly returns `unit:null`; only validated fields should be promoted to labelled trend charts.
+
 ## Next actions
 1. Verify latest CI after the recent selector-contract updates.
 2. Live-check datasource authentication and Infinity query behavior in Grafana.
 3. Use authenticated schema/coverage evidence to prioritize genuine historical panels.
-4. Add date-filtered read-only APIs only where they can be connected to Grafana's query time semantics and safely tested.
-5. Adapt reference dashboard panels gradually, starting with verified activity/archive data.
+4. Build date-filtered trend panels from confirmed fields, not guessed Garmin paths.
+5. Adapt the reference panels gradually.
 
 ## Blockers
 - Live authenticated schema and Infinity UI validation require private credentials/configuration not available in this session.
