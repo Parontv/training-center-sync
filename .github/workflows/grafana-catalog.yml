@@ -40,6 +40,10 @@ jobs:
         run: node grafana/test-existing-dashboards.mjs
       - name: Check dashboard-data panel selectors
         run: node grafana/test-dashboard-data-contract.mjs
+      - name: Build progressive Garmin Stats D1 dashboard
+        run: node grafana/build-progressive-clone.mjs
+      - name: Validate progressive clone mappings and importability
+        run: node grafana/test-progressive-clone.mjs
       - name: Check dashboard response contract
         run: node grafana/test-dashboard-response-contract.mjs
       - name: Check read-only metrics endpoint contract
