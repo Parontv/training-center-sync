@@ -15,3 +15,14 @@ Datasource setup:
 - Authorization header: Bearer token stored securely in Grafana datasource configuration, never in dashboard JSON or Git.
 
 The original overview uses the bounded `/dashboard-data` endpoint and is explicitly not full historical analytics. Next work is to extend it using verified read-only historical endpoints. Keep dashboards private and read-only. No Worker/D1 mutation or deployment is performed by this branch.
+
+## Live schema audit helper
+
+Run the audit locally when the Worker bearer token is available:
+
+```bash
+SYNC_BEARER_TOKEN='your-token' node grafana/fetch-live-schema.mjs
+node grafana/analyze-live-schema.mjs grafana/live-schema-audit.json
+```
+
+The audit JSON is private and git-ignored. Review candidate fields and units before converting them into panel queries. This helper is read-only and does not publish or deploy.
