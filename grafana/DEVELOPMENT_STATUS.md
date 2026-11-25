@@ -42,6 +42,10 @@ Updated 25 November 2026.
 - Added a privacy/trigger guard test and wired it into catalog CI. Execution remains pending CI evidence.
 - This removes recurring audit copy/paste; the one-time dependency is adding the Worker bearer credential as a GitHub Actions repository secret. No token is transferred through chat.
 
+## Dashboard/API contract checkpoint
+- Added a static contract test to verify both preserved Master/Overview dashboards target expected Worker read-only routes and their selectors match the `/dashboard-data` response roots.
+- Wired the test into the catalog CI workflow. This protects existing panels from contract drift while keeping live UI validation distinct.
+
 ## Next actions
 1. Prioritize matching reference panels to available archive fields.
 2. Validate field paths/types/units/date coverage through private schema audit or alternative evidence.
