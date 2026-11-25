@@ -9,4 +9,6 @@ for(let i=0;i<files.length;i++){
  assert.equal(new Set(ids).size,ids.length,files[i]+' unique panel IDs');
  for(const p of d.panels) for(const t of p.targets||[]){ if(t.url) assert.ok(!t.url.includes('SYNC_BEARER_TOKEN')&&!t.url.includes('Bearer '),'no token in panel URL');}
 }
-const generator=fs.readFileSync('grafana/build-dashboards.mjs','utf8');\nassert.ok(generator.includes(\"uid:'training-center-d1'\"),'generated dashboard datasource UID must match reused dashboard datasource UID');\nfor(const file of files){const dashboard=JSON.parse(fs.readFileSync(file,'utf8'));for(const panel of dashboard.panels)if(panel.datasource?.uid)assert.equal(panel.datasource.uid,'training-center-d1',file+' datasource UID consistency');}\nconsole.log('Existing dashboard asset integrity checks passed.');
+const generator=fs.readFileSync('grafana/build-dashboards.mjs','utf8');
+assert.ok(generator.includes(\"uid:'training-center-d1'\"),'generated dashboard datasource UID must match reused dashboard datasource UID');
+for(const file of files){const dashboard=JSON.parse(fs.readFileSync(file,'utf8'));for(const panel of dashboard.panels)if(panel.datasource?.uid)assert.equal(panel.datasource.uid,'training-center-d1',file+' datasource UID consistency');}\nconsole.log('Existing dashboard asset integrity checks passed.');
