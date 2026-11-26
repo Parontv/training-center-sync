@@ -1,0 +1,14 @@
+import fs from 'node:fs'; import assert from 'node:assert/strict';
+const catalog=JSON.parse(fs.readFileSync('grafana/LIVE_SCHEMA_CATALOG.json','utf8'));
+const ledger=JSON.parse(fs.readFileSync('grafana/FIELD_VALIDATION_LEDGER.json','utf8'));
+assert.equal(catalog.datasets.length,13);
+assert.equal(ledger.metrics.length,143);
+assert.equal(ledger.summary.total,143);
+assert.equal(ledger.summary.verified,0,'do not mark live fields verified without live evidence');
+assert.ok(ledger.metrics.every(x=>x.status==='CANDIDATE'));
+assert.ok(ledger.metrics.every(x=>x.stableKey===x.panelId+':'+x.targetIndex));
+assert.ok(catalog.schemaEndpoint==='/dashboard-schema');
+assert.ok(catalog.coverageEndpoints.includes('/dashboard-field-coverage'));
+assert.ok(catalog.coverageEndpoints.includes('/dashboard-field-values'));
+assert.ok(catalog.datasets.every(d=>d.status==='CANDIDATE'));
+console.log('Live schema audit ledger structure and evidence-status checks passed.');
