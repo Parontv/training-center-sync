@@ -1584,13 +1584,114 @@
         }
       },
       "pluginVersion": "12.0.1",
-      "targets": [],
+      "targets": [
+        {
+          "refId": "Deep sleep",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "training-center-d1"
+          },
+          "type": "json",
+          "source": "url",
+          "url": "https://training-center-sync.listaconcerti.workers.dev/dashboard-metrics?source=daily_records&dataset=sleep&field_path=%24.deepSleepSeconds&aggregation=sum&limit=2000",
+          "parser": "backend",
+          "format": "table",
+          "root_selector": "points",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "value",
+              "text": "Deep sleep",
+              "type": "number"
+            }
+          ]
+        },
+        {
+          "refId": "Light sleep",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "training-center-d1"
+          },
+          "type": "json",
+          "source": "url",
+          "url": "https://training-center-sync.listaconcerti.workers.dev/dashboard-metrics?source=daily_records&dataset=sleep&field_path=%24.lightSleepSeconds&aggregation=sum&limit=2000",
+          "parser": "backend",
+          "format": "table",
+          "root_selector": "points",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "value",
+              "text": "Light sleep",
+              "type": "number"
+            }
+          ]
+        },
+        {
+          "refId": "REM sleep",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "training-center-d1"
+          },
+          "type": "json",
+          "source": "url",
+          "url": "https://training-center-sync.listaconcerti.workers.dev/dashboard-metrics?source=daily_records&dataset=sleep&field_path=%24.remSleepSeconds&aggregation=sum&limit=2000",
+          "parser": "backend",
+          "format": "table",
+          "root_selector": "points",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "value",
+              "text": "REM sleep",
+              "type": "number"
+            }
+          ]
+        },
+        {
+          "refId": "Awake",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "training-center-d1"
+          },
+          "type": "json",
+          "source": "url",
+          "url": "https://training-center-sync.listaconcerti.workers.dev/dashboard-metrics?source=daily_records&dataset=sleep&field_path=%24.awakeSleepSeconds&aggregation=sum&limit=2000",
+          "parser": "backend",
+          "format": "table",
+          "root_selector": "points",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "value",
+              "text": "Awake",
+              "type": "number"
+            }
+          ]
+        }
+      ],
       "timeFrom": "24h",
       "title": "Last Sleep",
       "transparent": true,
       "type": "piechart",
       "transformations": [],
-      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified."
+      "description": "Sleep stage field candidates from D1. Duration semantics and transformation remain subject to live verification."
     },
     {
       "datasource": {
