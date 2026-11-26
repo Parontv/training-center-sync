@@ -31,3 +31,11 @@ Date: 2026-11-26
 - Added deterministic 143-target work-priority generator that separates CORE/SECONDARY/EXPERIMENTAL tiers and query complexity.
 - Added priority-plan integrity tests and wired these into CI.
 - Latest PR #10 head verified mergeable and remains draft. No Actions results returned for this newest head.
+
+
+## Mini-audit and CI failure diagnosis (2026-11-26)
+- Checked actual Actions runs for the branch head. Conversion audit, catalog validation, and field-matching validation were successful on the preceding commit.
+- The live schema discovery and snapshot-refresh workflows failed specifically because the repository Actions secret `SYNC_BEARER_TOKEN` was empty/missing; logs confirmed the failure before any Worker request.
+- Updated both workflows to skip authenticated live stages with a clear warning when the secret is absent, instead of failing unrelated CI validation. Authenticated stages are gated and private raw audit cleanup is retained.
+- Added a static regression assertion for graceful skip and secret-gated workflow steps.
+- No credential was requested or exposed. No live Worker, D1, sync, cron, or Grafana publishing action was taken.
