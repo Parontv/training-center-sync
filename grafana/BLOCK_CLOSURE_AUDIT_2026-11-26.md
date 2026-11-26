@@ -62,3 +62,13 @@ No deployment, production Worker changes, D1 mutation, Garmin sync/backfill or c
 - Added bounded retry/backoff to `fetch-live-schema.mjs` (up to 3 attempts, 15/30-second waits).
 - Added shared GitHub Actions concurrency group `garmin-live-schema-readonly` to the schema discovery and snapshot refresh workflows to serialize live schema scans.
 - No production Worker deployment or D1 mutation performed.
+
+
+## Autonomous continuation policy and load reduction
+- Live schema discovery is now manual/scheduled only (monthly); no pull-request or branch-push triggers, to avoid repeated D1 JSON scans during development.
+- Sanitized snapshot refresh is now manual/weekly; concurrent scans share the existing concurrency group.
+- Field coverage probe scaffolding remains unintegrated in full schema scans. Full scans and coverage probes must not run back-to-back without load controls.
+- Updated matcher workflow trigger safeguards to reflect manual/scheduled discovery policy.
+- Static CI failure found: the matcher test expected pull_request/push triggers. Corrected the test to assert workflow_dispatch/schedule and forbid PR/push-triggered live scans.
+- Simplified the weekly refresh workflow to remove obsolete pull-request-only artifact logic.
+- No deployment or D1/Garmin sync mutations performed.
