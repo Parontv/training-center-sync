@@ -1,0 +1,21 @@
+name: Source evidence crosswalk validation
+on:
+  pull_request:
+    paths:
+      - 'grafana/**'
+      - '.github/workflows/source-evidence-crosswalk.yml'
+  push:
+    branches:
+      - 'feat/grafana-automated-builder'
+    paths:
+      - 'grafana/**'
+      - '.github/workflows/source-evidence-crosswalk.yml'
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node grafana/test-source-evidence-crosswalk.mjs
