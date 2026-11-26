@@ -1,6 +1,16 @@
 name: Garmin schema discovery (read-only)
 
 on:
+  pull_request:
+    paths:
+      - 'grafana/**'
+      - '.github/workflows/garmin-schema-discovery.yml'
+  push:
+    branches:
+      - feat/grafana-automated-builder
+    paths:
+      - 'grafana/**'
+      - '.github/workflows/garmin-schema-discovery.yml'
   workflow_dispatch:
   schedule:
     - cron: '17 5 1 * *'
@@ -37,7 +47,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: garmin-schema-candidates
-          path: |\n            grafana/schema-candidates-sanitized.json\n            grafana/FIELD_MATCH_SUGGESTIONS.json\n            grafana/live-schema-snapshot.json
+          path: |
+            grafana/schema-candidates-sanitized.json
+            grafana/FIELD_MATCH_SUGGESTIONS.json
+            grafana/live-schema-snapshot.json
           if-no-files-found: error
           retention-days: 30
       - name: Delete private audit
