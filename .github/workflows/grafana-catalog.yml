@@ -58,6 +58,8 @@ jobs:
         run: node grafana/test-reference-inventory.mjs
       - name: Verify definitive 62-panel / 143-target master inventory
         run: node grafana/test-reference-master-inventory.mjs
+      - name: Verify source dashboard fidelity against inventories
+        run: node grafana/test-reference-fidelity-audit.mjs
       - name: Verify live schema catalog and evidence ledger
         run: node grafana/test-live-schema-catalog.mjs
       - name: Verify conversion engine input integrity
