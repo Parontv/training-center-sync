@@ -25,6 +25,10 @@ jobs:
         run: |
           if [ -z "$SYNC_BEARER_TOKEN" ]; then echo "Missing repository secret SYNC_BEARER_TOKEN"; exit 2; fi
           node grafana/fetch-live-schema.mjs
+      - name: Create sanitized live field snapshot and matching suggestions
+        run: |
+          node grafana/sanitize-live-schema-audit.mjs grafana/live-schema-audit.json
+          node grafana/suggest-live-field-matches.mjs
       - name: Generate sanitized candidate catalogue
         env:
           CANDIDATES_OUTPUT: grafana/schema-candidates-sanitized.json
