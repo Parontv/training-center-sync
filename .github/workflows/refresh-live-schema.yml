@@ -1,6 +1,10 @@
 name: Refresh sanitized D1 schema snapshot
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - grafana/fetch-sanitized-live-schema.mjs
+      - .github/workflows/refresh-live-schema.yml
   schedule:
     - cron: '17 */6 * * *'
 permissions:
@@ -11,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: feat/grafana-automated-builder
+          ref: ${{ github.event.pull_request.head.ref || 'feat/grafana-automated-builder' }}
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -20,7 +24,8 @@ jobs:
         env:
           SYNC_BEARER_TOKEN: ${{ secrets.SYNC_BEARER_TOKEN }}
           WORKER_BASE_URL: https://training-center-sync.listaconcerti.workers.dev
-      - name: Commit snapshot if changed
+      - name: Commit snapshot if changed (branch workflow only)
+        if: github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -28,3 +33,10 @@ jobs:
           if git diff --cached --quiet; then echo "No schema changes"; exit 0; fi
           git commit -m "Refresh sanitized live D1 schema snapshot"
           git push origin feat/grafana-automated-builder
+      - name: Upload sanitized schema snapshot as artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanitized-live-schema
+          path: grafana/live-schema-snapshot.json
+          retention-days: 7
