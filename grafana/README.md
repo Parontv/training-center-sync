@@ -30,14 +30,14 @@ node grafana/build-dashboards.mjs
 
 ## Next integration steps
 1. Configure and verify the authenticated Infinity datasource before expecting panels to return data.
-2. Audit live D1 schema/coverage with authenticated read-only `/dashboard-schema`.
+2. The authenticated read-only `/dashboard-schema` discovery has now been successfully run via GitHub Actions; review the sanitized artifact and use it to validate mapping candidates.
 3. Map verified field paths to normalized endpoints; avoid assumptions about units or semantics.
 4. Add real time-series panels to the existing Master dashboard, with dedicated detail dashboards only where justified.
 5. Test Infinity backend query behavior and verify dashboard JSON.
 6. Publishing remains disabled until the Grafana stack and scoped API token are explicitly verified.
 
 ## Limitations and safety
-The catalog helper is not a live metrics dashboard. Live schema audit requires the Worker bearer token; no authenticated live audit was performed by this development session. No deployment, publishing, D1 mutation, or Garmin sync change is authorized here.
+The catalog helper is not a live metrics dashboard. An authenticated live schema discovery has succeeded via GitHub Actions; sanitized metadata was generated and the private raw audit deleted. Metric semantics, units and mapping validity remain unverified. No deployment, publishing, D1 mutation, or Garmin sync change is authorized here.
 
 
 ## Fast path: first visible dashboard (manual Grafana step)
