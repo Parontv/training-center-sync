@@ -1,0 +1,39 @@
+name: Live Garmin Grafana read-only verification
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */6 * * *'
+  push:
+    branches: [feat/grafana-automated-builder]
+    paths:
+      - '.github/workflows/grafana-live-verification.yml'
+      - 'grafana/test-live-verification.mjs'
+permissions:
+  contents: read
+jobs:
+  live-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check credentials are configured
+        env:
+          GRAFANA_URL: ${{ secrets.GRAFANA_URL }}
+          GRAFANA_TOKEN: ${{ secrets.GRAFANA_TOKEN }}
+          WORKER_URL: ${{ secrets.TRAINING_CENTER_WORKER_URL }}
+          SYNC_TOKEN: ${{ secrets.SYNC_BEARER_TOKEN }}
+        run: |
+          set -eu
+          test -n "$GRAFANA_URL" || { echo "GRAFANA_URL missing"; exit 1; }
+          test -n "$GRAFANA_TOKEN" || { echo "GRAFANA_TOKEN missing"; exit 1; }
+          test -n "$WORKER_URL" || { echo "TRAINING_CENTER_WORKER_URL missing"; exit 1; }
+          test -n "$SYNC_TOKEN" || { echo "SYNC_BEARER_TOKEN missing"; exit 1; }
+      - name: Live read-only API checks
+        env:
+          GRAFANA_URL: ${{ secrets.GRAFANA_URL }}
+          GRAFANA_TOKEN: ${{ secrets.GRAFANA_TOKEN }}
+          WORKER_URL: ${{ secrets.TRAINING_CENTER_WORKER_URL }}
+          SYNC_TOKEN: ${{ secrets.SYNC_BEARER_TOKEN }}
+        run: node grafana/test-live-verification.mjs
