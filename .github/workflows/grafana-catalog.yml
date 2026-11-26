@@ -70,5 +70,7 @@ jobs:
         run: node grafana/test-conversion-engine.mjs
       - name: Verify progressive conversion phase queue
         run: node grafana/test-progressive-phase-queue.mjs
+      - name: Verify Phase 4 conversion fidelity
+        run: node grafana/test-phase4-conversion-fidelity.mjs
       - name: Verify generated panel implementation plan
         run: node grafana/test-panel-plan.mjs
