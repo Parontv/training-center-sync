@@ -10,6 +10,8 @@ on:
       - grafana/test-core-field-coverage-probe.mjs
       - grafana/CORE_METRIC_EVIDENCE_CATALOG.json
       - grafana/test-core-metric-evidence-catalog.mjs
+      - grafana/CORE_PANEL_MAPPING_REVIEW.json
+      - grafana/test-core-panel-mapping-review.mjs
       - grafana/probe-core-field-coverage.mjs
   push:
     branches:
@@ -41,3 +43,5 @@ jobs:
         run: node grafana/test-core-field-coverage-probe.mjs
       - name: Validate live-schema evidence catalog
         run: node grafana/test-core-metric-evidence-catalog.mjs
+      - name: Validate core panel mapping review
+        run: node grafana/test-core-panel-mapping-review.mjs
