@@ -29,9 +29,9 @@ This pass closes the remaining code-side work where safe and records the externa
 - Release gate **not passed**. Do not merge or publish based on static/synthetic CI alone.
 
 ## Final external prerequisites
-1. Set repository Actions secret `SYNC_BEARER_TOKEN` (the existing Worker bearer secret, entered privately in GitHub Actions Secrets; never in chat or dashboard JSON).
-2. Set repository variable `WORKER_BASE` to the Worker base URL used by discovery workflow.
-3. Run schema discovery and inspect sanitized coverage/value artifacts.
+1. GitHub Actions secret `SYNC_BEARER_TOKEN` is confirmed present and working.
+2. `WORKER_BASE` is optional for discovery: workflow falls back to the known Worker URL; no variable has been confirmed set.
+3. Retry schema discovery after D1 load subsides; inspect sanitized metadata and coverage artifacts.
 4. Configure/verify Grafana Infinity datasource in UI and run the live checklist.
 
 ## Safety boundary
@@ -54,3 +54,11 @@ No deployment, production Worker changes, D1 mutation, Garmin sync/backfill or c
 3. Run conversion generator tests and wire only mappings whose source, field path, aggregation, unit and time semantics are evidenced.
 4. Keep the 62-panel original clone and thematic dashboards intact; no duplicate dashboard rebuild.
 5. Live Grafana Infinity UI verification remains the final external gate; no publishing, deployment, D1 mutation, sync/backfill/cron changes or PR merge.
+
+
+## D1 load issue and mitigation (2026-11-26)
+- Latest authenticated discovery request returned HTTP 500 with D1 overload message: too many resources consumed within a 10-second window. Authentication succeeded; this is not a token or URL failure.
+- Likely contributing factor: full JSON-tree schema scans are expensive and can overlap across workflows. The read-only scan was not retried repeatedly to avoid adding pressure.
+- Added bounded retry/backoff to `fetch-live-schema.mjs` (up to 3 attempts, 15/30-second waits).
+- Added shared GitHub Actions concurrency group `garmin-live-schema-readonly` to the schema discovery and snapshot refresh workflows to serialize live schema scans.
+- No production Worker deployment or D1 mutation performed.
