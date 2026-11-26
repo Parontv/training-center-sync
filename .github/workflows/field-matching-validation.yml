@@ -7,6 +7,8 @@ on:
       - grafana/test-field-match-suggestions.mjs
       - grafana/build-conversion-priority-plan.mjs
       - grafana/test-conversion-priority-plan.mjs
+      - grafana/test-core-field-coverage-probe.mjs
+      - grafana/probe-core-field-coverage.mjs
   push:
     branches:
       - feat/grafana-automated-builder
@@ -33,3 +35,5 @@ jobs:
         run: node grafana/build-conversion-priority-plan.mjs
       - name: Validate priority plan
         run: node grafana/test-conversion-priority-plan.mjs
+      - name: Validate read-only coverage probe safeguards
+        run: node grafana/test-core-field-coverage-probe.mjs
