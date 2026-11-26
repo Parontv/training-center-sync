@@ -9,7 +9,7 @@ const token=process.env.SYNC_BEARER_TOKEN;
 if(!token){console.error('Missing SYNC_BEARER_TOKEN environment variable.');process.exit(2);}
 const base=(process.env.WORKER_BASE||'https://training-center-sync.listaconcerti.workers.dev').replace(/\/$/,'');
 const response=await fetch(base+'/dashboard-schema',{headers:{Authorization:'Bearer '+token},cache:'no-store'});
-if(!response.ok){console.error('Schema endpoint returned HTTP '+response.status);process.exit(1);}
+if(!response.ok){const errorBody=await response.json().catch(()=>null);const reason=String(errorBody?.error||errorBody?.message||'no structured error').slice(0,200);console.error('Schema endpoint returned HTTP '+response.status+' ('+reason+')');process.exit(1);}
 const body=await response.json();
 if(!body||body.ok===false){console.error('Schema response was not successful.');process.exit(1);}
 const out='grafana/live-schema-audit.json';
