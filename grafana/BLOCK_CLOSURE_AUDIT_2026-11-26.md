@@ -72,3 +72,14 @@ No deployment, production Worker changes, D1 mutation, Garmin sync/backfill or c
 - Static CI failure found: the matcher test expected pull_request/push triggers. Corrected the test to assert workflow_dispatch/schedule and forbid PR/push-triggered live scans.
 - Simplified the weekly refresh workflow to remove obsolete pull-request-only artifact logic.
 - No deployment or D1/Garmin sync mutations performed.
+
+
+## Latest continuation (2026-11-26)
+- Downloaded and inspected the sanitized schema discovery artifact from run 45883431337; no private raw record values were accessed.
+- Confirmed field existence and metadata coverage for the CORE candidate fields in steps, daily summaries, sleep, stress, resting HR, weight/fitness and related metrics. Schema coverage alone is not semantic verification.
+- Added `grafana/CORE_METRIC_EVIDENCE_CATALOG.json`: conservative evidence inventory with source candidate, dataset, field path, type and field presence counts; all statuses explicitly remain `SCHEMA_CONFIRMED_CANDIDATE_NOT_VERIFIED`.
+- Added `grafana/CORE_PANEL_MAPPING_REVIEW.json`: candidate review for selected original Garmin Stats panel targets; all remain `REVIEW_CANDIDATE`, none are enabled in the conversion ledger.
+- Added CI guardrail scripts for both catalog and mapping review; updated the field-matching workflow to run these tests.
+- Removed an unintegrated field-coverage probe scaffold because it was not correctly wired to the endpoint response and would risk unnecessary D1 load; no probe runs were performed.
+- A prior field-matching CI run failed only because its test expected PR/push live-schema triggers, which were intentionally removed to reduce D1 load. The assertion was corrected to require manual/scheduled discovery. CI for the newest commits has not yet been observed, so those additions are pending execution verification.
+- Current external gates: actual endpoint sample/query verification for candidate metrics, authorized Worker deployment if needed, secure Grafana Infinity datasource validation and rendered dashboard comparison. No deployment or publishing performed.
