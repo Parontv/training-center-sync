@@ -60,5 +60,7 @@ jobs:
         run: node grafana/test-reference-master-inventory.mjs
       - name: Verify live schema catalog and evidence ledger
         run: node grafana/test-live-schema-catalog.mjs
+      - name: Verify conversion engine input integrity
+        run: node grafana/test-conversion-engine.mjs
       - name: Verify generated panel implementation plan
         run: node grafana/test-panel-plan.mjs
