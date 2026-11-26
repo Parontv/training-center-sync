@@ -2,6 +2,10 @@ name: Grafana API smoke test
 
 on:
   workflow_dispatch:
+  push:
+    branches: [feat/grafana-automated-builder]
+    paths:
+      - '.github/workflows/grafana-api-smoke-test.yml'
 
 permissions:
   contents: read
