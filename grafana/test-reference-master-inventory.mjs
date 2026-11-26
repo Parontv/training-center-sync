@@ -1,0 +1,18 @@
+import fs from 'node:fs'; import assert from 'node:assert/strict';
+const inv=JSON.parse(fs.readFileSync('grafana/REFERENCE_MASTER_INVENTORY.json','utf8'));
+assert.equal(inv.panelCount,62,'expected source panel count');
+assert.equal(inv.targetCount,143,'expected source target count');
+assert.equal(inv.panels.length,62,'panel catalog length');
+assert.equal(inv.targets.length,143,'target catalog length');
+assert.equal(inv.sourceUid,'feiibsx498gsgb','preserve source UID');
+assert.equal(inv.stableIdentityRule,'panelId + targetIndex; normalized refs are only supplemental');
+const panelIds=inv.panels.map(p=>p.id);
+assert.equal(new Set(panelIds).size,62,'panel IDs must be unique');
+const keys=inv.targets.map(t=>t.stableKey);
+assert.equal(new Set(keys).size,143,'target stable keys must be unique');
+assert.ok(inv.targets.every(t=>t.stableKey===t.panelId+':'+t.targetIndex),'stable key consistency');
+assert.ok(inv.targets.every(t=>['A','B','C','D'].includes(t.classification)),'valid classifications');
+const sum=Object.values(inv.classificationCounts).reduce((a,b)=>a+b,0);
+assert.equal(sum,143,'classification counts sum to target count');
+assert.ok(inv.targets.every(t=>t.legacyQuery&&typeof t.legacyQuery==='object'));
+console.log('Definitive reference master inventory checks passed.');
