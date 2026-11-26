@@ -5,6 +5,7 @@ assert.ok(w.includes('secrets.SYNC_BEARER_TOKEN'),'token must be sourced from Ac
 assert.ok(w.includes('fetch-live-schema.mjs'));assert.ok(w.includes('analyze-live-schema.mjs'));assert.ok(w.includes('sanitize-live-schema-audit.mjs'));assert.ok(w.includes('suggest-live-field-matches.mjs'),'live field suggestion engine should run from audit');
 assert.ok(w.includes('schema-candidates-sanitized.json'),'only sanitized metadata should be uploaded');
 assert.ok(w.includes('rm -f grafana/live-schema-audit.json'),'private raw audit should be deleted');
-assert.ok(w.includes('::warning::Live schema audit skipped'),'missing secret should skip gracefully, not fail CI');\nassert.ok(w.includes("if: env.SYNC_BEARER_TOKEN != ''"),'authenticated stages should be gated on secret availability');
-assert.ok(!w.includes('live-schema-audit.json\n          if-no-files-found'),'raw audit must not be artifact');
+assert.ok(w.includes('::warning::Live schema audit skipped'),'missing secret should skip gracefully, not fail CI');
+assert.ok(w.includes("if: env.SYNC_BEARER_TOKEN != ''"),'authenticated stages should be gated on secret availability');
+assert.ok(!w.includes('path: grafana/live-schema-audit.json'),'raw audit must not be artifact');
 console.log('Automated schema discovery workflow safety check passed.');
