@@ -11,8 +11,10 @@ assert.ok(sanitizer.includes('field_path')&&!sanitizer.includes('examples'),'sna
 assert.ok(workflow.includes('suggest-live-field-matches.mjs'));
 assert.ok(workflow.includes('SYNC_BEARER_TOKEN'));
 assert.ok(workflow.includes('grafana/FIELD_MATCH_SUGGESTIONS.json'));
-assert.ok(workflow.includes('pull_request'));
-assert.ok(workflow.includes('push'));
+assert.ok(workflow.includes('workflow_dispatch'));
+assert.ok(workflow.includes('schedule'));
+assert.ok(!workflow.includes('pull_request'),'live schema scans should not run automatically on pull requests');
+assert.ok(!workflow.includes('push'),'live schema scans should not run on branch pushes');
 // Synthetic integration test: exercise the matcher without any live or private data.
 const snapshotPath='grafana/live-schema-snapshot.json',outputPath='grafana/FIELD_MATCH_SUGGESTIONS.json';
 const snapshot={generatedAt:'fixture',garmin_records:[{dataset:'daily',field_path:'steps.total',value_type:'integer',occurrences:3,records_with_field:3},{dataset:'daily',field_path:'heart_rate.resting',value_type:'integer',occurrences:2,records_with_field:2}],daily_records:[]};
