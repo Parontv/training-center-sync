@@ -37,7 +37,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: garmin-schema-candidates
-          path: grafana/schema-candidates-sanitized.json
+          path: |\n            grafana/schema-candidates-sanitized.json\n            grafana/FIELD_MATCH_SUGGESTIONS.json\n            grafana/live-schema-snapshot.json
           if-no-files-found: error
           retention-days: 30
       - name: Delete private audit
