@@ -18,7 +18,7 @@ try{
  if(dash){const detail=await req(g+'/api/dashboards/uid/lirklwv',gh);const panels=detail.data?.dashboard?.panels;add('Dashboard panel structure',detail.status===200&&Array.isArray(panels)?'PASS':'FAIL',Array.isArray(panels)?panels.length+' panels (current live dashboard; not source clone)':'HTTP '+detail.status);}
  const health=await req(w+'/health',{});add('Worker health',health.status===200&&health.data?.storage?'PASS':'FAIL','HTTP '+health.status+' '+JSON.stringify(health.data).slice(0,180));
  // The schema endpoint can be heavy; avoid full scan. Test compact field coverage on a deliberately small date range via API, without logging sample values.
- const schema=await req(w+'/dashboard-schema',wh);add('Worker schema endpoint',schema.status===200&&schema.data?.ok?'PASS':'FAIL','HTTP '+schema.status+'; field catalog rows '+(schema.data?.totals?JSON.stringify(schema.data.totals):'n/a'));
+ const caps=await req(w+'/analytics-capabilities',wh);add('D1 JSON capabilities',caps.status===200&&caps.data?.ok?'PASS':'FAIL','HTTP '+caps.status+'; SQLite JSON functions validated on sample only');
 }catch(e){add('Live checks execution','FAIL',String(e).slice(0,300));}
 emit();
 function emit(){fs.mkdirSync('evidence',{recursive:true});fs.writeFileSync('evidence/live-verification-report.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));}
