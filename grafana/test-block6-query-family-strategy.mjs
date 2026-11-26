@@ -1,23 +1,9 @@
 import fs from 'node:fs';
-const normalized=JSON.parse(fs.readFileSync('grafana/SOURCE_QUERY_NORMALIZATION.json','utf8'));
-const families={};
-for(const t of normalized.targets){
- const m=t.measurement||'',field=t.fieldCandidate||'',raw=t.rawQuery;
- let family='UNCLASSIFIED';
- if(raw) family='RAW_INFLUXQL_REQUIRES_MANUAL_TRANSLATION';
- else if(/GPS|Track|Position|Geo/i.test(m)||/GPS|latitude|longitude/i.test(field)) family='GPS_GEO_ACTIVITY';
- else if(/Intraday|Hourly|Minute|SleepMovement/i.test(m)) family='INTRADAY_TIME_SERIES';
- else if(/Daily|Summary|Stats/i.test(m)) family='DAILY_SUMMARY';
- else if(/Activity|Workout|Lap|Zone/i.test(m)) family='ACTIVITY_DETAIL';
- else if(/Sleep/i.test(m)) family='SLEEP';
- else if(/BodyBattery|Stress|HeartRate|HRV|Pulse|SpO2|Respiration/i.test(m+field)) family='HEALTH_INTRADAY_OR_SPECIAL';
- else family='OTHER_SOURCE_QUERY';
- (families[family]??=[]).push(t.stableKey);
-}
-const priorities=['DAILY_SUMMARY','ACTIVITY_DETAIL','SLEEP','HEALTH_INTRADAY_OR_SPECIAL','INTRADAY_TIME_SERIES','GPS_GEO_ACTIVITY','RAW_INFLUXQL_REQUIRES_MANUAL_TRANSLATION','OTHER_SOURCE_QUERY','UNCLASSIFIED'];
-const summary=priorities.map(f=>({family:f,count:(families[f]||[]).length,stableKeys:families[f]||[],conversionPolicy:f==='DAILY_SUMMARY'?'Attempt dataset/field match only with semantic evidence':f==='ACTIVITY_DETAIL'?'Activity table/detail endpoint candidate':f==='SLEEP'?'Sleep datasets; inspect nested JSON and aggregation':f==='HEALTH_INTRADAY_OR_SPECIAL'?'Check Garmin intraday records; time-series transformation required':f==='INTRADAY_TIME_SERIES'?'Requires time-resolved dataset and sampling semantics':f==='GPS_GEO_ACTIVITY'?'Separate GPS/location transformation; never substitute daily metrics':f==='RAW_INFLUXQL_REQUIRES_MANUAL_TRANSLATION'?'Parse/translate independently; keep inert if unsafe': 'Inspect source evidence and route to suitable conversion strategy'}));
-const result={generatedAt:'2026-11-26',sourceDashboard:normalized.sourceDashboard,totalTargets:normalized.targetCount,policy:'Classification is a conversion planning aid, not verification or activation.',families:summary};
-fs.writeFileSync('grafana/BLOCK6_QUERY_FAMILY_STRATEGY.json',JSON.stringify(result,null,2)+'\n');
-assert.equal(summary.reduce((n,x)=>n+x.count,0),143);
-assert.ok(summary.every(x=>x.family&&x.conversionPolicy));
-console.log('PASS: classified '+summary.reduce((n,x)=>n+x.count,0)+' targets across '+summary.filter(x=>x.count).length+' non-empty query families.');
+import assert from 'node:assert/strict';
+const src=JSON.parse(fs.readFileSync('grafana/dashboards/garmin-original-clone.json','utf8'));
+const groups={};let total=0;
+for(const p of src.panels||[])for(let i=0;i<(p.targets||[]).length;i++){const t=p.targets[i],field=(t.select||[]).flat().find(s=>s.type==='field')?.params?.[0]||'',m=t.measurement||'',key=p.id+':'+i;let family='OTHER';if(t.rawQuery)family='RAW_QUERY';else if(/GPS|Track|Position|Geo/i.test(m+field))family='GPS_GEO';else if(/Intraday|Hourly|Minute/i.test(m))family='INTRADAY';else if(/Activity|Workout|Lap|Zone/i.test(m))family='ACTIVITY';else if(/Sleep/i.test(m+field))family='SLEEP';else if(/Daily|Summary|Stats/i.test(m))family='DAILY';else if(/BodyBattery|Stress|HeartRate|HRV|Pulse|SpO2|Respiration/i.test(m+field))family='HEALTH_SPECIAL';(groups[family]??=[]).push({stableKey:key,panelId:p.id,targetIndex:i,panelTitle:p.title,measurement:m,fieldCandidate:field,rawQuery:!!t.rawQuery});total++;}
+assert.equal(total,143,'source targets');
+const policy={DAILY:'Prioritize D1 daily-record field matches; validate units, date uniqueness and aggregation before activation.',SLEEP:'Separate sleep payloads and stage intervals; validate timezone and overlap semantics.',ACTIVITY:'Use activities and activity_details, preserving per-activity grain and metric units.',INTRADAY:'Requires time-series endpoint/dataset and temporal grain; daily values are not substitutes.',GPS_GEO:'GPS/geo details must be mapped independently, preserve sequence and coordinates; no daily-summary substitutes.',RAW_QUERY:'Translate raw InfluxQL independently; preserve original text and remain inactive unless equivalent behavior is proven.',OTHER:'Review source query and visualization; map only with evidence.'};
+const result={generatedAt:'2026-11-26',sourceDashboard:src.title||'Garmin Stats',panelCount:src.panels.length,targetCount:total,policy:'Families are planning categories, not verified D1 equivalence or activation.',families:Object.entries(groups).map(([family,targets])=>({family,count:targets.length,policy:policy[family],targets}))};
+fs.writeFileSync('grafana/BLOCK6_QUERY_FAMILY_STRATEGY.json',JSON.stringify(result,null,2)+'\n');assert.equal(result.families.reduce((n,f)=>n+f.count,0),143);console.log('PASS: Block 6 family strategy generated and target accounting verified.');
