@@ -533,20 +533,46 @@
         }
       },
       "pluginVersion": "12.0.1",
-      "targets": [],
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "training-center-d1"
+          },
+          "type": "json",
+          "source": "url",
+          "url": "https://training-center-sync.listaconcerti.workers.dev/dashboard-metrics?source=daily_records&dataset=stress&field_path=%24.values.overallStressLevel&aggregation=avg&limit=2000",
+          "parser": "backend",
+          "format": "table",
+          "root_selector": "points",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "value",
+              "text": "stress",
+              "type": "number"
+            }
+          ]
+        }
+      ],
       "timeFrom": "24h",
       "title": "Stress",
       "transformations": [],
       "transparent": true,
       "type": "timeseries",
-      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified."
+      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending."
     },
     {
       "datasource": {
         "type": "yesoreyeram-infinity-datasource",
         "uid": "training-center-d1"
       },
-      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified.",
+      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -604,7 +630,33 @@
         "text": {}
       },
       "pluginVersion": "12.0.1",
-      "targets": [],
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "training-center-d1"
+          },
+          "type": "json",
+          "source": "url",
+          "url": "https://training-center-sync.listaconcerti.workers.dev/dashboard-metrics?source=daily_records&dataset=daily_heart_rate&field_path=%24.restingHeartRate&aggregation=avg&limit=2000",
+          "parser": "backend",
+          "format": "table",
+          "root_selector": "points",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "value",
+              "text": "daily_heart_rate",
+              "type": "number"
+            }
+          ]
+        }
+      ],
       "title": "Today RHR",
       "transformations": [],
       "transparent": true,
@@ -615,7 +667,7 @@
         "type": "yesoreyeram-infinity-datasource",
         "uid": "training-center-d1"
       },
-      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified.",
+      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -673,7 +725,33 @@
         "text": {}
       },
       "pluginVersion": "12.0.1",
-      "targets": [],
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "training-center-d1"
+          },
+          "type": "json",
+          "source": "url",
+          "url": "https://training-center-sync.listaconcerti.workers.dev/dashboard-metrics?source=daily_records&dataset=steps&field_path=%24.totalSteps&aggregation=sum&limit=2000",
+          "parser": "backend",
+          "format": "table",
+          "root_selector": "points",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "value",
+              "text": "steps",
+              "type": "number"
+            }
+          ]
+        }
+      ],
       "title": "Today's Steps",
       "transformations": [],
       "transparent": true,
@@ -776,20 +854,46 @@
         }
       },
       "pluginVersion": "12.0.1",
-      "targets": [],
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "training-center-d1"
+          },
+          "type": "json",
+          "source": "url",
+          "url": "https://training-center-sync.listaconcerti.workers.dev/dashboard-metrics?source=daily_records&dataset=daily_summaries&field_path=%24.movement.steps.value&aggregation=sum&limit=2000",
+          "parser": "backend",
+          "format": "table",
+          "root_selector": "points",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "value",
+              "text": "daily_summaries",
+              "type": "number"
+            }
+          ]
+        }
+      ],
       "timeFrom": "24h",
       "title": "Steps Cumulative (24h)",
       "transformations": [],
       "transparent": true,
       "type": "timeseries",
-      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified."
+      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending."
     },
     {
       "datasource": {
         "type": "yesoreyeram-infinity-datasource",
         "uid": "training-center-d1"
       },
-      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified.",
+      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -847,7 +951,33 @@
         "text": {}
       },
       "pluginVersion": "12.0.1",
-      "targets": [],
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "training-center-d1"
+          },
+          "type": "json",
+          "source": "url",
+          "url": "https://training-center-sync.listaconcerti.workers.dev/dashboard-metrics?source=daily_records&dataset=spo2_acclimation&field_path=%24.averageSpO2&aggregation=avg&limit=2000",
+          "parser": "backend",
+          "format": "table",
+          "root_selector": "points",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "value",
+              "text": "spo2_acclimation",
+              "type": "number"
+            }
+          ]
+        }
+      ],
       "title": "Today SpO2",
       "transformations": [],
       "transparent": true,
@@ -988,13 +1118,39 @@
         "sizing": "auto"
       },
       "pluginVersion": "12.0.1",
-      "targets": [],
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "training-center-d1"
+          },
+          "type": "json",
+          "source": "url",
+          "url": "https://training-center-sync.listaconcerti.workers.dev/dashboard-metrics?source=daily_records&dataset=sleep&field_path=%24.sleepTimeSeconds&aggregation=sum&limit=2000",
+          "parser": "backend",
+          "format": "table",
+          "root_selector": "points",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "value",
+              "text": "sleep",
+              "type": "number"
+            }
+          ]
+        }
+      ],
       "timeFrom": "24h",
       "title": "Last Sleep Hours",
       "transparent": true,
       "type": "gauge",
       "transformations": [],
-      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified."
+      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending."
     },
     {
       "datasource": {
@@ -1170,12 +1326,38 @@
         "sizing": "auto"
       },
       "pluginVersion": "12.0.1",
-      "targets": [],
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "training-center-d1"
+          },
+          "type": "json",
+          "source": "url",
+          "url": "https://training-center-sync.listaconcerti.workers.dev/dashboard-metrics?source=daily_records&dataset=daily_summaries&field_path=%24.stress.highStressDurationInMillis&aggregation=sum&limit=2000",
+          "parser": "backend",
+          "format": "table",
+          "root_selector": "points",
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "value",
+              "text": "daily_summaries",
+              "type": "number"
+            }
+          ]
+        }
+      ],
       "title": "High Stress Duration",
       "transparent": true,
       "type": "gauge",
       "transformations": [],
-      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified."
+      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending."
     },
     {
       "datasource": {
