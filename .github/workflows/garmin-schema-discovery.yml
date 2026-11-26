@@ -1,16 +1,6 @@
 name: Garmin schema discovery (read-only)
 
 on:
-  pull_request:
-    paths:
-      - 'grafana/**'
-      - '.github/workflows/garmin-schema-discovery.yml'
-  push:
-    branches:
-      - feat/grafana-automated-builder
-    paths:
-      - 'grafana/**'
-      - '.github/workflows/garmin-schema-discovery.yml'
   workflow_dispatch:
   schedule:
     - cron: '17 5 1 * *'
