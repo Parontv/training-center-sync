@@ -1,0 +1,5877 @@
+{
+  "generated": "2026-11-26",
+  "dashboard": "Garmin Stats",
+  "panels": 62,
+  "targets": [
+    {
+      "stableKey": "15:0",
+      "panelId": 15,
+      "panelTitle": "Heart Rate",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "HeartRateIntraday",
+        "field": "HeartRate",
+        "alias": "Heart Rate",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "HeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "2m"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "26:0",
+      "panelId": 26,
+      "panelTitle": "Last Sync ",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "HeartRateIntraday",
+        "field": "HeartRate",
+        "alias": null,
+        "rawQuery": false,
+        "query": null,
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "HeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "21:0",
+      "panelId": 21,
+      "panelTitle": "Heart Rate Distribution",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "HeartRate_Intraday",
+        "field": "value",
+        "alias": "Heart rate histogram",
+        "rawQuery": true,
+        "query": "select mean_value from (SELECT mean(\"HeartRate\") as mean_value FROM \"HeartRateIntraday\" WHERE $timeFilter GROUP BY time(1m) fill(null)) where mean_value <= 96",
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "value"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "$interval"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "21:1",
+      "panelId": 21,
+      "panelTitle": "Heart Rate Distribution",
+      "targetIndex": 1,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "HeartRate_Intraday",
+        "field": "value",
+        "alias": "Heart rate histogram > 96",
+        "rawQuery": true,
+        "query": "select mean_value from (SELECT mean(\"HeartRate\") as mean_value FROM \"HeartRateIntraday\" WHERE $timeFilter GROUP BY time(1m) fill(null)) where mean_value > 96",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "value"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "21:2",
+      "panelId": 21,
+      "panelTitle": "Heart Rate Distribution",
+      "targetIndex": 2,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "HeartRate_Intraday",
+        "field": "value",
+        "alias": "Heart rate histogram < 60",
+        "rawQuery": true,
+        "query": "select mean_value from (SELECT mean(\"HeartRate\") as mean_value FROM \"HeartRateIntraday\" WHERE $timeFilter GROUP BY time(1m) fill(null)) where mean_value < 60",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "value"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "21:3",
+      "panelId": 21,
+      "panelTitle": "Heart Rate Distribution",
+      "targetIndex": 3,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "HeartRate_Intraday",
+        "field": "value",
+        "alias": "Heart rate histogram > 110",
+        "rawQuery": true,
+        "query": "select mean_value from (SELECT mean(\"HeartRate\") as mean_value FROM \"HeartRateIntraday\" WHERE $timeFilter GROUP BY time(1m) fill(null)) where mean_value > 110",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "value"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "29:0",
+      "panelId": 29,
+      "panelTitle": "Stress",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "StressIntraday",
+        "field": "stressLevel",
+        "alias": "Stress",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "stressLevel"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "29:1",
+      "panelId": 29,
+      "panelTitle": "Stress",
+      "targetIndex": 1,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "BodyBatteryIntraday",
+        "field": "BodyBatteryLevel",
+        "alias": "Body Battery",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "BodyBatteryLevel"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "28:0",
+      "panelId": 28,
+      "panelTitle": "Today RHR",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "restingHeartRate",
+        "alias": null,
+        "rawQuery": false,
+        "query": null,
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "restingHeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "30:0",
+      "panelId": 30,
+      "panelTitle": "Today's Steps",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "totalSteps",
+        "alias": null,
+        "rawQuery": false,
+        "query": null,
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "totalSteps"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "16:0",
+      "panelId": 16,
+      "panelTitle": "Steps Cumulative (24h)",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "StepsIntraday",
+        "field": "StepsCount",
+        "alias": "Intraday Steps",
+        "rawQuery": false,
+        "query": "SELECT moving_average(mean(\"value\"), 6) FROM \"HeartRate_Intraday\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+        "operations": "mean,cumulative_sum",
+        "select": [
+          [
+            {
+              "params": [
+                "StepsCount"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            },
+            {
+              "params": [],
+              "type": "cumulative_sum"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "15m"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "31:0",
+      "panelId": 31,
+      "panelTitle": "Today SpO2",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "averageSpo2",
+        "alias": null,
+        "rawQuery": false,
+        "query": null,
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "averageSpo2"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "68:0",
+      "panelId": 68,
+      "panelTitle": "Steps Hourly (24h)",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "StepsIntraday",
+        "field": "StepsCount",
+        "alias": "Hourly Steps",
+        "rawQuery": false,
+        "query": "SELECT moving_average(mean(\"value\"), 6) FROM \"HeartRate_Intraday\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+        "operations": "sum",
+        "select": [
+          [
+            {
+              "params": [
+                "StepsCount"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "sum"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1h"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "0"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "32:0",
+      "panelId": 32,
+      "panelTitle": "Last Sleep Hours",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepSummary",
+        "field": "sleepTimeSeconds",
+        "alias": "Total Asleep",
+        "rawQuery": false,
+        "query": null,
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "sleepTimeSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "62:0",
+      "panelId": 62,
+      "panelTitle": "Breathing Rates",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "BreathingRateIntraday",
+        "field": "BreathingRate",
+        "alias": "BR",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "BreathingRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "2m"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "33:0",
+      "panelId": 33,
+      "panelTitle": "High Stress Duration",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "highStressDuration",
+        "alias": "Stress",
+        "rawQuery": false,
+        "query": null,
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "highStressDuration"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "52:0",
+      "panelId": 52,
+      "panelTitle": "Sleep Movement Activity",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepIntraday",
+        "field": "SleepMovementActivityLevel",
+        "alias": "Sleeping Movement Activity",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "SleepMovementActivityLevel"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "36:0",
+      "panelId": 36,
+      "panelTitle": "Last Sleep",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepSummary",
+        "field": "deepSleepSeconds",
+        "alias": "Deep",
+        "rawQuery": false,
+        "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "deepSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "36:1",
+      "panelId": 36,
+      "panelTitle": "Last Sleep",
+      "targetIndex": 1,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepSummary",
+        "field": "lightSleepSeconds",
+        "alias": "Light",
+        "rawQuery": false,
+        "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "lightSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "36:2",
+      "panelId": 36,
+      "panelTitle": "Last Sleep",
+      "targetIndex": 2,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepSummary",
+        "field": "remSleepSeconds",
+        "alias": "REM",
+        "rawQuery": false,
+        "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "remSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "36:3",
+      "panelId": 36,
+      "panelTitle": "Last Sleep",
+      "targetIndex": 3,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepSummary",
+        "field": "awakeSleepSeconds",
+        "alias": "Awake",
+        "rawQuery": false,
+        "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "awakeSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "7:0",
+      "panelId": 7,
+      "panelTitle": "Sleep Intraday Stats",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepIntraday",
+        "field": "heartRate",
+        "alias": "Sleeping Heart Rate",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "heartRate"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "7:1",
+      "panelId": 7,
+      "panelTitle": "Sleep Intraday Stats",
+      "targetIndex": 1,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepIntraday",
+        "field": "spo2Reading",
+        "alias": "SpO2",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "spo2Reading"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "7:2",
+      "panelId": 7,
+      "panelTitle": "Sleep Intraday Stats",
+      "targetIndex": 2,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "HRV_Intraday",
+        "field": "hrvValue",
+        "alias": "HRV",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "hrvValue"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "35:0",
+      "panelId": 35,
+      "panelTitle": "Today Activity",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "sedentarySeconds",
+        "alias": "Sedentary",
+        "rawQuery": false,
+        "query": null,
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "sedentarySeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "35:1",
+      "panelId": 35,
+      "panelTitle": "Today Activity",
+      "targetIndex": 1,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "vigorousIntensityMinutes",
+        "alias": "Intense Activity",
+        "rawQuery": false,
+        "query": null,
+        "operations": "last,math",
+        "select": [
+          [
+            {
+              "params": [
+                "vigorousIntensityMinutes"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            },
+            {
+              "params": [
+                "* 60"
+              ],
+              "type": "math"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "35:2",
+      "panelId": 35,
+      "panelTitle": "Today Activity",
+      "targetIndex": 2,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "moderateIntensityMinutes",
+        "alias": "Moderate Activity",
+        "rawQuery": false,
+        "query": null,
+        "operations": "last,math",
+        "select": [
+          [
+            {
+              "params": [
+                "moderateIntensityMinutes"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            },
+            {
+              "params": [
+                "* 60"
+              ],
+              "type": "math"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "35:3",
+      "panelId": 35,
+      "panelTitle": "Today Activity",
+      "targetIndex": 3,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "sleepingSeconds",
+        "alias": "Sleeping",
+        "rawQuery": false,
+        "query": null,
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "sleepingSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "6:0",
+      "panelId": 6,
+      "panelTitle": "Sleep Stages",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepIntraday",
+        "field": "SleepStageLevel",
+        "alias": "Deep",
+        "rawQuery": true,
+        "query": "SELECT \"SleepStageLevel\"+1 FROM \"SleepIntraday\" WHERE SleepStageLevel=0 AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "SleepStageLevel"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "6:1",
+      "panelId": 6,
+      "panelTitle": "Sleep Stages",
+      "targetIndex": 1,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepIntraday",
+        "field": "SleepStageLevel",
+        "alias": "Light",
+        "rawQuery": true,
+        "query": "SELECT \"SleepStageLevel\"+1 FROM \"SleepIntraday\" WHERE SleepStageLevel=1 AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "SleepStageLevel"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "6:2",
+      "panelId": 6,
+      "panelTitle": "Sleep Stages",
+      "targetIndex": 2,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepIntraday",
+        "field": "SleepStageLevel",
+        "alias": "REM",
+        "rawQuery": true,
+        "query": "SELECT \"SleepStageLevel\"+1 FROM \"SleepIntraday\" WHERE SleepStageLevel=2 AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "SleepStageLevel"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "6:3",
+      "panelId": 6,
+      "panelTitle": "Sleep Stages",
+      "targetIndex": 3,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepIntraday",
+        "field": "SleepStageLevel",
+        "alias": "Awake",
+        "rawQuery": true,
+        "query": "SELECT \"SleepStageLevel\"+1 FROM \"SleepIntraday\" WHERE SleepStageLevel=3 AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "SleepStageLevel"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "43:0",
+      "panelId": 43,
+      "panelTitle": "Activity HR Zones (mean)",
+      "targetIndex": 0,
+      "classification": "B",
+      "phase": "5B/5C",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivitySummary",
+        "field": "hrTimeInZone_1",
+        "alias": "Zone 1",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "hrTimeInZone_1"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "stableKey": "43:1",
+      "panelId": 43,
+      "panelTitle": "Activity HR Zones (mean)",
+      "targetIndex": 1,
+      "classification": "B",
+      "phase": "5B/5C",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivitySummary",
+        "field": "hrTimeInZone_2",
+        "alias": "Zone 2",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "hrTimeInZone_2"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "stableKey": "43:2",
+      "panelId": 43,
+      "panelTitle": "Activity HR Zones (mean)",
+      "targetIndex": 2,
+      "classification": "B",
+      "phase": "5B/5C",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivitySummary",
+        "field": "hrTimeInZone_3",
+        "alias": "Zone 3",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "hrTimeInZone_3"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "stableKey": "43:3",
+      "panelId": 43,
+      "panelTitle": "Activity HR Zones (mean)",
+      "targetIndex": 3,
+      "classification": "B",
+      "phase": "5B/5C",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivitySummary",
+        "field": "hrTimeInZone_4",
+        "alias": "Zone 4",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "hrTimeInZone_4"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "stableKey": "43:4",
+      "panelId": 43,
+      "panelTitle": "Activity HR Zones (mean)",
+      "targetIndex": 4,
+      "classification": "B",
+      "phase": "5B/5C",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivitySummary",
+        "field": "hrTimeInZone_5",
+        "alias": "Zone 5",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "hrTimeInZone_5"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "stableKey": "44:0",
+      "panelId": 44,
+      "panelTitle": "Activity Calories (mean)",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivitySummary",
+        "field": "calories",
+        "alias": "calories",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "calories"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "44:1",
+      "panelId": 44,
+      "panelTitle": "Activity Calories (mean)",
+      "targetIndex": 1,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivitySummary",
+        "field": "bmrCalories",
+        "alias": "BMR calories",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "bmrCalories"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "48:0",
+      "panelId": 48,
+      "panelTitle": "Activity HR difference (Max-Avg)",
+      "targetIndex": 0,
+      "classification": "B",
+      "phase": "5B/5C",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivitySummary",
+        "field": "averageHR",
+        "alias": "avgHR",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "averageHR"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "$__interval"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "stableKey": "48:1",
+      "panelId": 48,
+      "panelTitle": "Activity HR difference (Max-Avg)",
+      "targetIndex": 1,
+      "classification": "B",
+      "phase": "5B/5C",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivitySummary",
+        "field": "maxHR",
+        "alias": "maxHR",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "maxHR"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "$__interval"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "stableKey": "53:0",
+      "panelId": 53,
+      "panelTitle": "Activity Distance",
+      "targetIndex": 0,
+      "classification": "B",
+      "phase": "5B/5C",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivitySummary",
+        "field": "distance",
+        "alias": "Distance",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "distance"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "stableKey": "54:0",
+      "panelId": 54,
+      "panelTitle": "Activity Duration",
+      "targetIndex": 0,
+      "classification": "B",
+      "phase": "5B/5C",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivitySummary",
+        "field": "elapsedDuration",
+        "alias": "Duration",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "elapsedDuration"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "stableKey": "50:0",
+      "panelId": 50,
+      "panelTitle": "GPS Track by Velocity",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "Latitude",
+        "alias": "lat",
+        "rawQuery": false,
+        "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "Latitude"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "50:1",
+      "panelId": 50,
+      "panelTitle": "GPS Track by Velocity",
+      "targetIndex": 1,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "Longitude",
+        "alias": "lon",
+        "rawQuery": false,
+        "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "Longitude"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "50:2",
+      "panelId": 50,
+      "panelTitle": "GPS Track by Velocity",
+      "targetIndex": 2,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "HeartRate",
+        "alias": "HR",
+        "rawQuery": false,
+        "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "HeartRate"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "50:3",
+      "panelId": 50,
+      "panelTitle": "GPS Track by Velocity",
+      "targetIndex": 3,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "Speed",
+        "alias": "speed (Km/h)",
+        "rawQuery": false,
+        "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+        "operations": "math",
+        "select": [
+          [
+            {
+              "params": [
+                "Speed"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [
+                "* 3.6"
+              ],
+              "type": "math"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "49:0",
+      "panelId": 49,
+      "panelTitle": "GPS Track by Heart Rate",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "Latitude",
+        "alias": "lat",
+        "rawQuery": false,
+        "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "Latitude"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "49:1",
+      "panelId": 49,
+      "panelTitle": "GPS Track by Heart Rate",
+      "targetIndex": 1,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "Longitude",
+        "alias": "lon",
+        "rawQuery": false,
+        "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "Longitude"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "49:2",
+      "panelId": 49,
+      "panelTitle": "GPS Track by Heart Rate",
+      "targetIndex": 2,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "HeartRate",
+        "alias": "HR",
+        "rawQuery": false,
+        "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "HeartRate"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "49:3",
+      "panelId": 49,
+      "panelTitle": "GPS Track by Heart Rate",
+      "targetIndex": 3,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "Speed",
+        "alias": "speed",
+        "rawQuery": false,
+        "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "Speed"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "45:0",
+      "panelId": 45,
+      "panelTitle": "GPS Track Heart Rate",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "HeartRate",
+        "alias": "HR",
+        "rawQuery": false,
+        "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "HeartRate"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "61:0",
+      "panelId": 61,
+      "panelTitle": "GPS Track Cadence",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "Cadence",
+        "alias": "Cadence",
+        "rawQuery": false,
+        "query": "SELECT (1000/(\"Cadence\"* 60)) FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/) AND $timeFilter",
+        "operations": "math",
+        "select": [
+          [
+            {
+              "params": [
+                "Cadence"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [
+                "* 2"
+              ],
+              "type": "math"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "57:0",
+      "panelId": 57,
+      "panelTitle": "Distance vs HR",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "Distance",
+        "alias": "Distance",
+        "rawQuery": false,
+        "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "Distance"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "57:1",
+      "panelId": 57,
+      "panelTitle": "Distance vs HR",
+      "targetIndex": 1,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "HeartRate",
+        "alias": "Heart Rate",
+        "rawQuery": false,
+        "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "HeartRate"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "57:2",
+      "panelId": 57,
+      "panelTitle": "Distance vs HR",
+      "targetIndex": 2,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "Speed",
+        "alias": "Pace",
+        "rawQuery": false,
+        "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+        "operations": "math",
+        "select": [
+          [
+            {
+              "params": [
+                "Speed"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [
+                "* 3.6"
+              ],
+              "type": "math"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "57:3",
+      "panelId": 57,
+      "panelTitle": "Distance vs HR",
+      "targetIndex": 3,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "DurationSeconds",
+        "alias": "Duration",
+        "rawQuery": false,
+        "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "DurationSeconds"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "55:0",
+      "panelId": 55,
+      "panelTitle": "Heart Rate vs Pace",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "Speed",
+        "alias": "Speed (Km/h)",
+        "rawQuery": false,
+        "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+        "operations": "math",
+        "select": [
+          [
+            {
+              "params": [
+                "Speed"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [
+                "* 3.6"
+              ],
+              "type": "math"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "55:1",
+      "panelId": 55,
+      "panelTitle": "Heart Rate vs Pace",
+      "targetIndex": 1,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "HeartRate",
+        "alias": "Heart Rate",
+        "rawQuery": false,
+        "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "HeartRate"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "47:0",
+      "panelId": 47,
+      "panelTitle": "GPS Track pace",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "Speed",
+        "alias": "m/s",
+        "rawQuery": false,
+        "query": "SELECT \"Speed\" FROM \"ActivityGPS\" WHERE \"Speed\" > 0 AND  (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/) AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "Speed"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "47:1",
+      "panelId": 47,
+      "panelTitle": "GPS Track pace",
+      "targetIndex": 1,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "DurationSeconds",
+        "alias": "Duration",
+        "rawQuery": false,
+        "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "DurationSeconds"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "46:0",
+      "panelId": 46,
+      "panelTitle": "GPS Track Altitude",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "Altitude",
+        "alias": "Altitude",
+        "rawQuery": false,
+        "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "Altitude"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "38:0",
+      "panelId": 38,
+      "panelTitle": "Recent Activity",
+      "targetIndex": 0,
+      "classification": "B",
+      "phase": "5B/5C",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivitySummary",
+        "field": "activityType",
+        "alias": "Activity Type",
+        "rawQuery": false,
+        "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "activityType"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "stableKey": "38:1",
+      "panelId": 38,
+      "panelTitle": "Recent Activity",
+      "targetIndex": 1,
+      "classification": "B",
+      "phase": "5B/5C",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivitySummary",
+        "field": "elapsedDuration",
+        "alias": "Duration",
+        "rawQuery": false,
+        "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "elapsedDuration"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "stableKey": "38:2",
+      "panelId": 38,
+      "panelTitle": "Recent Activity",
+      "targetIndex": 2,
+      "classification": "B",
+      "phase": "5B/5C",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivitySummary",
+        "field": "maxHR",
+        "alias": "Max HR",
+        "rawQuery": false,
+        "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "maxHR"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "stableKey": "38:3",
+      "panelId": 38,
+      "panelTitle": "Recent Activity",
+      "targetIndex": 3,
+      "classification": "B",
+      "phase": "5B/5C",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivitySummary",
+        "field": "maxSpeed",
+        "alias": "Max Speed",
+        "rawQuery": false,
+        "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+        "operations": "math",
+        "select": [
+          [
+            {
+              "params": [
+                "maxSpeed"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [
+                "* 3.6"
+              ],
+              "type": "math"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "stableKey": "38:4",
+      "panelId": 38,
+      "panelTitle": "Recent Activity",
+      "targetIndex": 4,
+      "classification": "B",
+      "phase": "5B/5C",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivitySummary",
+        "field": "distance",
+        "alias": "Distance",
+        "rawQuery": false,
+        "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "distance"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "stableKey": "38:5",
+      "panelId": 38,
+      "panelTitle": "Recent Activity",
+      "targetIndex": 5,
+      "classification": "B",
+      "phase": "5B/5C",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivitySummary",
+        "field": "locationName",
+        "alias": "Location",
+        "rawQuery": false,
+        "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "locationName"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "stableKey": "41:0",
+      "panelId": 41,
+      "panelTitle": "Activities",
+      "targetIndex": 0,
+      "classification": "B",
+      "phase": "5B/5C",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivitySummary",
+        "field": "activityType",
+        "alias": "Activity Timeline",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "activityType"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "stableKey": "59:0",
+      "panelId": 59,
+      "panelTitle": "Week at a Glance",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "totalDistanceMeters",
+        "alias": "Distance Covered",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max",
+        "select": [
+          [
+            {
+              "params": [
+                "totalDistanceMeters"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "59:1",
+      "panelId": 59,
+      "panelTitle": "Week at a Glance",
+      "targetIndex": 1,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "totalSteps",
+        "alias": "Steps",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max",
+        "select": [
+          [
+            {
+              "params": [
+                "totalSteps"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "59:2",
+      "panelId": 59,
+      "panelTitle": "Week at a Glance",
+      "targetIndex": 2,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "sleepingSeconds",
+        "alias": "Total Sleep",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max",
+        "select": [
+          [
+            {
+              "params": [
+                "sleepingSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "59:3",
+      "panelId": 59,
+      "panelTitle": "Week at a Glance",
+      "targetIndex": 3,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "highStressDuration",
+        "alias": "High Stress Duration",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max",
+        "select": [
+          [
+            {
+              "params": [
+                "highStressDuration"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "59:4",
+      "panelId": 59,
+      "panelTitle": "Week at a Glance",
+      "targetIndex": 4,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "highlyActiveSeconds",
+        "alias": "High Activity Duration",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max",
+        "select": [
+          [
+            {
+              "params": [
+                "highlyActiveSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "59:5",
+      "panelId": 59,
+      "panelTitle": "Week at a Glance",
+      "targetIndex": 5,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "restingHeartRate",
+        "alias": "Resting Heart Rate",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max",
+        "select": [
+          [
+            {
+              "params": [
+                "restingHeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "59:6",
+      "panelId": 59,
+      "panelTitle": "Week at a Glance",
+      "targetIndex": 6,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "averageSpo2",
+        "alias": "Avg SpO2",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max",
+        "select": [
+          [
+            {
+              "params": [
+                "averageSpo2"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "59:7",
+      "panelId": 59,
+      "panelTitle": "Week at a Glance",
+      "targetIndex": 7,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "bodyBatteryChargedValue",
+        "alias": "Body Battery Change",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max",
+        "select": [
+          [
+            {
+              "params": [
+                "bodyBatteryChargedValue"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "1:0",
+      "panelId": 1,
+      "panelTitle": "Daily Steps",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "totalSteps",
+        "alias": "Steps",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "totalSteps"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "3:0",
+      "panelId": 3,
+      "panelTitle": "Daily Distance",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "totalDistanceMeters",
+        "alias": "Distance Covered",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max",
+        "select": [
+          [
+            {
+              "params": [
+                "totalDistanceMeters"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "10:0",
+      "panelId": 10,
+      "panelTitle": "Daily Calories",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "bmrKilocalories",
+        "alias": "BMR Calories",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "bmrKilocalories"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "10:1",
+      "panelId": 10,
+      "panelTitle": "Daily Calories",
+      "targetIndex": 1,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "activeKilocalories",
+        "alias": "Activity Calories",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "activeKilocalories"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "11:0",
+      "panelId": 11,
+      "panelTitle": "Daily avg health metrics",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepSummary",
+        "field": "averageSpO2Value",
+        "alias": "Avg SpO2",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "averageSpO2Value"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "11:1",
+      "panelId": 11,
+      "panelTitle": "Daily avg health metrics",
+      "targetIndex": 1,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "HRV_Intraday",
+        "field": "hrvValue",
+        "alias": "Avg HRV",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "hrvValue"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "11:2",
+      "panelId": 11,
+      "panelTitle": "Daily avg health metrics",
+      "targetIndex": 2,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "restingHeartRate",
+        "alias": "Avg Resting HR",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "restingHeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "51:0",
+      "panelId": 51,
+      "panelTitle": "Daily avg health metrics",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "BreathingRateIntraday",
+        "field": "BreathingRate",
+        "alias": "Avg Breathing Rate",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "BreathingRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "51:1",
+      "panelId": 51,
+      "panelTitle": "Daily avg health metrics",
+      "targetIndex": 1,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "StressIntraday",
+        "field": "stressLevel",
+        "alias": "Avg Stress",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "stressLevel"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "51:2",
+      "panelId": 51,
+      "panelTitle": "Daily avg health metrics",
+      "targetIndex": 2,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepSummary",
+        "field": "avgSleepStress",
+        "alias": "Avg Sleeping Stress",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "avgSleepStress"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "63:0",
+      "panelId": 63,
+      "panelTitle": "Race Predictions",
+      "targetIndex": 0,
+      "classification": "B",
+      "phase": "5B/5C",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "RacePredictions",
+        "field": "time5K",
+        "alias": "Time 5K",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "time5K"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "stableKey": "63:1",
+      "panelId": 63,
+      "panelTitle": "Race Predictions",
+      "targetIndex": 1,
+      "classification": "B",
+      "phase": "5B/5C",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "RacePredictions",
+        "field": "time10K",
+        "alias": "Time 10K",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "time10K"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "stableKey": "63:2",
+      "panelId": 63,
+      "panelTitle": "Race Predictions",
+      "targetIndex": 2,
+      "classification": "B",
+      "phase": "5B/5C",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "RacePredictions",
+        "field": "timeHalfMarathon",
+        "alias": "Half Marathon",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "timeHalfMarathon"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "stableKey": "63:3",
+      "panelId": 63,
+      "panelTitle": "Race Predictions",
+      "targetIndex": 3,
+      "classification": "B",
+      "phase": "5B/5C",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "RacePredictions",
+        "field": "timeMarathon",
+        "alias": "Full Marathon",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "timeMarathon"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "stableKey": "64:0",
+      "panelId": 64,
+      "panelTitle": "VO2 Max",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "VO2_Max",
+        "field": "VO2_max_value",
+        "alias": "VO2 Max",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "VO2_max_value"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "69:0",
+      "panelId": 69,
+      "panelTitle": "Heatmap for GPS Activity (within selected time)",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "Latitude",
+        "alias": "lat",
+        "rawQuery": false,
+        "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "Latitude"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "69:1",
+      "panelId": 69,
+      "panelTitle": "Heatmap for GPS Activity (within selected time)",
+      "targetIndex": 1,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "ActivityGPS",
+        "field": "Longitude",
+        "alias": "lon",
+        "rawQuery": false,
+        "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "Longitude"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "13:0",
+      "panelId": 13,
+      "panelTitle": "Sleep Stages",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepSummary",
+        "field": "deepSleepSeconds",
+        "alias": "Deep Sleep",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "deepSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "12h"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "13:1",
+      "panelId": 13,
+      "panelTitle": "Sleep Stages",
+      "targetIndex": 1,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepSummary",
+        "field": "lightSleepSeconds",
+        "alias": "Light Sleep",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "lightSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "12h"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "13:2",
+      "panelId": 13,
+      "panelTitle": "Sleep Stages",
+      "targetIndex": 2,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepSummary",
+        "field": "remSleepSeconds",
+        "alias": "REM Sleep",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "remSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "12h"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "13:3",
+      "panelId": 13,
+      "panelTitle": "Sleep Stages",
+      "targetIndex": 3,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepSummary",
+        "field": "awakeSleepSeconds",
+        "alias": "Awake",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "awakeSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "12h"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "23:0",
+      "panelId": 23,
+      "panelTitle": "Avg Activity over given duration",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "sedentarySeconds",
+        "alias": "Sedentary",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "sedentarySeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "23:1",
+      "panelId": 23,
+      "panelTitle": "Avg Activity over given duration",
+      "targetIndex": 1,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "highlyActiveSeconds",
+        "alias": "Intense Activity",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "highlyActiveSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "23:2",
+      "panelId": 23,
+      "panelTitle": "Avg Activity over given duration",
+      "targetIndex": 2,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "activeSeconds",
+        "alias": "Fair Activity",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "activeSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "23:3",
+      "panelId": 23,
+      "panelTitle": "Avg Activity over given duration",
+      "targetIndex": 3,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "sleepingSeconds",
+        "alias": "Sleeping",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "sleepingSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "12:0",
+      "panelId": 12,
+      "panelTitle": "Sleep Score",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepSummary",
+        "field": "sleepScore",
+        "alias": "Sleep Score",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "sleepScore"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "17:0",
+      "panelId": 17,
+      "panelTitle": "Daily Activity Overview",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "sleepingSeconds",
+        "alias": "Sleeping",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "sleepingSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "17:1",
+      "panelId": 17,
+      "panelTitle": "Daily Activity Overview",
+      "targetIndex": 1,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "sedentarySeconds",
+        "alias": "Sedentary",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "sedentarySeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "17:2",
+      "panelId": 17,
+      "panelTitle": "Daily Activity Overview",
+      "targetIndex": 2,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "activeSeconds",
+        "alias": "Active",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "activeSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "17:3",
+      "panelId": 17,
+      "panelTitle": "Daily Activity Overview",
+      "targetIndex": 3,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "highlyActiveSeconds",
+        "alias": "Highly Active",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "highlyActiveSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "19:0",
+      "panelId": 19,
+      "panelTitle": "Body Battery overview",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "bodyBatteryChargedValue",
+        "alias": "Charged",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "bodyBatteryChargedValue"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "19:1",
+      "panelId": 19,
+      "panelTitle": "Body Battery overview",
+      "targetIndex": 1,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "bodyBatteryDrainedValue",
+        "alias": "Drained",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean,math",
+        "select": [
+          [
+            {
+              "params": [
+                "bodyBatteryDrainedValue"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            },
+            {
+              "params": [
+                "* -1"
+              ],
+              "type": "math"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "4:0",
+      "panelId": 4,
+      "panelTitle": "Daily Intensity Minutes",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "moderateIntensityMinutes",
+        "alias": "Moderate Intensity",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max,math",
+        "select": [
+          [
+            {
+              "params": [
+                "moderateIntensityMinutes"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            },
+            {
+              "params": [
+                "* 60"
+              ],
+              "type": "math"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "4:1",
+      "panelId": 4,
+      "panelTitle": "Daily Intensity Minutes",
+      "targetIndex": 1,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "vigorousIntensityMinutes",
+        "alias": "Vigorous Intensity",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max,math",
+        "select": [
+          [
+            {
+              "params": [
+                "vigorousIntensityMinutes"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            },
+            {
+              "params": [
+                "* 60"
+              ],
+              "type": "math"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "18:0",
+      "panelId": 18,
+      "panelTitle": "Stress overview",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "lowStressDuration",
+        "alias": "Low Stress duration",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "lowStressDuration"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "18:1",
+      "panelId": 18,
+      "panelTitle": "Stress overview",
+      "targetIndex": 1,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "restStressDuration",
+        "alias": "Rest stress duration",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "restStressDuration"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "18:2",
+      "panelId": 18,
+      "panelTitle": "Stress overview",
+      "targetIndex": 2,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "mediumStressDuration",
+        "alias": "Medium stress duration",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "mediumStressDuration"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "18:3",
+      "panelId": 18,
+      "panelTitle": "Stress overview",
+      "targetIndex": 3,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "uncategorizedStressDuration",
+        "alias": "Uncategorized stress duration",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "uncategorizedStressDuration"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "18:4",
+      "panelId": 18,
+      "panelTitle": "Stress overview",
+      "targetIndex": 4,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "highStressDuration",
+        "alias": "High stress duration",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "highStressDuration"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "22:0",
+      "panelId": 22,
+      "panelTitle": "Average Sleep trends",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepSummary",
+        "field": "deepSleepSeconds",
+        "alias": "Deep",
+        "rawQuery": false,
+        "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "deepSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "22:1",
+      "panelId": 22,
+      "panelTitle": "Average Sleep trends",
+      "targetIndex": 1,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepSummary",
+        "field": "lightSleepSeconds",
+        "alias": "Light",
+        "rawQuery": false,
+        "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "lightSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "22:2",
+      "panelId": 22,
+      "panelTitle": "Average Sleep trends",
+      "targetIndex": 2,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepSummary",
+        "field": "remSleepSeconds",
+        "alias": "REM",
+        "rawQuery": false,
+        "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "remSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "22:3",
+      "panelId": 22,
+      "panelTitle": "Average Sleep trends",
+      "targetIndex": 3,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepSummary",
+        "field": "awakeSleepSeconds",
+        "alias": "Awake",
+        "rawQuery": false,
+        "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "awakeSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "37:0",
+      "panelId": 37,
+      "panelTitle": "Body Battery Level Change",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "bodyBatteryLowestValue",
+        "alias": "bb_low",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "bodyBatteryLowestValue"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "37:1",
+      "panelId": 37,
+      "panelTitle": "Body Battery Level Change",
+      "targetIndex": 1,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "bodyBatteryHighestValue",
+        "alias": "bb_high",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "bodyBatteryHighestValue"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "34:0",
+      "panelId": 34,
+      "panelTitle": "Weight",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "BodyComposition",
+        "field": "weight",
+        "alias": "Weight in KG",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "weight"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "$__interval"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "58:0",
+      "panelId": 58,
+      "panelTitle": "HR Range (Max-Min)",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "minHeartRate",
+        "alias": "hr_low",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "minHeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "58:1",
+      "panelId": 58,
+      "panelTitle": "HR Range (Max-Min)",
+      "targetIndex": 1,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "maxHeartRate",
+        "alias": "hr_high",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "maxHeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "66:0",
+      "panelId": 66,
+      "panelTitle": "Month at a Glance (Daily Average)",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "restingHeartRate",
+        "alias": "Resting HR",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "restingHeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "66:1",
+      "panelId": 66,
+      "panelTitle": "Month at a Glance (Daily Average)",
+      "targetIndex": 1,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "highStressDuration",
+        "alias": "High Stress Duration",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "highStressDuration"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "66:2",
+      "panelId": 66,
+      "panelTitle": "Month at a Glance (Daily Average)",
+      "targetIndex": 2,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "activeSeconds",
+        "alias": "Active time",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "activeSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "66:3",
+      "panelId": 66,
+      "panelTitle": "Month at a Glance (Daily Average)",
+      "targetIndex": 3,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "bodyBatteryHighestValue",
+        "alias": "Body Battery (Highest)",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "bodyBatteryHighestValue"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "66:4",
+      "panelId": 66,
+      "panelTitle": "Month at a Glance (Daily Average)",
+      "targetIndex": 4,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "totalSteps",
+        "alias": "Total Steps",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "totalSteps"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "66:5",
+      "panelId": 66,
+      "panelTitle": "Month at a Glance (Daily Average)",
+      "targetIndex": 5,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "averageSpo2",
+        "alias": "SpO2",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "averageSpo2"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "66:6",
+      "panelId": 66,
+      "panelTitle": "Month at a Glance (Daily Average)",
+      "targetIndex": 6,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepSummary",
+        "field": "sleepScore",
+        "alias": "Sleep Score",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "sleepScore"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "66:7",
+      "panelId": 66,
+      "panelTitle": "Month at a Glance (Daily Average)",
+      "targetIndex": 7,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "DailyStats",
+        "field": "sleepingSeconds",
+        "alias": "Total Sleep",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "sleepingSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    },
+    {
+      "stableKey": "66:8",
+      "panelId": 66,
+      "panelTitle": "Month at a Glance (Daily Average)",
+      "targetIndex": 8,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "HRV_Intraday",
+        "field": "hrvValue",
+        "alias": "HRV",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "hrvValue"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "67:0",
+      "panelId": 67,
+      "panelTitle": "Month at a Glance (Intraday)",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "HeartRateIntraday",
+        "field": "HeartRate",
+        "alias": "Band Wearing",
+        "rawQuery": false,
+        "query": null,
+        "operations": "count",
+        "select": [
+          [
+            {
+              "params": [
+                "HeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "count"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "2m"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "0"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "67:1",
+      "panelId": 67,
+      "panelTitle": "Month at a Glance (Intraday)",
+      "targetIndex": 1,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "HeartRateIntraday",
+        "field": "HeartRate",
+        "alias": "HR Zones",
+        "rawQuery": false,
+        "query": null,
+        "operations": "median",
+        "select": [
+          [
+            {
+              "params": [
+                "HeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "median"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1h"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "67:2",
+      "panelId": 67,
+      "panelTitle": "Month at a Glance (Intraday)",
+      "targetIndex": 2,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "BodyBatteryIntraday",
+        "field": "BodyBatteryLevel",
+        "alias": "Body Battery",
+        "rawQuery": false,
+        "query": null,
+        "operations": "median",
+        "select": [
+          [
+            {
+              "params": [
+                "BodyBatteryLevel"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "median"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1h"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "67:3",
+      "panelId": 67,
+      "panelTitle": "Month at a Glance (Intraday)",
+      "targetIndex": 3,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "StressIntraday",
+        "field": "stressLevel",
+        "alias": "Stress Level",
+        "rawQuery": false,
+        "query": null,
+        "operations": "median",
+        "select": [
+          [
+            {
+              "params": [
+                "stressLevel"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "median"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1h"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "67:4",
+      "panelId": 67,
+      "panelTitle": "Month at a Glance (Intraday)",
+      "targetIndex": 4,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "StepsIntraday",
+        "field": "StepsCount",
+        "alias": "Steps Taken",
+        "rawQuery": false,
+        "query": null,
+        "operations": "sum",
+        "select": [
+          [
+            {
+              "params": [
+                "StepsCount"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "sum"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1h"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "65:0",
+      "panelId": 65,
+      "panelTitle": "HR Histogram Heatmap",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "HeartRateIntraday",
+        "field": "HeartRate",
+        "alias": "Heart Rate",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "HeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "$__interval"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "20:0",
+      "panelId": 20,
+      "panelTitle": "Hourly walk heatmap",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "StepsIntraday",
+        "field": "StepsCount",
+        "alias": "Hourly Steps",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "StepsCount"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "$__interval"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "27:0",
+      "panelId": 27,
+      "panelTitle": "Sleep Regularity",
+      "targetIndex": 0,
+      "classification": "C",
+      "phase": "5D",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "SleepIntraday",
+        "field": "SleepStageLevel",
+        "alias": "Sleep Regularity",
+        "rawQuery": false,
+        "query": "SELECT median(\"level\") FROM \"Sleep Levels\" WHERE $timeFilter GROUP BY time(1h)",
+        "operations": "median",
+        "select": [
+          [
+            {
+              "params": [
+                "SleepStageLevel"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "median"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1h"
+            ],
+            "type": "time"
+          }
+        ]
+      },
+      "priority": "LOW_COMPLEXITY_AFTER_CORE"
+    },
+    {
+      "stableKey": "60:0",
+      "panelId": 60,
+      "panelTitle": "Battery Level (Requires GarminHomeAssistant from ConnectIQ integration)",
+      "targetIndex": 0,
+      "classification": "A",
+      "phase": "5A/5B",
+      "status": "PENDING_LIVE_FIELD_VERIFICATION",
+      "sourceQueryReference": {
+        "measurement": "%",
+        "field": "value",
+        "alias": "Device Battery Level",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "value"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "10m"
+            ],
+            "type": "time"
+          }
+        ]
+      },
+      "priority": "HIGH"
+    }
+  ],
+  "phaseDefinitions": {
+    "phase5A": "Simple scalar/daily metrics (Class A) after live schema validation",
+    "phase5B": "Daily health, sleep, recovery, stress/body battery and body metrics (Class A/B)",
+    "phase5C": "Activity and detailed activity summary metrics",
+    "phase5D": "Intraday streams, GPS, histograms, heatmaps and complex visualization (Class C)"
+  },
+  "existingProgressiveConnectedPanels": [
+    38,
+    41,
+    48,
+    53,
+    54
+  ],
+  "notes": [
+    "Existing five-panel activity clone remains the progressive dashboard baseline.",
+    "This queue prioritizes conversion after field verification; it does not claim target query compatibility.",
+    "Class A is complexity triage, not necessarily a verified daily-record mapping."
+  ]
+}
