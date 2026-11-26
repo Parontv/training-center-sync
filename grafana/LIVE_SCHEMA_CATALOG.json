@@ -1,0 +1,200 @@
+{
+  "generated": "2026-11-26",
+  "source": "Cloudflare D1 storico_garmin, read-only schema audit pending authenticated response",
+  "schemaEndpoint": "/dashboard-schema",
+  "coverageEndpoints": [
+    "/dashboard-field-coverage",
+    "/dashboard-field-values"
+  ],
+  "tables": [
+    "daily_records",
+    "garmin_records"
+  ],
+  "fieldStatusDefinitions": {
+    "VERIFIED": "Live schema, values and coverage inspected; semantics and units confirmed",
+    "CANDIDATE": "Proposed field/metric, evidence incomplete",
+    "SPARSE": "Live field exists but coverage is sparse",
+    "UNAVAILABLE": "Not present in audited schema/coverage"
+  },
+  "datasets": [
+    {
+      "datasetKey": "sleep",
+      "label": "Sleep",
+      "priority": "CORE",
+      "dashboard": "Recovery",
+      "metrics": [
+        "duration",
+        "sleep stages",
+        "score"
+      ],
+      "fieldEvidence": [],
+      "status": "CANDIDATE",
+      "reason": "Live schema/coverage evidence not yet collected"
+    },
+    {
+      "datasetKey": "hrv",
+      "label": "HRV",
+      "priority": "CORE",
+      "dashboard": "Recovery",
+      "metrics": [
+        "daily HRV",
+        "baseline",
+        "trend"
+      ],
+      "fieldEvidence": [],
+      "status": "CANDIDATE",
+      "reason": "Live schema/coverage evidence not yet collected"
+    },
+    {
+      "datasetKey": "weight",
+      "label": "Weight",
+      "priority": "CORE",
+      "dashboard": "Body",
+      "metrics": [
+        "weight",
+        "trend",
+        "rolling average"
+      ],
+      "fieldEvidence": [],
+      "status": "CANDIDATE",
+      "reason": "Live schema/coverage evidence not yet collected"
+    },
+    {
+      "datasetKey": "resting_hr",
+      "label": "Resting heart rate",
+      "priority": "CORE",
+      "dashboard": "Recovery",
+      "metrics": [
+        "resting heart rate",
+        "trend"
+      ],
+      "fieldEvidence": [],
+      "status": "CANDIDATE",
+      "reason": "Live schema/coverage evidence not yet collected"
+    },
+    {
+      "datasetKey": "steps",
+      "label": "Steps",
+      "priority": "CORE",
+      "dashboard": "Activity",
+      "metrics": [
+        "daily steps",
+        "weekly totals"
+      ],
+      "fieldEvidence": [],
+      "status": "CANDIDATE",
+      "reason": "Live schema/coverage evidence not yet collected"
+    },
+    {
+      "datasetKey": "stress",
+      "label": "Stress",
+      "priority": "CORE",
+      "dashboard": "Recovery",
+      "metrics": [
+        "daily stress",
+        "trend"
+      ],
+      "fieldEvidence": [],
+      "status": "CANDIDATE",
+      "reason": "Live schema/coverage evidence not yet collected"
+    },
+    {
+      "datasetKey": "training_load",
+      "label": "Training load / recovery",
+      "priority": "CORE",
+      "dashboard": "Training",
+      "metrics": [
+        "load",
+        "readiness",
+        "recovery indicators"
+      ],
+      "fieldEvidence": [],
+      "status": "CANDIDATE",
+      "reason": "Live schema/coverage evidence not yet collected"
+    },
+    {
+      "datasetKey": "respiration",
+      "label": "Respiration",
+      "priority": "SECONDARY",
+      "dashboard": "Recovery",
+      "metrics": [
+        "sleep/day respiration"
+      ],
+      "fieldEvidence": [],
+      "status": "CANDIDATE",
+      "reason": "Live schema/coverage evidence not yet collected"
+    },
+    {
+      "datasetKey": "spo2",
+      "label": "SpO2",
+      "priority": "SECONDARY",
+      "dashboard": "Recovery",
+      "metrics": [
+        "overnight/spot readings"
+      ],
+      "fieldEvidence": [],
+      "status": "CANDIDATE",
+      "reason": "Live schema/coverage evidence not yet collected"
+    },
+    {
+      "datasetKey": "body_composition",
+      "label": "Body composition",
+      "priority": "SECONDARY",
+      "dashboard": "Body",
+      "metrics": [
+        "available body-composition metrics"
+      ],
+      "fieldEvidence": [],
+      "status": "CANDIDATE",
+      "reason": "Live schema/coverage evidence not yet collected"
+    },
+    {
+      "datasetKey": "hydration",
+      "label": "Hydration",
+      "priority": "EXPERIMENTAL",
+      "dashboard": "Body",
+      "metrics": [
+        "intake"
+      ],
+      "fieldEvidence": [],
+      "status": "CANDIDATE",
+      "reason": "Live schema/coverage evidence not yet collected"
+    },
+    {
+      "datasetKey": "activities",
+      "label": "Activities",
+      "priority": "CORE",
+      "dashboard": "Training",
+      "metrics": [
+        "distance",
+        "duration",
+        "pace",
+        "heart rate",
+        "calories",
+        "sport"
+      ],
+      "fieldEvidence": [],
+      "status": "CANDIDATE",
+      "reason": "Live schema/coverage evidence not yet collected"
+    },
+    {
+      "datasetKey": "activity_details",
+      "label": "Activity details",
+      "priority": "SECONDARY",
+      "dashboard": "Training",
+      "metrics": [
+        "per-activity detailed streams and metrics"
+      ],
+      "fieldEvidence": [],
+      "status": "CANDIDATE",
+      "reason": "Live schema/coverage evidence not yet collected"
+    }
+  ],
+  "panelsReferenced": 62,
+  "targetCount": 143,
+  "notes": [
+    "No live schema JSON included in the branch audit at this point; do not guess exact field paths.",
+    "Schema endpoint enumerates leaf JSON fields and counts record coverage, but field-path validation, value distributions, units and semantic confirmation remain follow-up steps.",
+    "This catalog is a gap ledger, not a claimed live database inventory."
+  ]
+}
