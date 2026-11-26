@@ -5,6 +5,17 @@ on:
       - grafana/PROGRESSIVE_CONVERSION_PHASES.json
       - grafana/suggest-live-field-matches.mjs
       - grafana/test-field-match-suggestions.mjs
+      - grafana/build-conversion-priority-plan.mjs
+      - grafana/test-conversion-priority-plan.mjs
+  push:
+    branches:
+      - feat/grafana-automated-builder
+    paths:
+      - grafana/PROGRESSIVE_CONVERSION_PHASES.json
+      - grafana/suggest-live-field-matches.mjs
+      - grafana/test-field-match-suggestions.mjs
+      - grafana/build-conversion-priority-plan.mjs
+      - grafana/test-conversion-priority-plan.mjs
   workflow_dispatch:
 permissions:
   contents: read
@@ -16,7 +27,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Validate suggestion guardrails
+      - name: Validate matcher with synthetic schema
         run: node grafana/test-field-match-suggestions.mjs
-      - name: Generate suggestions if live snapshot exists
-        run: node grafana/suggest-live-field-matches.mjs
+      - name: Generate conversion work priority plan
+        run: node grafana/build-conversion-priority-plan.mjs
+      - name: Validate priority plan
+        run: node grafana/test-conversion-priority-plan.mjs
