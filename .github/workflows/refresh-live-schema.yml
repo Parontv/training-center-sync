@@ -7,6 +7,10 @@ on:
       - .github/workflows/refresh-live-schema.yml
   schedule:
     - cron: '17 */6 * * *'
+concurrency:
+  group: garmin-live-schema-readonly
+  cancel-in-progress: false
+
 permissions:
   contents: write
 jobs:
