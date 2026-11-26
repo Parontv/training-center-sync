@@ -516,7 +516,6 @@ $('run').addEventListener('click',async()=>{
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
       try {
-        await ensureCoreSchema(env.DB);
         const [counts, datasets, activities, daily, steps, activityQuality, recordQuality] = await Promise.all([
           env.DB.prepare("SELECT (SELECT COUNT(*) FROM activities) AS activities, (SELECT COUNT(*) FROM activity_details) AS activity_details, (SELECT COUNT(*) FROM daily_records) AS daily_records, (SELECT COUNT(*) FROM garmin_records) AS garmin_records, (SELECT COUNT(*) FROM sync_runs) AS sync_runs").first(),
           env.DB.prepare("SELECT dataset, COUNT(*) AS records, MIN(record_date) AS first_date, MAX(record_date) AS last_date, SUM(CASE WHEN raw_json='[]' OR raw_json='{}' THEN 1 ELSE 0 END) AS empty_records FROM garmin_records GROUP BY dataset ORDER BY dataset").all(),
