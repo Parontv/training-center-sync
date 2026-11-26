@@ -41,8 +41,10 @@ for(const [source,dataset,field_path] of candidates){
   const body=await res.json();
   const safe={source,dataset,field_path,status:'OK'};
   // Keep only aggregate coverage metadata; deliberately discard samples/values.
-  for(const key of ['recordCount','recordsWithField','distinctDatesWithField','coverage','dateFrom','dateTo','datasetDateFrom','datasetDateTo','valueType','typeCounts']) if(body[key]!==undefined)safe[key]=body[key];
+  if(body.record_scope!==undefined)safe.record_scope=body.record_scope;
+  if(body.field_coverage!==undefined)safe.field_coverage=body.field_coverage;
   if(body.ok===false)safe.status='API_ERROR';
+  if(body.error!==undefined)safe.error=String(body.error).slice(0,200);
   rows.push(safe);
  }catch(e){rows.push({source,dataset,field_path,status:'REQUEST_ERROR'});}
 }
