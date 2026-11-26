@@ -1,12 +1,8 @@
 name: Refresh sanitized D1 schema snapshot
 on:
   workflow_dispatch:
-  pull_request:
-    paths:
-      - grafana/fetch-sanitized-live-schema.mjs
-      - .github/workflows/refresh-live-schema.yml
   schedule:
-    - cron: '17 */6 * * *'
+    - cron: '17 5 * * 1'
 concurrency:
   group: garmin-live-schema-readonly
   cancel-in-progress: false
