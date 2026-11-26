@@ -1,0 +1,58 @@
+name: Garmin schema discovery (read-only)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 5 1 * *'
+
+concurrency:
+  group: garmin-live-schema-readonly
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    env:
+      SYNC_BEARER_TOKEN: ${{ secrets.SYNC_BEARER_TOKEN }}
+      WORKER_BASE: ${{ vars.WORKER_BASE }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/grafana-automated-builder
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Fetch private schema audit (read-only)
+        run: |
+          if [ -z "$SYNC_BEARER_TOKEN" ]; then
+            echo "::warning::Live schema audit skipped: repository secret SYNC_BEARER_TOKEN is not configured."
+            exit 0
+          fi
+          node grafana/fetch-live-schema.mjs
+      - name: Create sanitized live field snapshot and matching suggestions
+        if: env.SYNC_BEARER_TOKEN != ''
+        run: |
+          node grafana/sanitize-live-schema-audit.mjs grafana/live-schema-audit.json
+          node grafana/suggest-live-field-matches.mjs
+      - name: Generate sanitized candidate catalogue
+        if: env.SYNC_BEARER_TOKEN != ''
+        env:
+          CANDIDATES_OUTPUT: grafana/schema-candidates-sanitized.json
+        run: node grafana/analyze-live-schema.mjs grafana/live-schema-audit.json
+      - name: Upload sanitized candidate catalogue only
+        if: env.SYNC_BEARER_TOKEN != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: garmin-schema-candidates
+          path: |
+            grafana/schema-candidates-sanitized.json
+            grafana/FIELD_MATCH_SUGGESTIONS.json
+            grafana/live-schema-snapshot.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Delete private audit
+        if: always()
+        run: rm -f grafana/live-schema-audit.json

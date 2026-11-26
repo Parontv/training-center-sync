@@ -1,0 +1,78 @@
+name: Grafana dashboard catalog and analytics validation
+on:
+  pull_request:
+    paths:
+      - 'grafana/**'
+      - 'src/**'
+  push:
+    branches:
+      - 'feat/grafana-automated-builder'
+    paths:
+      - 'grafana/**'
+      - 'src/index.js'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Syntax-check Worker source
+        run: node --check src/index.js
+      - name: Test strict calendar date validation
+        run: node grafana/test-date-validation.mjs
+      - name: Validate dataset manifest
+        run: node grafana/test-datasets.mjs
+      - name: Smoke-check candidate analyzer
+        run: node grafana/test-analyzer.mjs
+      - name: Test analyzer with synthetic fixtures
+        run: node grafana/test-analyzer-fixture.mjs
+      - name: Check field endpoint read-only safeguards
+        run: node grafana/test-field-endpoint.mjs
+      - name: Generate catalog dashboard
+        run: node grafana/build-dashboards.mjs
+      - name: Validate generated dashboard JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('grafana/dashboards/training-center-d1-catalog.json','utf8'))"
+      - name: Verify reused dashboard integrity
+        run: node grafana/test-existing-dashboards.mjs
+      - name: Check dashboard-data panel selectors
+        run: node grafana/test-dashboard-data-contract.mjs
+      - name: Build progressive Garmin Stats D1 dashboard
+        run: node grafana/build-progressive-clone.mjs
+      - name: Validate progressive clone mappings and importability
+        run: node grafana/test-progressive-clone.mjs
+      - name: Check dashboard response contract
+        run: node grafana/test-dashboard-response-contract.mjs
+      - name: Check read-only metrics endpoint contract
+        run: node grafana/test-readonly-endpoint-contract.mjs src/index.js
+      - name: Verify live audit helper safety
+        run: node grafana/test-live-audit-helper.mjs
+      - name: Verify browser-side schema audit
+        run: node grafana/test-run-audit.mjs
+      - name: Check automated schema discovery workflow privacy
+        run: node grafana/test-schema-discovery-workflow.mjs
+      - name: Verify reference panel inventory
+        run: node grafana/test-reference-inventory.mjs
+      - name: Verify definitive 62-panel / 143-target master inventory
+        run: node grafana/test-reference-master-inventory.mjs
+      - name: Verify source dashboard fidelity against inventories
+        run: node grafana/test-reference-fidelity-audit.mjs
+      - name: Verify Phase 2 schema evidence safety gate
+        run: node grafana/test-phase2-evidence-gate.mjs
+      - name: Verify strictly read-only dashboard-data API contract
+        run: node grafana/test-phase3-readonly-dashboard-data.mjs
+      - name: Verify live schema catalog and evidence ledger
+        run: node grafana/test-live-schema-catalog.mjs
+      - name: Verify conversion engine input integrity
+        run: node grafana/test-conversion-engine.mjs
+      - name: Verify progressive conversion phase queue
+        run: node grafana/test-progressive-phase-queue.mjs
+      - name: Verify Phase 4 conversion fidelity
+        run: node grafana/test-phase4-conversion-fidelity.mjs
+      - name: Verify Phase 5–7 evidence and safety gates
+        run: node grafana/test-phases5-7-evidence-gate.mjs
+      - name: Verify generated panel implementation plan
+        run: node grafana/test-panel-plan.mjs

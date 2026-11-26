@@ -1,0 +1,33 @@
+name: Grafana live dashboard builder
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/grafana-automated-builder]
+    paths:
+      - 'grafana/**'
+      - '.github/workflows/grafana-live-builder.yml'
+  schedule:
+    - cron: "17 3 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/grafana-automated-builder
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate source-faithful progressive clone
+        run: |
+          node grafana/test-progressive-clone.mjs
+          node grafana/test-conversion-engine.mjs
+

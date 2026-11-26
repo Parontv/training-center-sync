@@ -1,0 +1,10 @@
+import fs from 'node:fs'; import assert from 'node:assert/strict';
+const src=fs.readFileSync('grafana/fetch-live-schema.mjs','utf8');
+assert.ok(src.includes('SYNC_BEARER_TOKEN')||src.includes('SYNC_BEARER_TOKEN'),'token environment variable');
+assert.ok(src.includes('/dashboard-schema'));
+assert.ok(src.includes('Authorization'));
+assert.ok(src.includes('live-schema-audit.json'));
+assert.ok(!src.includes('INSERT INTO')&&!src.includes('UPDATE ')&&!src.includes('DELETE FROM'),'audit helper must be read-only');
+const ignore=fs.readFileSync('grafana/.gitignore','utf8');
+assert.ok(ignore.includes('live-schema-audit.json'),'private audit file ignored');
+console.log('Live audit helper safety checks passed.');

@@ -1,0 +1,17 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+const manifest=JSON.parse(fs.readFileSync('grafana/datasets.json','utf8'));
+assert.ok(manifest.datasets.length>0);
+assert.ok(manifest.datasets.every(d=>manifest.status.includes(d.status)));
+assert.ok(manifest.datasets.some(d=>d.key==='sleep'));
+assert.ok(manifest.datasets.some(d=>d.key==='hrv'));
+assert.ok(manifest.datasets.some(d=>d.key==='weight'));
+assert.equal(new Set(manifest.datasets.map(d=>d.key)).size,manifest.datasets.length,'dataset keys must be unique');
+assert.ok(manifest.datasets.every(d=>d.label&&d.dashboard&&Array.isArray(d.metrics)&&d.metrics.length>0),'every dataset requires label, dashboard and metrics');
+await import('./build-dashboards.mjs');
+const dashboard=JSON.parse(fs.readFileSync('grafana/dashboards/training-center-d1-catalog.json','utf8'));
+assert.equal(dashboard.uid,'tc-d1-catalog');
+assert.equal(dashboard.panels.length,manifest.datasets.length+1);
+assert.equal(dashboard.panels[0].title,'Data coverage not yet verified');
+assert.ok(dashboard.panels.every(p=>p.type==='text'&&p.options?.mode==='markdown'));
+console.log('Dataset manifest and generated dashboard checks passed.');

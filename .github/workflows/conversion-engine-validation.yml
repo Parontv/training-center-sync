@@ -1,0 +1,31 @@
+name: Conversion engine synthetic validation
+on:
+  pull_request:
+    paths:
+      - grafana/build-d1-conversion-candidate.mjs
+      - grafana/test-conversion-engine-synthetic.mjs
+      - grafana/FIELD_VALIDATION_LEDGER.json
+      - grafana/dashboards/garmin-original-clone.json
+  push:
+    branches:
+      - feat/grafana-automated-builder
+    paths:
+      - grafana/build-d1-conversion-candidate.mjs
+      - grafana/test-conversion-engine-synthetic.mjs
+      - grafana/FIELD_VALIDATION_LEDGER.json
+      - grafana/dashboards/garmin-original-clone.json
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate conversion engine inputs
+        run: node grafana/test-conversion-engine.mjs
+      - name: Synthetic target conversion
+        run: node grafana/test-conversion-engine-synthetic.mjs

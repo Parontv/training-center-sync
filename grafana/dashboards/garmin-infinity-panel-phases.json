@@ -1,0 +1,375 @@
+{
+  "generated": "2026-11-25",
+  "panelCount": 62,
+  "targetCount": 143,
+  "phases": [
+    {
+      "phase": 1,
+      "family": "stat",
+      "panels": [
+        {
+          "panelId": 26,
+          "title": "Last Sync ",
+          "targetCount": 1
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "family": "gauge",
+      "panels": [
+        {
+          "panelId": 28,
+          "title": "Today RHR",
+          "targetCount": 1
+        },
+        {
+          "panelId": 30,
+          "title": "Today's Steps",
+          "targetCount": 1
+        },
+        {
+          "panelId": 31,
+          "title": "Today SpO2",
+          "targetCount": 1
+        },
+        {
+          "panelId": 32,
+          "title": "Last Sleep Hours",
+          "targetCount": 1
+        },
+        {
+          "panelId": 33,
+          "title": "High Stress Duration",
+          "targetCount": 1
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "family": "timeseries",
+      "panels": [
+        {
+          "panelId": 6,
+          "title": "Sleep Stages",
+          "targetCount": 4
+        },
+        {
+          "panelId": 7,
+          "title": "Sleep Intraday Stats",
+          "targetCount": 3
+        },
+        {
+          "panelId": 11,
+          "title": "Daily avg health metrics",
+          "targetCount": 3
+        },
+        {
+          "panelId": 15,
+          "title": "Heart Rate",
+          "targetCount": 1
+        },
+        {
+          "panelId": 16,
+          "title": "Steps Cumulative (24h)",
+          "targetCount": 1
+        },
+        {
+          "panelId": 29,
+          "title": "Stress",
+          "targetCount": 2
+        },
+        {
+          "panelId": 34,
+          "title": "Weight",
+          "targetCount": 1
+        },
+        {
+          "panelId": 51,
+          "title": "Daily avg health metrics",
+          "targetCount": 3
+        },
+        {
+          "panelId": 52,
+          "title": "Sleep Movement Activity",
+          "targetCount": 1
+        },
+        {
+          "panelId": 60,
+          "title": "Battery Level (Requires GarminHomeAssistant from ConnectIQ integration)",
+          "targetCount": 1
+        },
+        {
+          "panelId": 62,
+          "title": "Breathing Rates",
+          "targetCount": 1
+        },
+        {
+          "panelId": 63,
+          "title": "Race Predictions",
+          "targetCount": 4
+        },
+        {
+          "panelId": 64,
+          "title": "VO2 Max",
+          "targetCount": 1
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "family": "barchart",
+      "panels": [
+        {
+          "panelId": 1,
+          "title": "Daily Steps",
+          "targetCount": 1
+        },
+        {
+          "panelId": 3,
+          "title": "Daily Distance",
+          "targetCount": 1
+        },
+        {
+          "panelId": 4,
+          "title": "Daily Intensity Minutes",
+          "targetCount": 2
+        },
+        {
+          "panelId": 10,
+          "title": "Daily Calories",
+          "targetCount": 2
+        },
+        {
+          "panelId": 12,
+          "title": "Sleep Score",
+          "targetCount": 1
+        },
+        {
+          "panelId": 13,
+          "title": "Sleep Stages",
+          "targetCount": 4
+        },
+        {
+          "panelId": 17,
+          "title": "Daily Activity Overview",
+          "targetCount": 4
+        },
+        {
+          "panelId": 18,
+          "title": "Stress overview",
+          "targetCount": 5
+        },
+        {
+          "panelId": 19,
+          "title": "Body Battery overview",
+          "targetCount": 2
+        },
+        {
+          "panelId": 37,
+          "title": "Body Battery Level Change",
+          "targetCount": 2
+        },
+        {
+          "panelId": 45,
+          "title": "GPS Track Heart Rate",
+          "targetCount": 1
+        },
+        {
+          "panelId": 46,
+          "title": "GPS Track Altitude",
+          "targetCount": 1
+        },
+        {
+          "panelId": 47,
+          "title": "GPS Track pace",
+          "targetCount": 2
+        },
+        {
+          "panelId": 48,
+          "title": "Activity HR difference (Max-Avg)",
+          "targetCount": 2
+        },
+        {
+          "panelId": 53,
+          "title": "Activity Distance",
+          "targetCount": 1
+        },
+        {
+          "panelId": 54,
+          "title": "Activity Duration",
+          "targetCount": 1
+        },
+        {
+          "panelId": 58,
+          "title": "HR Range (Max-Min)",
+          "targetCount": 2
+        },
+        {
+          "panelId": 61,
+          "title": "GPS Track Cadence",
+          "targetCount": 1
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "family": "piechart",
+      "panels": [
+        {
+          "panelId": 22,
+          "title": "Average Sleep trends",
+          "targetCount": 4
+        },
+        {
+          "panelId": 23,
+          "title": "Avg Activity over given duration",
+          "targetCount": 4
+        },
+        {
+          "panelId": 35,
+          "title": "Today Activity",
+          "targetCount": 4
+        },
+        {
+          "panelId": 36,
+          "title": "Last Sleep",
+          "targetCount": 4
+        },
+        {
+          "panelId": 43,
+          "title": "Activity HR Zones (mean)",
+          "targetCount": 5
+        },
+        {
+          "panelId": 44,
+          "title": "Activity Calories (mean)",
+          "targetCount": 2
+        }
+      ]
+    },
+    {
+      "phase": 6,
+      "family": "table",
+      "panels": [
+        {
+          "panelId": 38,
+          "title": "Recent Activity",
+          "targetCount": 6
+        },
+        {
+          "panelId": 59,
+          "title": "Week at a Glance",
+          "targetCount": 8
+        }
+      ]
+    },
+    {
+      "phase": 7,
+      "family": "state-timeline",
+      "panels": [
+        {
+          "panelId": 41,
+          "title": "Activities",
+          "targetCount": 1
+        },
+        {
+          "panelId": 66,
+          "title": "Month at a Glance (Daily Average)",
+          "targetCount": 9
+        },
+        {
+          "panelId": 67,
+          "title": "Month at a Glance (Intraday)",
+          "targetCount": 5
+        },
+        {
+          "panelId": 68,
+          "title": "Steps Hourly (24h)",
+          "targetCount": 1
+        }
+      ]
+    },
+    {
+      "phase": 8,
+      "family": "histogram",
+      "panels": [
+        {
+          "panelId": 21,
+          "title": "Heart Rate Distribution",
+          "targetCount": 4
+        }
+      ]
+    },
+    {
+      "phase": 9,
+      "family": "trend",
+      "panels": [
+        {
+          "panelId": 57,
+          "title": "Distance vs HR",
+          "targetCount": 4
+        }
+      ]
+    },
+    {
+      "phase": 10,
+      "family": "xychart",
+      "panels": [
+        {
+          "panelId": 55,
+          "title": "Heart Rate vs Pace",
+          "targetCount": 2
+        }
+      ]
+    },
+    {
+      "phase": 11,
+      "family": "heatmap",
+      "panels": [
+        {
+          "panelId": 65,
+          "title": "HR Histogram Heatmap",
+          "targetCount": 1
+        }
+      ]
+    },
+    {
+      "phase": 12,
+      "family": "marcusolsson-hourly-heatmap-panel",
+      "panels": [
+        {
+          "panelId": 20,
+          "title": "Hourly walk heatmap",
+          "targetCount": 1
+        },
+        {
+          "panelId": 27,
+          "title": "Sleep Regularity",
+          "targetCount": 1
+        }
+      ]
+    },
+    {
+      "phase": 13,
+      "family": "geomap",
+      "panels": [
+        {
+          "panelId": 49,
+          "title": "GPS Track by Heart Rate",
+          "targetCount": 4
+        },
+        {
+          "panelId": 50,
+          "title": "GPS Track by Velocity",
+          "targetCount": 4
+        },
+        {
+          "panelId": 69,
+          "title": "Heatmap for GPS Activity (within selected time)",
+          "targetCount": 2
+        }
+      ]
+    }
+  ]
+}

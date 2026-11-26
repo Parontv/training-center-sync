@@ -1,0 +1,6682 @@
+{
+  "sourceDashboard": "Garmin Stats",
+  "sourceUid": "feiibsx498gsgb",
+  "source": "arpanghosh8453/garmin-grafana",
+  "inventoryGenerated": "2026-11-26",
+  "panelCount": 62,
+  "targetCount": 143,
+  "stableIdentityRule": "panelId + targetIndex; normalized refs are only supplemental",
+  "classificationCounts": {
+    "A": 71,
+    "B": 20,
+    "C": 52,
+    "D": 0
+  },
+  "panels": [
+    {
+      "id": 14,
+      "title": "Intraday Health Stats",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "targetCount": 0,
+      "classification": "D"
+    },
+    {
+      "id": 25,
+      "title": "Support Me!",
+      "type": "text",
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 0,
+        "y": 1
+      },
+      "targetCount": 0,
+      "classification": "D"
+    },
+    {
+      "id": 15,
+      "title": "Heart Rate",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 9,
+        "w": 21,
+        "x": 3,
+        "y": 1
+      },
+      "targetCount": 1,
+      "classification": "B"
+    },
+    {
+      "id": 26,
+      "title": "Last Sync ",
+      "type": "stat",
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 0,
+        "y": 4
+      },
+      "targetCount": 1,
+      "classification": "B"
+    },
+    {
+      "id": 21,
+      "title": "Heart Rate Distribution",
+      "type": "histogram",
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 7
+      },
+      "targetCount": 4,
+      "classification": "C"
+    },
+    {
+      "id": 29,
+      "title": "Stress",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 21,
+        "x": 3,
+        "y": 10
+      },
+      "targetCount": 2,
+      "classification": "A"
+    },
+    {
+      "id": 28,
+      "title": "Today RHR",
+      "type": "gauge",
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 0,
+        "y": 11
+      },
+      "targetCount": 1,
+      "classification": "A"
+    },
+    {
+      "id": 30,
+      "title": "Today's Steps",
+      "type": "gauge",
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 0,
+        "y": 16
+      },
+      "targetCount": 1,
+      "classification": "A"
+    },
+    {
+      "id": 16,
+      "title": "Steps Cumulative (24h)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 21,
+        "x": 3,
+        "y": 18
+      },
+      "targetCount": 1,
+      "classification": "A"
+    },
+    {
+      "id": 31,
+      "title": "Today SpO2",
+      "type": "gauge",
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 0,
+        "y": 22
+      },
+      "targetCount": 1,
+      "classification": "A"
+    },
+    {
+      "id": 68,
+      "title": "Steps Hourly (24h)",
+      "type": "state-timeline",
+      "gridPos": {
+        "h": 3,
+        "w": 21,
+        "x": 3,
+        "y": 26
+      },
+      "targetCount": 1,
+      "classification": "C"
+    },
+    {
+      "id": 32,
+      "title": "Last Sleep Hours",
+      "type": "gauge",
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 0,
+        "y": 28
+      },
+      "targetCount": 1,
+      "classification": "A"
+    },
+    {
+      "id": 62,
+      "title": "Breathing Rates",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 21,
+        "x": 3,
+        "y": 29
+      },
+      "targetCount": 1,
+      "classification": "B"
+    },
+    {
+      "id": 33,
+      "title": "High Stress Duration",
+      "type": "gauge",
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 0,
+        "y": 34
+      },
+      "targetCount": 1,
+      "classification": "A"
+    },
+    {
+      "id": 52,
+      "title": "Sleep Movement Activity",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 21,
+        "x": 3,
+        "y": 36
+      },
+      "targetCount": 1,
+      "classification": "A"
+    },
+    {
+      "id": 36,
+      "title": "Last Sleep",
+      "type": "piechart",
+      "gridPos": {
+        "h": 9,
+        "w": 3,
+        "x": 0,
+        "y": 41
+      },
+      "targetCount": 4,
+      "classification": "A"
+    },
+    {
+      "id": 7,
+      "title": "Sleep Intraday Stats",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 9,
+        "w": 21,
+        "x": 3,
+        "y": 43
+      },
+      "targetCount": 3,
+      "classification": "C"
+    },
+    {
+      "id": 35,
+      "title": "Today Activity",
+      "type": "piechart",
+      "gridPos": {
+        "h": 9,
+        "w": 3,
+        "x": 0,
+        "y": 50
+      },
+      "targetCount": 4,
+      "classification": "B"
+    },
+    {
+      "id": 6,
+      "title": "Sleep Stages",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 21,
+        "x": 3,
+        "y": 52
+      },
+      "targetCount": 4,
+      "classification": "A"
+    },
+    {
+      "id": 43,
+      "title": "Activity HR Zones (mean)",
+      "type": "piechart",
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 0,
+        "y": 59
+      },
+      "targetCount": 5,
+      "classification": "B"
+    },
+    {
+      "id": 44,
+      "title": "Activity Calories (mean)",
+      "type": "piechart",
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 5,
+        "y": 59
+      },
+      "targetCount": 2,
+      "classification": "A"
+    },
+    {
+      "id": 48,
+      "title": "Activity HR difference (Max-Avg)",
+      "type": "barchart",
+      "gridPos": {
+        "h": 9,
+        "w": 4,
+        "x": 10,
+        "y": 59
+      },
+      "targetCount": 2,
+      "classification": "B"
+    },
+    {
+      "id": 53,
+      "title": "Activity Distance",
+      "type": "barchart",
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 14,
+        "y": 59
+      },
+      "targetCount": 1,
+      "classification": "B"
+    },
+    {
+      "id": 54,
+      "title": "Activity Duration",
+      "type": "barchart",
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 19,
+        "y": 59
+      },
+      "targetCount": 1,
+      "classification": "B"
+    },
+    {
+      "id": 42,
+      "title": "Recent Activities",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 68
+      },
+      "targetCount": 0,
+      "classification": "D"
+    },
+    {
+      "id": 50,
+      "title": "GPS Track by Velocity",
+      "type": "geomap",
+      "gridPos": {
+        "h": 11,
+        "w": 12,
+        "x": 0,
+        "y": 69
+      },
+      "targetCount": 4,
+      "classification": "C"
+    },
+    {
+      "id": 49,
+      "title": "GPS Track by Heart Rate",
+      "type": "geomap",
+      "gridPos": {
+        "h": 11,
+        "w": 12,
+        "x": 12,
+        "y": 69
+      },
+      "targetCount": 4,
+      "classification": "C"
+    },
+    {
+      "id": 45,
+      "title": "GPS Track Heart Rate",
+      "type": "barchart",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 80
+      },
+      "targetCount": 1,
+      "classification": "C"
+    },
+    {
+      "id": 61,
+      "title": "GPS Track Cadence",
+      "type": "barchart",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 88
+      },
+      "targetCount": 1,
+      "classification": "C"
+    },
+    {
+      "id": 57,
+      "title": "Distance vs HR",
+      "type": "trend",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 96
+      },
+      "targetCount": 4,
+      "classification": "B"
+    },
+    {
+      "id": 55,
+      "title": "Heart Rate vs Pace",
+      "type": "xychart",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 104
+      },
+      "targetCount": 2,
+      "classification": "C"
+    },
+    {
+      "id": 47,
+      "title": "GPS Track pace",
+      "type": "barchart",
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 112
+      },
+      "targetCount": 2,
+      "classification": "C"
+    },
+    {
+      "id": 46,
+      "title": "GPS Track Altitude",
+      "type": "barchart",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 119
+      },
+      "targetCount": 1,
+      "classification": "C"
+    },
+    {
+      "id": 38,
+      "title": "Recent Activity",
+      "type": "table",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 127
+      },
+      "targetCount": 6,
+      "classification": "B"
+    },
+    {
+      "id": 41,
+      "title": "Activities",
+      "type": "state-timeline",
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 135
+      },
+      "targetCount": 1,
+      "classification": "C"
+    },
+    {
+      "id": 9,
+      "title": "Long term visualization",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 139
+      },
+      "targetCount": 0,
+      "classification": "D"
+    },
+    {
+      "id": 59,
+      "title": "Week at a Glance",
+      "type": "table",
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 140
+      },
+      "targetCount": 8,
+      "classification": "B"
+    },
+    {
+      "id": 1,
+      "title": "Daily Steps",
+      "type": "barchart",
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 0,
+        "y": 151
+      },
+      "targetCount": 1,
+      "classification": "A"
+    },
+    {
+      "id": 3,
+      "title": "Daily Distance",
+      "type": "barchart",
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 8,
+        "y": 151
+      },
+      "targetCount": 1,
+      "classification": "A"
+    },
+    {
+      "id": 10,
+      "title": "Daily Calories",
+      "type": "barchart",
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 16,
+        "y": 151
+      },
+      "targetCount": 2,
+      "classification": "A"
+    },
+    {
+      "id": 11,
+      "title": "Daily avg health metrics",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 160
+      },
+      "targetCount": 3,
+      "classification": "A"
+    },
+    {
+      "id": 51,
+      "title": "Daily avg health metrics",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 160
+      },
+      "targetCount": 3,
+      "classification": "A"
+    },
+    {
+      "id": 63,
+      "title": "Race Predictions",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 0,
+        "y": 169
+      },
+      "targetCount": 4,
+      "classification": "B"
+    },
+    {
+      "id": 64,
+      "title": "VO2 Max",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 8,
+        "y": 169
+      },
+      "targetCount": 1,
+      "classification": "A"
+    },
+    {
+      "id": 69,
+      "title": "Heatmap for GPS Activity (within selected time)",
+      "type": "geomap",
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 16,
+        "y": 169
+      },
+      "targetCount": 2,
+      "classification": "C"
+    },
+    {
+      "id": 13,
+      "title": "Sleep Stages",
+      "type": "barchart",
+      "gridPos": {
+        "h": 11,
+        "w": 9,
+        "x": 0,
+        "y": 179
+      },
+      "targetCount": 4,
+      "classification": "A"
+    },
+    {
+      "id": 23,
+      "title": "Avg Activity over given duration",
+      "type": "piechart",
+      "gridPos": {
+        "h": 11,
+        "w": 7,
+        "x": 9,
+        "y": 179
+      },
+      "targetCount": 4,
+      "classification": "B"
+    },
+    {
+      "id": 12,
+      "title": "Sleep Score",
+      "type": "barchart",
+      "gridPos": {
+        "h": 11,
+        "w": 8,
+        "x": 16,
+        "y": 179
+      },
+      "targetCount": 1,
+      "classification": "A"
+    },
+    {
+      "id": 17,
+      "title": "Daily Activity Overview",
+      "type": "barchart",
+      "gridPos": {
+        "h": 11,
+        "w": 9,
+        "x": 0,
+        "y": 190
+      },
+      "targetCount": 4,
+      "classification": "A"
+    },
+    {
+      "id": 19,
+      "title": "Body Battery overview",
+      "type": "barchart",
+      "gridPos": {
+        "h": 11,
+        "w": 8,
+        "x": 9,
+        "y": 190
+      },
+      "targetCount": 2,
+      "classification": "A"
+    },
+    {
+      "id": 4,
+      "title": "Daily Intensity Minutes",
+      "type": "barchart",
+      "gridPos": {
+        "h": 11,
+        "w": 7,
+        "x": 17,
+        "y": 190
+      },
+      "targetCount": 2,
+      "classification": "A"
+    },
+    {
+      "id": 18,
+      "title": "Stress overview",
+      "type": "barchart",
+      "gridPos": {
+        "h": 14,
+        "w": 10,
+        "x": 0,
+        "y": 201
+      },
+      "targetCount": 5,
+      "classification": "A"
+    },
+    {
+      "id": 22,
+      "title": "Average Sleep trends",
+      "type": "piechart",
+      "gridPos": {
+        "h": 6,
+        "w": 7,
+        "x": 10,
+        "y": 201
+      },
+      "targetCount": 4,
+      "classification": "A"
+    },
+    {
+      "id": 37,
+      "title": "Body Battery Level Change",
+      "type": "barchart",
+      "gridPos": {
+        "h": 7,
+        "w": 7,
+        "x": 17,
+        "y": 201
+      },
+      "targetCount": 2,
+      "classification": "A"
+    },
+    {
+      "id": 34,
+      "title": "Weight",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 7,
+        "x": 10,
+        "y": 207
+      },
+      "targetCount": 1,
+      "classification": "A"
+    },
+    {
+      "id": 58,
+      "title": "HR Range (Max-Min)",
+      "type": "barchart",
+      "gridPos": {
+        "h": 7,
+        "w": 7,
+        "x": 17,
+        "y": 208
+      },
+      "targetCount": 2,
+      "classification": "B"
+    },
+    {
+      "id": 66,
+      "title": "Month at a Glance (Daily Average)",
+      "type": "state-timeline",
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 215
+      },
+      "targetCount": 9,
+      "classification": "C"
+    },
+    {
+      "id": 67,
+      "title": "Month at a Glance (Intraday)",
+      "type": "state-timeline",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 226
+      },
+      "targetCount": 5,
+      "classification": "C"
+    },
+    {
+      "id": 65,
+      "title": "HR Histogram Heatmap",
+      "type": "heatmap",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 234
+      },
+      "targetCount": 1,
+      "classification": "C"
+    },
+    {
+      "id": 20,
+      "title": "Hourly walk heatmap",
+      "type": "marcusolsson-hourly-heatmap-panel",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 242
+      },
+      "targetCount": 1,
+      "classification": "C"
+    },
+    {
+      "id": 27,
+      "title": "Sleep Regularity",
+      "type": "marcusolsson-hourly-heatmap-panel",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 242
+      },
+      "targetCount": 1,
+      "classification": "C"
+    },
+    {
+      "id": 60,
+      "title": "Battery Level (Requires GarminHomeAssistant from ConnectIQ integration)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 252
+      },
+      "targetCount": 1,
+      "classification": "A"
+    }
+  ],
+  "targets": [
+    {
+      "panelId": 15,
+      "panelTitle": "Heart Rate",
+      "panelType": "timeseries",
+      "targetIndex": 0,
+      "stableKey": "15:0",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "HeartRateIntraday",
+        "field": "HeartRate",
+        "alias": "Heart Rate",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "HeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "2m"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 26,
+      "panelTitle": "Last Sync ",
+      "panelType": "stat",
+      "targetIndex": 0,
+      "stableKey": "26:0",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "HeartRateIntraday",
+        "field": "HeartRate",
+        "alias": null,
+        "rawQuery": false,
+        "query": null,
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "HeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 21,
+      "panelTitle": "Heart Rate Distribution",
+      "panelType": "histogram",
+      "targetIndex": 0,
+      "stableKey": "21:0",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "HeartRate_Intraday",
+        "field": "value",
+        "alias": "Heart rate histogram",
+        "rawQuery": true,
+        "query": "select mean_value from (SELECT mean(\"HeartRate\") as mean_value FROM \"HeartRateIntraday\" WHERE $timeFilter GROUP BY time(1m) fill(null)) where mean_value <= 96",
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "value"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "$interval"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 21,
+      "panelTitle": "Heart Rate Distribution",
+      "panelType": "histogram",
+      "targetIndex": 1,
+      "stableKey": "21:1",
+      "legacyRef": "B",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "HeartRate_Intraday",
+        "field": "value",
+        "alias": "Heart rate histogram > 96",
+        "rawQuery": true,
+        "query": "select mean_value from (SELECT mean(\"HeartRate\") as mean_value FROM \"HeartRateIntraday\" WHERE $timeFilter GROUP BY time(1m) fill(null)) where mean_value > 96",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "value"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 21,
+      "panelTitle": "Heart Rate Distribution",
+      "panelType": "histogram",
+      "targetIndex": 2,
+      "stableKey": "21:2",
+      "legacyRef": "C",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "HeartRate_Intraday",
+        "field": "value",
+        "alias": "Heart rate histogram < 60",
+        "rawQuery": true,
+        "query": "select mean_value from (SELECT mean(\"HeartRate\") as mean_value FROM \"HeartRateIntraday\" WHERE $timeFilter GROUP BY time(1m) fill(null)) where mean_value < 60",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "value"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 21,
+      "panelTitle": "Heart Rate Distribution",
+      "panelType": "histogram",
+      "targetIndex": 3,
+      "stableKey": "21:3",
+      "legacyRef": "D",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "HeartRate_Intraday",
+        "field": "value",
+        "alias": "Heart rate histogram > 110",
+        "rawQuery": true,
+        "query": "select mean_value from (SELECT mean(\"HeartRate\") as mean_value FROM \"HeartRateIntraday\" WHERE $timeFilter GROUP BY time(1m) fill(null)) where mean_value > 110",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "value"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 29,
+      "panelTitle": "Stress",
+      "panelType": "timeseries",
+      "targetIndex": 0,
+      "stableKey": "29:0",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "StressIntraday",
+        "field": "stressLevel",
+        "alias": "Stress",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "stressLevel"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 29,
+      "panelTitle": "Stress",
+      "panelType": "timeseries",
+      "targetIndex": 1,
+      "stableKey": "29:1",
+      "legacyRef": "B",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "BodyBatteryIntraday",
+        "field": "BodyBatteryLevel",
+        "alias": "Body Battery",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "BodyBatteryLevel"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 28,
+      "panelTitle": "Today RHR",
+      "panelType": "gauge",
+      "targetIndex": 0,
+      "stableKey": "28:0",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "restingHeartRate",
+        "alias": null,
+        "rawQuery": false,
+        "query": null,
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "restingHeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 30,
+      "panelTitle": "Today's Steps",
+      "panelType": "gauge",
+      "targetIndex": 0,
+      "stableKey": "30:0",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "totalSteps",
+        "alias": null,
+        "rawQuery": false,
+        "query": null,
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "totalSteps"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 16,
+      "panelTitle": "Steps Cumulative (24h)",
+      "panelType": "timeseries",
+      "targetIndex": 0,
+      "stableKey": "16:0",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "StepsIntraday",
+        "field": "StepsCount",
+        "alias": "Intraday Steps",
+        "rawQuery": false,
+        "query": "SELECT moving_average(mean(\"value\"), 6) FROM \"HeartRate_Intraday\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+        "operations": "mean,cumulative_sum",
+        "select": [
+          [
+            {
+              "params": [
+                "StepsCount"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            },
+            {
+              "params": [],
+              "type": "cumulative_sum"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "15m"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 31,
+      "panelTitle": "Today SpO2",
+      "panelType": "gauge",
+      "targetIndex": 0,
+      "stableKey": "31:0",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "averageSpo2",
+        "alias": null,
+        "rawQuery": false,
+        "query": null,
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "averageSpo2"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 68,
+      "panelTitle": "Steps Hourly (24h)",
+      "panelType": "state-timeline",
+      "targetIndex": 0,
+      "stableKey": "68:0",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "StepsIntraday",
+        "field": "StepsCount",
+        "alias": "Hourly Steps",
+        "rawQuery": false,
+        "query": "SELECT moving_average(mean(\"value\"), 6) FROM \"HeartRate_Intraday\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+        "operations": "sum",
+        "select": [
+          [
+            {
+              "params": [
+                "StepsCount"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "sum"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1h"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "0"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 32,
+      "panelTitle": "Last Sleep Hours",
+      "panelType": "gauge",
+      "targetIndex": 0,
+      "stableKey": "32:0",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "SleepSummary",
+        "field": "sleepTimeSeconds",
+        "alias": "Total Asleep",
+        "rawQuery": false,
+        "query": null,
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "sleepTimeSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 62,
+      "panelTitle": "Breathing Rates",
+      "panelType": "timeseries",
+      "targetIndex": 0,
+      "stableKey": "62:0",
+      "legacyRef": "B",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "BreathingRateIntraday",
+        "field": "BreathingRate",
+        "alias": "BR",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "BreathingRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "2m"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 33,
+      "panelTitle": "High Stress Duration",
+      "panelType": "gauge",
+      "targetIndex": 0,
+      "stableKey": "33:0",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "highStressDuration",
+        "alias": "Stress",
+        "rawQuery": false,
+        "query": null,
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "highStressDuration"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 52,
+      "panelTitle": "Sleep Movement Activity",
+      "panelType": "timeseries",
+      "targetIndex": 0,
+      "stableKey": "52:0",
+      "legacyRef": "E",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "SleepIntraday",
+        "field": "SleepMovementActivityLevel",
+        "alias": "Sleeping Movement Activity",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "SleepMovementActivityLevel"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 36,
+      "panelTitle": "Last Sleep",
+      "panelType": "piechart",
+      "targetIndex": 0,
+      "stableKey": "36:0",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "SleepSummary",
+        "field": "deepSleepSeconds",
+        "alias": "Deep",
+        "rawQuery": false,
+        "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "deepSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 36,
+      "panelTitle": "Last Sleep",
+      "panelType": "piechart",
+      "targetIndex": 1,
+      "stableKey": "36:1",
+      "legacyRef": "B",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "SleepSummary",
+        "field": "lightSleepSeconds",
+        "alias": "Light",
+        "rawQuery": false,
+        "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "lightSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 36,
+      "panelTitle": "Last Sleep",
+      "panelType": "piechart",
+      "targetIndex": 2,
+      "stableKey": "36:2",
+      "legacyRef": "C",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "SleepSummary",
+        "field": "remSleepSeconds",
+        "alias": "REM",
+        "rawQuery": false,
+        "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "remSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 36,
+      "panelTitle": "Last Sleep",
+      "panelType": "piechart",
+      "targetIndex": 3,
+      "stableKey": "36:3",
+      "legacyRef": "D",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "SleepSummary",
+        "field": "awakeSleepSeconds",
+        "alias": "Awake",
+        "rawQuery": false,
+        "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "awakeSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 7,
+      "panelTitle": "Sleep Intraday Stats",
+      "panelType": "timeseries",
+      "targetIndex": 0,
+      "stableKey": "7:0",
+      "legacyRef": "C",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "SleepIntraday",
+        "field": "heartRate",
+        "alias": "Sleeping Heart Rate",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "heartRate"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 7,
+      "panelTitle": "Sleep Intraday Stats",
+      "panelType": "timeseries",
+      "targetIndex": 1,
+      "stableKey": "7:1",
+      "legacyRef": "D",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "SleepIntraday",
+        "field": "spo2Reading",
+        "alias": "SpO2",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "spo2Reading"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 7,
+      "panelTitle": "Sleep Intraday Stats",
+      "panelType": "timeseries",
+      "targetIndex": 2,
+      "stableKey": "7:2",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "HRV_Intraday",
+        "field": "hrvValue",
+        "alias": "HRV",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "hrvValue"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 35,
+      "panelTitle": "Today Activity",
+      "panelType": "piechart",
+      "targetIndex": 0,
+      "stableKey": "35:0",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "sedentarySeconds",
+        "alias": "Sedentary",
+        "rawQuery": false,
+        "query": null,
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "sedentarySeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 35,
+      "panelTitle": "Today Activity",
+      "panelType": "piechart",
+      "targetIndex": 1,
+      "stableKey": "35:1",
+      "legacyRef": "B",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "vigorousIntensityMinutes",
+        "alias": "Intense Activity",
+        "rawQuery": false,
+        "query": null,
+        "operations": "last,math",
+        "select": [
+          [
+            {
+              "params": [
+                "vigorousIntensityMinutes"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            },
+            {
+              "params": [
+                "* 60"
+              ],
+              "type": "math"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 35,
+      "panelTitle": "Today Activity",
+      "panelType": "piechart",
+      "targetIndex": 2,
+      "stableKey": "35:2",
+      "legacyRef": "C",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "moderateIntensityMinutes",
+        "alias": "Moderate Activity",
+        "rawQuery": false,
+        "query": null,
+        "operations": "last,math",
+        "select": [
+          [
+            {
+              "params": [
+                "moderateIntensityMinutes"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            },
+            {
+              "params": [
+                "* 60"
+              ],
+              "type": "math"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 35,
+      "panelTitle": "Today Activity",
+      "panelType": "piechart",
+      "targetIndex": 3,
+      "stableKey": "35:3",
+      "legacyRef": "D",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "sleepingSeconds",
+        "alias": "Sleeping",
+        "rawQuery": false,
+        "query": null,
+        "operations": "last",
+        "select": [
+          [
+            {
+              "params": [
+                "sleepingSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "last"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 6,
+      "panelTitle": "Sleep Stages",
+      "panelType": "timeseries",
+      "targetIndex": 0,
+      "stableKey": "6:0",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "SleepIntraday",
+        "field": "SleepStageLevel",
+        "alias": "Deep",
+        "rawQuery": true,
+        "query": "SELECT \"SleepStageLevel\"+1 FROM \"SleepIntraday\" WHERE SleepStageLevel=0 AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "SleepStageLevel"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 6,
+      "panelTitle": "Sleep Stages",
+      "panelType": "timeseries",
+      "targetIndex": 1,
+      "stableKey": "6:1",
+      "legacyRef": "B",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "SleepIntraday",
+        "field": "SleepStageLevel",
+        "alias": "Light",
+        "rawQuery": true,
+        "query": "SELECT \"SleepStageLevel\"+1 FROM \"SleepIntraday\" WHERE SleepStageLevel=1 AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "SleepStageLevel"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 6,
+      "panelTitle": "Sleep Stages",
+      "panelType": "timeseries",
+      "targetIndex": 2,
+      "stableKey": "6:2",
+      "legacyRef": "C",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "SleepIntraday",
+        "field": "SleepStageLevel",
+        "alias": "REM",
+        "rawQuery": true,
+        "query": "SELECT \"SleepStageLevel\"+1 FROM \"SleepIntraday\" WHERE SleepStageLevel=2 AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "SleepStageLevel"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 6,
+      "panelTitle": "Sleep Stages",
+      "panelType": "timeseries",
+      "targetIndex": 3,
+      "stableKey": "6:3",
+      "legacyRef": "D",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "SleepIntraday",
+        "field": "SleepStageLevel",
+        "alias": "Awake",
+        "rawQuery": true,
+        "query": "SELECT \"SleepStageLevel\"+1 FROM \"SleepIntraday\" WHERE SleepStageLevel=3 AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "SleepStageLevel"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 43,
+      "panelTitle": "Activity HR Zones (mean)",
+      "panelType": "piechart",
+      "targetIndex": 0,
+      "stableKey": "43:0",
+      "legacyRef": "A",
+      "classification": "B",
+      "classificationRationale": "transformation or semantics require further review",
+      "legacyQuery": {
+        "measurement": "ActivitySummary",
+        "field": "hrTimeInZone_1",
+        "alias": "Zone 1",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "hrTimeInZone_1"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 43,
+      "panelTitle": "Activity HR Zones (mean)",
+      "panelType": "piechart",
+      "targetIndex": 1,
+      "stableKey": "43:1",
+      "legacyRef": "B",
+      "classification": "B",
+      "classificationRationale": "transformation or semantics require further review",
+      "legacyQuery": {
+        "measurement": "ActivitySummary",
+        "field": "hrTimeInZone_2",
+        "alias": "Zone 2",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "hrTimeInZone_2"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 43,
+      "panelTitle": "Activity HR Zones (mean)",
+      "panelType": "piechart",
+      "targetIndex": 2,
+      "stableKey": "43:2",
+      "legacyRef": "C",
+      "classification": "B",
+      "classificationRationale": "transformation or semantics require further review",
+      "legacyQuery": {
+        "measurement": "ActivitySummary",
+        "field": "hrTimeInZone_3",
+        "alias": "Zone 3",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "hrTimeInZone_3"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 43,
+      "panelTitle": "Activity HR Zones (mean)",
+      "panelType": "piechart",
+      "targetIndex": 3,
+      "stableKey": "43:3",
+      "legacyRef": "D",
+      "classification": "B",
+      "classificationRationale": "transformation or semantics require further review",
+      "legacyQuery": {
+        "measurement": "ActivitySummary",
+        "field": "hrTimeInZone_4",
+        "alias": "Zone 4",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "hrTimeInZone_4"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 43,
+      "panelTitle": "Activity HR Zones (mean)",
+      "panelType": "piechart",
+      "targetIndex": 4,
+      "stableKey": "43:4",
+      "legacyRef": "E",
+      "classification": "B",
+      "classificationRationale": "transformation or semantics require further review",
+      "legacyQuery": {
+        "measurement": "ActivitySummary",
+        "field": "hrTimeInZone_5",
+        "alias": "Zone 5",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "hrTimeInZone_5"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 44,
+      "panelTitle": "Activity Calories (mean)",
+      "panelType": "piechart",
+      "targetIndex": 0,
+      "stableKey": "44:0",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "ActivitySummary",
+        "field": "calories",
+        "alias": "calories",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "calories"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 44,
+      "panelTitle": "Activity Calories (mean)",
+      "panelType": "piechart",
+      "targetIndex": 1,
+      "stableKey": "44:1",
+      "legacyRef": "B",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "ActivitySummary",
+        "field": "bmrCalories",
+        "alias": "BMR calories",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "bmrCalories"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 48,
+      "panelTitle": "Activity HR difference (Max-Avg)",
+      "panelType": "barchart",
+      "targetIndex": 0,
+      "stableKey": "48:0",
+      "legacyRef": "A",
+      "classification": "B",
+      "classificationRationale": "transformation or semantics require further review",
+      "legacyQuery": {
+        "measurement": "ActivitySummary",
+        "field": "averageHR",
+        "alias": "avgHR",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "averageHR"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "$__interval"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 48,
+      "panelTitle": "Activity HR difference (Max-Avg)",
+      "panelType": "barchart",
+      "targetIndex": 1,
+      "stableKey": "48:1",
+      "legacyRef": "B",
+      "classification": "B",
+      "classificationRationale": "transformation or semantics require further review",
+      "legacyQuery": {
+        "measurement": "ActivitySummary",
+        "field": "maxHR",
+        "alias": "maxHR",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "maxHR"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "$__interval"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 53,
+      "panelTitle": "Activity Distance",
+      "panelType": "barchart",
+      "targetIndex": 0,
+      "stableKey": "53:0",
+      "legacyRef": "A",
+      "classification": "B",
+      "classificationRationale": "transformation or semantics require further review",
+      "legacyQuery": {
+        "measurement": "ActivitySummary",
+        "field": "distance",
+        "alias": "Distance",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "distance"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 54,
+      "panelTitle": "Activity Duration",
+      "panelType": "barchart",
+      "targetIndex": 0,
+      "stableKey": "54:0",
+      "legacyRef": "A",
+      "classification": "B",
+      "classificationRationale": "transformation or semantics require further review",
+      "legacyQuery": {
+        "measurement": "ActivitySummary",
+        "field": "elapsedDuration",
+        "alias": "Duration",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "elapsedDuration"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 50,
+      "panelTitle": "GPS Track by Velocity",
+      "panelType": "geomap",
+      "targetIndex": 0,
+      "stableKey": "50:0",
+      "legacyRef": "I",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "Latitude",
+        "alias": "lat",
+        "rawQuery": false,
+        "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "Latitude"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 50,
+      "panelTitle": "GPS Track by Velocity",
+      "panelType": "geomap",
+      "targetIndex": 1,
+      "stableKey": "50:1",
+      "legacyRef": "J",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "Longitude",
+        "alias": "lon",
+        "rawQuery": false,
+        "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "Longitude"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 50,
+      "panelTitle": "GPS Track by Velocity",
+      "panelType": "geomap",
+      "targetIndex": 2,
+      "stableKey": "50:2",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "HeartRate",
+        "alias": "HR",
+        "rawQuery": false,
+        "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "HeartRate"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 50,
+      "panelTitle": "GPS Track by Velocity",
+      "panelType": "geomap",
+      "targetIndex": 3,
+      "stableKey": "50:3",
+      "legacyRef": "B",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "Speed",
+        "alias": "speed (Km/h)",
+        "rawQuery": false,
+        "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+        "operations": "math",
+        "select": [
+          [
+            {
+              "params": [
+                "Speed"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [
+                "* 3.6"
+              ],
+              "type": "math"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 49,
+      "panelTitle": "GPS Track by Heart Rate",
+      "panelType": "geomap",
+      "targetIndex": 0,
+      "stableKey": "49:0",
+      "legacyRef": "I",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "Latitude",
+        "alias": "lat",
+        "rawQuery": false,
+        "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "Latitude"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 49,
+      "panelTitle": "GPS Track by Heart Rate",
+      "panelType": "geomap",
+      "targetIndex": 1,
+      "stableKey": "49:1",
+      "legacyRef": "J",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "Longitude",
+        "alias": "lon",
+        "rawQuery": false,
+        "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "Longitude"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 49,
+      "panelTitle": "GPS Track by Heart Rate",
+      "panelType": "geomap",
+      "targetIndex": 2,
+      "stableKey": "49:2",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "HeartRate",
+        "alias": "HR",
+        "rawQuery": false,
+        "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "HeartRate"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 49,
+      "panelTitle": "GPS Track by Heart Rate",
+      "panelType": "geomap",
+      "targetIndex": 3,
+      "stableKey": "49:3",
+      "legacyRef": "B",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "Speed",
+        "alias": "speed",
+        "rawQuery": false,
+        "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "Speed"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 45,
+      "panelTitle": "GPS Track Heart Rate",
+      "panelType": "barchart",
+      "targetIndex": 0,
+      "stableKey": "45:0",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "HeartRate",
+        "alias": "HR",
+        "rawQuery": false,
+        "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "HeartRate"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 61,
+      "panelTitle": "GPS Track Cadence",
+      "panelType": "barchart",
+      "targetIndex": 0,
+      "stableKey": "61:0",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "Cadence",
+        "alias": "Cadence",
+        "rawQuery": false,
+        "query": "SELECT (1000/(\"Cadence\"* 60)) FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/) AND $timeFilter",
+        "operations": "math",
+        "select": [
+          [
+            {
+              "params": [
+                "Cadence"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [
+                "* 2"
+              ],
+              "type": "math"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 57,
+      "panelTitle": "Distance vs HR",
+      "panelType": "trend",
+      "targetIndex": 0,
+      "stableKey": "57:0",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "Distance",
+        "alias": "Distance",
+        "rawQuery": false,
+        "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "Distance"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 57,
+      "panelTitle": "Distance vs HR",
+      "panelType": "trend",
+      "targetIndex": 1,
+      "stableKey": "57:1",
+      "legacyRef": "B",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "HeartRate",
+        "alias": "Heart Rate",
+        "rawQuery": false,
+        "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "HeartRate"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 57,
+      "panelTitle": "Distance vs HR",
+      "panelType": "trend",
+      "targetIndex": 2,
+      "stableKey": "57:2",
+      "legacyRef": "C",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "Speed",
+        "alias": "Pace",
+        "rawQuery": false,
+        "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+        "operations": "math",
+        "select": [
+          [
+            {
+              "params": [
+                "Speed"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [
+                "* 3.6"
+              ],
+              "type": "math"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 57,
+      "panelTitle": "Distance vs HR",
+      "panelType": "trend",
+      "targetIndex": 3,
+      "stableKey": "57:3",
+      "legacyRef": "D",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "DurationSeconds",
+        "alias": "Duration",
+        "rawQuery": false,
+        "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "DurationSeconds"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 55,
+      "panelTitle": "Heart Rate vs Pace",
+      "panelType": "xychart",
+      "targetIndex": 0,
+      "stableKey": "55:0",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "Speed",
+        "alias": "Speed (Km/h)",
+        "rawQuery": false,
+        "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+        "operations": "math",
+        "select": [
+          [
+            {
+              "params": [
+                "Speed"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [
+                "* 3.6"
+              ],
+              "type": "math"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 55,
+      "panelTitle": "Heart Rate vs Pace",
+      "panelType": "xychart",
+      "targetIndex": 1,
+      "stableKey": "55:1",
+      "legacyRef": "B",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "HeartRate",
+        "alias": "Heart Rate",
+        "rawQuery": false,
+        "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "HeartRate"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 47,
+      "panelTitle": "GPS Track pace",
+      "panelType": "barchart",
+      "targetIndex": 0,
+      "stableKey": "47:0",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "Speed",
+        "alias": "m/s",
+        "rawQuery": false,
+        "query": "SELECT \"Speed\" FROM \"ActivityGPS\" WHERE \"Speed\" > 0 AND  (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/) AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "Speed"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 47,
+      "panelTitle": "GPS Track pace",
+      "panelType": "barchart",
+      "targetIndex": 1,
+      "stableKey": "47:1",
+      "legacyRef": "B",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "DurationSeconds",
+        "alias": "Duration",
+        "rawQuery": false,
+        "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "DurationSeconds"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 46,
+      "panelTitle": "GPS Track Altitude",
+      "panelType": "barchart",
+      "targetIndex": 0,
+      "stableKey": "46:0",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "Altitude",
+        "alias": "Altitude",
+        "rawQuery": false,
+        "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "Altitude"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 38,
+      "panelTitle": "Recent Activity",
+      "panelType": "table",
+      "targetIndex": 0,
+      "stableKey": "38:0",
+      "legacyRef": "B",
+      "classification": "B",
+      "classificationRationale": "transformation or semantics require further review",
+      "legacyQuery": {
+        "measurement": "ActivitySummary",
+        "field": "activityType",
+        "alias": "Activity Type",
+        "rawQuery": false,
+        "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "activityType"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 38,
+      "panelTitle": "Recent Activity",
+      "panelType": "table",
+      "targetIndex": 1,
+      "stableKey": "38:1",
+      "legacyRef": "A",
+      "classification": "B",
+      "classificationRationale": "transformation or semantics require further review",
+      "legacyQuery": {
+        "measurement": "ActivitySummary",
+        "field": "elapsedDuration",
+        "alias": "Duration",
+        "rawQuery": false,
+        "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "elapsedDuration"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 38,
+      "panelTitle": "Recent Activity",
+      "panelType": "table",
+      "targetIndex": 2,
+      "stableKey": "38:2",
+      "legacyRef": "C",
+      "classification": "B",
+      "classificationRationale": "transformation or semantics require further review",
+      "legacyQuery": {
+        "measurement": "ActivitySummary",
+        "field": "maxHR",
+        "alias": "Max HR",
+        "rawQuery": false,
+        "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "maxHR"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 38,
+      "panelTitle": "Recent Activity",
+      "panelType": "table",
+      "targetIndex": 3,
+      "stableKey": "38:3",
+      "legacyRef": "E",
+      "classification": "B",
+      "classificationRationale": "transformation or semantics require further review",
+      "legacyQuery": {
+        "measurement": "ActivitySummary",
+        "field": "maxSpeed",
+        "alias": "Max Speed",
+        "rawQuery": false,
+        "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+        "operations": "math",
+        "select": [
+          [
+            {
+              "params": [
+                "maxSpeed"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [
+                "* 3.6"
+              ],
+              "type": "math"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 38,
+      "panelTitle": "Recent Activity",
+      "panelType": "table",
+      "targetIndex": 4,
+      "stableKey": "38:4",
+      "legacyRef": "F",
+      "classification": "B",
+      "classificationRationale": "transformation or semantics require further review",
+      "legacyQuery": {
+        "measurement": "ActivitySummary",
+        "field": "distance",
+        "alias": "Distance",
+        "rawQuery": false,
+        "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "distance"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 38,
+      "panelTitle": "Recent Activity",
+      "panelType": "table",
+      "targetIndex": 5,
+      "stableKey": "38:5",
+      "legacyRef": "D",
+      "classification": "B",
+      "classificationRationale": "transformation or semantics require further review",
+      "legacyQuery": {
+        "measurement": "ActivitySummary",
+        "field": "locationName",
+        "alias": "Location",
+        "rawQuery": false,
+        "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "locationName"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 41,
+      "panelTitle": "Activities",
+      "panelType": "state-timeline",
+      "targetIndex": 0,
+      "stableKey": "41:0",
+      "legacyRef": "A",
+      "classification": "B",
+      "classificationRationale": "transformation or semantics require further review",
+      "legacyQuery": {
+        "measurement": "ActivitySummary",
+        "field": "activityType",
+        "alias": "Activity Timeline",
+        "rawQuery": false,
+        "query": null,
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "activityType"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 59,
+      "panelTitle": "Week at a Glance",
+      "panelType": "table",
+      "targetIndex": 0,
+      "stableKey": "59:0",
+      "legacyRef": "B",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "totalDistanceMeters",
+        "alias": "Distance Covered",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max",
+        "select": [
+          [
+            {
+              "params": [
+                "totalDistanceMeters"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 59,
+      "panelTitle": "Week at a Glance",
+      "panelType": "table",
+      "targetIndex": 1,
+      "stableKey": "59:1",
+      "legacyRef": "C",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "totalSteps",
+        "alias": "Steps",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max",
+        "select": [
+          [
+            {
+              "params": [
+                "totalSteps"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 59,
+      "panelTitle": "Week at a Glance",
+      "panelType": "table",
+      "targetIndex": 2,
+      "stableKey": "59:2",
+      "legacyRef": "E",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "sleepingSeconds",
+        "alias": "Total Sleep",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max",
+        "select": [
+          [
+            {
+              "params": [
+                "sleepingSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 59,
+      "panelTitle": "Week at a Glance",
+      "panelType": "table",
+      "targetIndex": 3,
+      "stableKey": "59:3",
+      "legacyRef": "D",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "highStressDuration",
+        "alias": "High Stress Duration",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max",
+        "select": [
+          [
+            {
+              "params": [
+                "highStressDuration"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 59,
+      "panelTitle": "Week at a Glance",
+      "panelType": "table",
+      "targetIndex": 4,
+      "stableKey": "59:4",
+      "legacyRef": "H",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "highlyActiveSeconds",
+        "alias": "High Activity Duration",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max",
+        "select": [
+          [
+            {
+              "params": [
+                "highlyActiveSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 59,
+      "panelTitle": "Week at a Glance",
+      "panelType": "table",
+      "targetIndex": 5,
+      "stableKey": "59:5",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "restingHeartRate",
+        "alias": "Resting Heart Rate",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max",
+        "select": [
+          [
+            {
+              "params": [
+                "restingHeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 59,
+      "panelTitle": "Week at a Glance",
+      "panelType": "table",
+      "targetIndex": 6,
+      "stableKey": "59:6",
+      "legacyRef": "F",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "averageSpo2",
+        "alias": "Avg SpO2",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max",
+        "select": [
+          [
+            {
+              "params": [
+                "averageSpo2"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 59,
+      "panelTitle": "Week at a Glance",
+      "panelType": "table",
+      "targetIndex": 7,
+      "stableKey": "59:7",
+      "legacyRef": "G",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "bodyBatteryChargedValue",
+        "alias": "Body Battery Change",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max",
+        "select": [
+          [
+            {
+              "params": [
+                "bodyBatteryChargedValue"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 1,
+      "panelTitle": "Daily Steps",
+      "panelType": "barchart",
+      "targetIndex": 0,
+      "stableKey": "1:0",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "totalSteps",
+        "alias": "Steps",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "totalSteps"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 3,
+      "panelTitle": "Daily Distance",
+      "panelType": "barchart",
+      "targetIndex": 0,
+      "stableKey": "3:0",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "totalDistanceMeters",
+        "alias": "Distance Covered",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max",
+        "select": [
+          [
+            {
+              "params": [
+                "totalDistanceMeters"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 10,
+      "panelTitle": "Daily Calories",
+      "panelType": "barchart",
+      "targetIndex": 0,
+      "stableKey": "10:0",
+      "legacyRef": "B",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "bmrKilocalories",
+        "alias": "BMR Calories",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "bmrKilocalories"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 10,
+      "panelTitle": "Daily Calories",
+      "panelType": "barchart",
+      "targetIndex": 1,
+      "stableKey": "10:1",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "activeKilocalories",
+        "alias": "Activity Calories",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "activeKilocalories"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 11,
+      "panelTitle": "Daily avg health metrics",
+      "panelType": "timeseries",
+      "targetIndex": 0,
+      "stableKey": "11:0",
+      "legacyRef": "B",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "SleepSummary",
+        "field": "averageSpO2Value",
+        "alias": "Avg SpO2",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "averageSpO2Value"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 11,
+      "panelTitle": "Daily avg health metrics",
+      "panelType": "timeseries",
+      "targetIndex": 1,
+      "stableKey": "11:1",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "HRV_Intraday",
+        "field": "hrvValue",
+        "alias": "Avg HRV",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "hrvValue"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 11,
+      "panelTitle": "Daily avg health metrics",
+      "panelType": "timeseries",
+      "targetIndex": 2,
+      "stableKey": "11:2",
+      "legacyRef": "D",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "restingHeartRate",
+        "alias": "Avg Resting HR",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "restingHeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 51,
+      "panelTitle": "Daily avg health metrics",
+      "panelType": "timeseries",
+      "targetIndex": 0,
+      "stableKey": "51:0",
+      "legacyRef": "E",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "BreathingRateIntraday",
+        "field": "BreathingRate",
+        "alias": "Avg Breathing Rate",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "BreathingRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 51,
+      "panelTitle": "Daily avg health metrics",
+      "panelType": "timeseries",
+      "targetIndex": 1,
+      "stableKey": "51:1",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "StressIntraday",
+        "field": "stressLevel",
+        "alias": "Avg Stress",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "stressLevel"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 51,
+      "panelTitle": "Daily avg health metrics",
+      "panelType": "timeseries",
+      "targetIndex": 2,
+      "stableKey": "51:2",
+      "legacyRef": "C",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "SleepSummary",
+        "field": "avgSleepStress",
+        "alias": "Avg Sleeping Stress",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "avgSleepStress"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 63,
+      "panelTitle": "Race Predictions",
+      "panelType": "timeseries",
+      "targetIndex": 0,
+      "stableKey": "63:0",
+      "legacyRef": "B",
+      "classification": "B",
+      "classificationRationale": "transformation or semantics require further review",
+      "legacyQuery": {
+        "measurement": "RacePredictions",
+        "field": "time5K",
+        "alias": "Time 5K",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "time5K"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 63,
+      "panelTitle": "Race Predictions",
+      "panelType": "timeseries",
+      "targetIndex": 1,
+      "stableKey": "63:1",
+      "legacyRef": "A",
+      "classification": "B",
+      "classificationRationale": "transformation or semantics require further review",
+      "legacyQuery": {
+        "measurement": "RacePredictions",
+        "field": "time10K",
+        "alias": "Time 10K",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "time10K"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 63,
+      "panelTitle": "Race Predictions",
+      "panelType": "timeseries",
+      "targetIndex": 2,
+      "stableKey": "63:2",
+      "legacyRef": "C",
+      "classification": "B",
+      "classificationRationale": "transformation or semantics require further review",
+      "legacyQuery": {
+        "measurement": "RacePredictions",
+        "field": "timeHalfMarathon",
+        "alias": "Half Marathon",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "timeHalfMarathon"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 63,
+      "panelTitle": "Race Predictions",
+      "panelType": "timeseries",
+      "targetIndex": 3,
+      "stableKey": "63:3",
+      "legacyRef": "D",
+      "classification": "B",
+      "classificationRationale": "transformation or semantics require further review",
+      "legacyQuery": {
+        "measurement": "RacePredictions",
+        "field": "timeMarathon",
+        "alias": "Full Marathon",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "timeMarathon"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 64,
+      "panelTitle": "VO2 Max",
+      "panelType": "timeseries",
+      "targetIndex": 0,
+      "stableKey": "64:0",
+      "legacyRef": "B",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "VO2_Max",
+        "field": "VO2_max_value",
+        "alias": "VO2 Max",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "VO2_max_value"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 69,
+      "panelTitle": "Heatmap for GPS Activity (within selected time)",
+      "panelType": "geomap",
+      "targetIndex": 0,
+      "stableKey": "69:0",
+      "legacyRef": "I",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "Latitude",
+        "alias": "lat",
+        "rawQuery": false,
+        "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "Latitude"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 69,
+      "panelTitle": "Heatmap for GPS Activity (within selected time)",
+      "panelType": "geomap",
+      "targetIndex": 1,
+      "stableKey": "69:1",
+      "legacyRef": "J",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "ActivityGPS",
+        "field": "Longitude",
+        "alias": "lon",
+        "rawQuery": false,
+        "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+        "operations": null,
+        "select": [
+          [
+            {
+              "params": [
+                "Longitude"
+              ],
+              "type": "field"
+            }
+          ]
+        ],
+        "groupBy": []
+      }
+    },
+    {
+      "panelId": 13,
+      "panelTitle": "Sleep Stages",
+      "panelType": "barchart",
+      "targetIndex": 0,
+      "stableKey": "13:0",
+      "legacyRef": "B",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "SleepSummary",
+        "field": "deepSleepSeconds",
+        "alias": "Deep Sleep",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "deepSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "12h"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 13,
+      "panelTitle": "Sleep Stages",
+      "panelType": "barchart",
+      "targetIndex": 1,
+      "stableKey": "13:1",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "SleepSummary",
+        "field": "lightSleepSeconds",
+        "alias": "Light Sleep",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "lightSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "12h"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 13,
+      "panelTitle": "Sleep Stages",
+      "panelType": "barchart",
+      "targetIndex": 2,
+      "stableKey": "13:2",
+      "legacyRef": "C",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "SleepSummary",
+        "field": "remSleepSeconds",
+        "alias": "REM Sleep",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "remSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "12h"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 13,
+      "panelTitle": "Sleep Stages",
+      "panelType": "barchart",
+      "targetIndex": 3,
+      "stableKey": "13:3",
+      "legacyRef": "D",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "SleepSummary",
+        "field": "awakeSleepSeconds",
+        "alias": "Awake",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "awakeSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "12h"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 23,
+      "panelTitle": "Avg Activity over given duration",
+      "panelType": "piechart",
+      "targetIndex": 0,
+      "stableKey": "23:0",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "sedentarySeconds",
+        "alias": "Sedentary",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "sedentarySeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 23,
+      "panelTitle": "Avg Activity over given duration",
+      "panelType": "piechart",
+      "targetIndex": 1,
+      "stableKey": "23:1",
+      "legacyRef": "B",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "highlyActiveSeconds",
+        "alias": "Intense Activity",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "highlyActiveSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 23,
+      "panelTitle": "Avg Activity over given duration",
+      "panelType": "piechart",
+      "targetIndex": 2,
+      "stableKey": "23:2",
+      "legacyRef": "C",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "activeSeconds",
+        "alias": "Fair Activity",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "activeSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 23,
+      "panelTitle": "Avg Activity over given duration",
+      "panelType": "piechart",
+      "targetIndex": 3,
+      "stableKey": "23:3",
+      "legacyRef": "D",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "sleepingSeconds",
+        "alias": "Sleeping",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "sleepingSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 12,
+      "panelTitle": "Sleep Score",
+      "panelType": "barchart",
+      "targetIndex": 0,
+      "stableKey": "12:0",
+      "legacyRef": "B",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "SleepSummary",
+        "field": "sleepScore",
+        "alias": "Sleep Score",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "sleepScore"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 17,
+      "panelTitle": "Daily Activity Overview",
+      "panelType": "barchart",
+      "targetIndex": 0,
+      "stableKey": "17:0",
+      "legacyRef": "D",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "sleepingSeconds",
+        "alias": "Sleeping",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "sleepingSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 17,
+      "panelTitle": "Daily Activity Overview",
+      "panelType": "barchart",
+      "targetIndex": 1,
+      "stableKey": "17:1",
+      "legacyRef": "C",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "sedentarySeconds",
+        "alias": "Sedentary",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "sedentarySeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 17,
+      "panelTitle": "Daily Activity Overview",
+      "panelType": "barchart",
+      "targetIndex": 2,
+      "stableKey": "17:2",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "activeSeconds",
+        "alias": "Active",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "activeSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 17,
+      "panelTitle": "Daily Activity Overview",
+      "panelType": "barchart",
+      "targetIndex": 3,
+      "stableKey": "17:3",
+      "legacyRef": "B",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "highlyActiveSeconds",
+        "alias": "Highly Active",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "highlyActiveSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 19,
+      "panelTitle": "Body Battery overview",
+      "panelType": "barchart",
+      "targetIndex": 0,
+      "stableKey": "19:0",
+      "legacyRef": "D",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "bodyBatteryChargedValue",
+        "alias": "Charged",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "bodyBatteryChargedValue"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 19,
+      "panelTitle": "Body Battery overview",
+      "panelType": "barchart",
+      "targetIndex": 1,
+      "stableKey": "19:1",
+      "legacyRef": "C",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "bodyBatteryDrainedValue",
+        "alias": "Drained",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean,math",
+        "select": [
+          [
+            {
+              "params": [
+                "bodyBatteryDrainedValue"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            },
+            {
+              "params": [
+                "* -1"
+              ],
+              "type": "math"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 4,
+      "panelTitle": "Daily Intensity Minutes",
+      "panelType": "barchart",
+      "targetIndex": 0,
+      "stableKey": "4:0",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "moderateIntensityMinutes",
+        "alias": "Moderate Intensity",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max,math",
+        "select": [
+          [
+            {
+              "params": [
+                "moderateIntensityMinutes"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            },
+            {
+              "params": [
+                "* 60"
+              ],
+              "type": "math"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 4,
+      "panelTitle": "Daily Intensity Minutes",
+      "panelType": "barchart",
+      "targetIndex": 1,
+      "stableKey": "4:1",
+      "legacyRef": "B",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "vigorousIntensityMinutes",
+        "alias": "Vigorous Intensity",
+        "rawQuery": false,
+        "query": null,
+        "operations": "max,math",
+        "select": [
+          [
+            {
+              "params": [
+                "vigorousIntensityMinutes"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "max"
+            },
+            {
+              "params": [
+                "* 60"
+              ],
+              "type": "math"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 18,
+      "panelTitle": "Stress overview",
+      "panelType": "barchart",
+      "targetIndex": 0,
+      "stableKey": "18:0",
+      "legacyRef": "D",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "lowStressDuration",
+        "alias": "Low Stress duration",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "lowStressDuration"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 18,
+      "panelTitle": "Stress overview",
+      "panelType": "barchart",
+      "targetIndex": 1,
+      "stableKey": "18:1",
+      "legacyRef": "B",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "restStressDuration",
+        "alias": "Rest stress duration",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "restStressDuration"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 18,
+      "panelTitle": "Stress overview",
+      "panelType": "barchart",
+      "targetIndex": 2,
+      "stableKey": "18:2",
+      "legacyRef": "C",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "mediumStressDuration",
+        "alias": "Medium stress duration",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "mediumStressDuration"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 18,
+      "panelTitle": "Stress overview",
+      "panelType": "barchart",
+      "targetIndex": 3,
+      "stableKey": "18:3",
+      "legacyRef": "E",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "uncategorizedStressDuration",
+        "alias": "Uncategorized stress duration",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "uncategorizedStressDuration"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 18,
+      "panelTitle": "Stress overview",
+      "panelType": "barchart",
+      "targetIndex": 4,
+      "stableKey": "18:4",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "highStressDuration",
+        "alias": "High stress duration",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "highStressDuration"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 22,
+      "panelTitle": "Average Sleep trends",
+      "panelType": "piechart",
+      "targetIndex": 0,
+      "stableKey": "22:0",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "SleepSummary",
+        "field": "deepSleepSeconds",
+        "alias": "Deep",
+        "rawQuery": false,
+        "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "deepSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 22,
+      "panelTitle": "Average Sleep trends",
+      "panelType": "piechart",
+      "targetIndex": 1,
+      "stableKey": "22:1",
+      "legacyRef": "B",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "SleepSummary",
+        "field": "lightSleepSeconds",
+        "alias": "Light",
+        "rawQuery": false,
+        "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "lightSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 22,
+      "panelTitle": "Average Sleep trends",
+      "panelType": "piechart",
+      "targetIndex": 2,
+      "stableKey": "22:2",
+      "legacyRef": "C",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "SleepSummary",
+        "field": "remSleepSeconds",
+        "alias": "REM",
+        "rawQuery": false,
+        "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "remSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 22,
+      "panelTitle": "Average Sleep trends",
+      "panelType": "piechart",
+      "targetIndex": 3,
+      "stableKey": "22:3",
+      "legacyRef": "D",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "SleepSummary",
+        "field": "awakeSleepSeconds",
+        "alias": "Awake",
+        "rawQuery": false,
+        "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "awakeSleepSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 37,
+      "panelTitle": "Body Battery Level Change",
+      "panelType": "barchart",
+      "targetIndex": 0,
+      "stableKey": "37:0",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "bodyBatteryLowestValue",
+        "alias": "bb_low",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "bodyBatteryLowestValue"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 37,
+      "panelTitle": "Body Battery Level Change",
+      "panelType": "barchart",
+      "targetIndex": 1,
+      "stableKey": "37:1",
+      "legacyRef": "B",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "bodyBatteryHighestValue",
+        "alias": "bb_high",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "bodyBatteryHighestValue"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 34,
+      "panelTitle": "Weight",
+      "panelType": "timeseries",
+      "targetIndex": 0,
+      "stableKey": "34:0",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "BodyComposition",
+        "field": "weight",
+        "alias": "Weight in KG",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "weight"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "$__interval"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 58,
+      "panelTitle": "HR Range (Max-Min)",
+      "panelType": "barchart",
+      "targetIndex": 0,
+      "stableKey": "58:0",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "minHeartRate",
+        "alias": "hr_low",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "minHeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 58,
+      "panelTitle": "HR Range (Max-Min)",
+      "panelType": "barchart",
+      "targetIndex": 1,
+      "stableKey": "58:1",
+      "legacyRef": "B",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "maxHeartRate",
+        "alias": "hr_high",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "maxHeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 66,
+      "panelTitle": "Month at a Glance (Daily Average)",
+      "panelType": "state-timeline",
+      "targetIndex": 0,
+      "stableKey": "66:0",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "restingHeartRate",
+        "alias": "Resting HR",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "restingHeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 66,
+      "panelTitle": "Month at a Glance (Daily Average)",
+      "panelType": "state-timeline",
+      "targetIndex": 1,
+      "stableKey": "66:1",
+      "legacyRef": "B",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "highStressDuration",
+        "alias": "High Stress Duration",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "highStressDuration"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 66,
+      "panelTitle": "Month at a Glance (Daily Average)",
+      "panelType": "state-timeline",
+      "targetIndex": 2,
+      "stableKey": "66:2",
+      "legacyRef": "C",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "activeSeconds",
+        "alias": "Active time",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "activeSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 66,
+      "panelTitle": "Month at a Glance (Daily Average)",
+      "panelType": "state-timeline",
+      "targetIndex": 3,
+      "stableKey": "66:3",
+      "legacyRef": "G",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "bodyBatteryHighestValue",
+        "alias": "Body Battery (Highest)",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "bodyBatteryHighestValue"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 66,
+      "panelTitle": "Month at a Glance (Daily Average)",
+      "panelType": "state-timeline",
+      "targetIndex": 4,
+      "stableKey": "66:4",
+      "legacyRef": "E",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "totalSteps",
+        "alias": "Total Steps",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "totalSteps"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 66,
+      "panelTitle": "Month at a Glance (Daily Average)",
+      "panelType": "state-timeline",
+      "targetIndex": 5,
+      "stableKey": "66:5",
+      "legacyRef": "D",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "averageSpo2",
+        "alias": "SpO2",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "averageSpo2"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 66,
+      "panelTitle": "Month at a Glance (Daily Average)",
+      "panelType": "state-timeline",
+      "targetIndex": 6,
+      "stableKey": "66:6",
+      "legacyRef": "H",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "SleepSummary",
+        "field": "sleepScore",
+        "alias": "Sleep Score",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "sleepScore"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 66,
+      "panelTitle": "Month at a Glance (Daily Average)",
+      "panelType": "state-timeline",
+      "targetIndex": 7,
+      "stableKey": "66:7",
+      "legacyRef": "F",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "DailyStats",
+        "field": "sleepingSeconds",
+        "alias": "Total Sleep",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "sleepingSeconds"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 66,
+      "panelTitle": "Month at a Glance (Daily Average)",
+      "panelType": "state-timeline",
+      "targetIndex": 8,
+      "stableKey": "66:8",
+      "legacyRef": "I",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "HRV_Intraday",
+        "field": "hrvValue",
+        "alias": "HRV",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "hrvValue"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1d"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 67,
+      "panelTitle": "Month at a Glance (Intraday)",
+      "panelType": "state-timeline",
+      "targetIndex": 0,
+      "stableKey": "67:0",
+      "legacyRef": "D",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "HeartRateIntraday",
+        "field": "HeartRate",
+        "alias": "Band Wearing",
+        "rawQuery": false,
+        "query": null,
+        "operations": "count",
+        "select": [
+          [
+            {
+              "params": [
+                "HeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "count"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "2m"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "0"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 67,
+      "panelTitle": "Month at a Glance (Intraday)",
+      "panelType": "state-timeline",
+      "targetIndex": 1,
+      "stableKey": "67:1",
+      "legacyRef": "E",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "HeartRateIntraday",
+        "field": "HeartRate",
+        "alias": "HR Zones",
+        "rawQuery": false,
+        "query": null,
+        "operations": "median",
+        "select": [
+          [
+            {
+              "params": [
+                "HeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "median"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1h"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 67,
+      "panelTitle": "Month at a Glance (Intraday)",
+      "panelType": "state-timeline",
+      "targetIndex": 2,
+      "stableKey": "67:2",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "BodyBatteryIntraday",
+        "field": "BodyBatteryLevel",
+        "alias": "Body Battery",
+        "rawQuery": false,
+        "query": null,
+        "operations": "median",
+        "select": [
+          [
+            {
+              "params": [
+                "BodyBatteryLevel"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "median"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1h"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 67,
+      "panelTitle": "Month at a Glance (Intraday)",
+      "panelType": "state-timeline",
+      "targetIndex": 3,
+      "stableKey": "67:3",
+      "legacyRef": "B",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "StressIntraday",
+        "field": "stressLevel",
+        "alias": "Stress Level",
+        "rawQuery": false,
+        "query": null,
+        "operations": "median",
+        "select": [
+          [
+            {
+              "params": [
+                "stressLevel"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "median"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1h"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 67,
+      "panelTitle": "Month at a Glance (Intraday)",
+      "panelType": "state-timeline",
+      "targetIndex": 4,
+      "stableKey": "67:4",
+      "legacyRef": "C",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "StepsIntraday",
+        "field": "StepsCount",
+        "alias": "Steps Taken",
+        "rawQuery": false,
+        "query": null,
+        "operations": "sum",
+        "select": [
+          [
+            {
+              "params": [
+                "StepsCount"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "sum"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1h"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 65,
+      "panelTitle": "HR Histogram Heatmap",
+      "panelType": "heatmap",
+      "targetIndex": 0,
+      "stableKey": "65:0",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "HeartRateIntraday",
+        "field": "HeartRate",
+        "alias": "Heart Rate",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "HeartRate"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "$__interval"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 20,
+      "panelTitle": "Hourly walk heatmap",
+      "panelType": "marcusolsson-hourly-heatmap-panel",
+      "targetIndex": 0,
+      "stableKey": "20:0",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "StepsIntraday",
+        "field": "StepsCount",
+        "alias": "Hourly Steps",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "StepsCount"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "$__interval"
+            ],
+            "type": "time"
+          },
+          {
+            "params": [
+              "null"
+            ],
+            "type": "fill"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 27,
+      "panelTitle": "Sleep Regularity",
+      "panelType": "marcusolsson-hourly-heatmap-panel",
+      "targetIndex": 0,
+      "stableKey": "27:0",
+      "legacyRef": "A",
+      "classification": "C",
+      "classificationRationale": "stream, spatial, intraday or complex visualization; likely needs specialized shape",
+      "legacyQuery": {
+        "measurement": "SleepIntraday",
+        "field": "SleepStageLevel",
+        "alias": "Sleep Regularity",
+        "rawQuery": false,
+        "query": "SELECT median(\"level\") FROM \"Sleep Levels\" WHERE $timeFilter GROUP BY time(1h)",
+        "operations": "median",
+        "select": [
+          [
+            {
+              "params": [
+                "SleepStageLevel"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "median"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "1h"
+            ],
+            "type": "time"
+          }
+        ]
+      }
+    },
+    {
+      "panelId": 60,
+      "panelTitle": "Battery Level (Requires GarminHomeAssistant from ConnectIQ integration)",
+      "panelType": "timeseries",
+      "targetIndex": 0,
+      "stableKey": "60:0",
+      "legacyRef": "A",
+      "classification": "A",
+      "classificationRationale": "scalar/daily aggregate candidate, still requires exact field/unit verification",
+      "legacyQuery": {
+        "measurement": "%",
+        "field": "value",
+        "alias": "Device Battery Level",
+        "rawQuery": false,
+        "query": null,
+        "operations": "mean",
+        "select": [
+          [
+            {
+              "params": [
+                "value"
+              ],
+              "type": "field"
+            },
+            {
+              "params": [],
+              "type": "mean"
+            }
+          ]
+        ],
+        "groupBy": [
+          {
+            "params": [
+              "10m"
+            ],
+            "type": "time"
+          }
+        ]
+      }
+    }
+  ],
+  "notes": [
+    "Classification is conversion-complexity triage only, not evidence that fields exist in D1.",
+    "All target query semantics, field paths, units and coverage require validation against the live D1 archive.",
+    "Source queries are InfluxDB references and are not executed or copied into the D1 API."
+  ]
+}

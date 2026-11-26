@@ -1,0 +1,15 @@
+name: Block 6 query-family strategy
+on:
+  push:
+    branches: [feat/grafana-automated-builder]
+  pull_request:
+    branches: [feat/grafana-automated-builder]
+jobs:
+  strategy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node grafana/test-block6-query-family-strategy.mjs

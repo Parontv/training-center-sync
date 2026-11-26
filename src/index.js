@@ -1,5 +1,7 @@
+import { isValidIsoDate } from "./date-validation.js";
 const GARMIN_BASE = "https://personal.connectapi.garmin.com";
 const TOKEN_PATH = "/personalapitoken-service/personal-api/personal-api-key/token";
+
 
 export default {
   async scheduled(event, env, ctx) {
@@ -24,7 +26,7 @@ export default {
       }
     }
     if (url.pathname === "/run" && request.method === "GET") {
-      return new Response(`<!doctype html><html lang="it"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Center Sync</title><body style="font:16px system-ui;max-width:560px;margin:40px auto;padding:16px;background:#111;color:#eee"><h2>Training Center Sync</h2><p>Inserisci il tuo SYNC_BEARER_TOKEN configurato nei Secrets Cloudflare. Non è la chiave Garmin.</p><input id="token" type="password" autocomplete="off" placeholder="SYNC_BEARER_TOKEN" style="box-sizing:border-box;width:100%;padding:12px;margin:8px 0;background:#222;color:#fff;border:1px solid #555;border-radius:8px"><label style="display:block;margin:4px 0 12px;color:#ccc"><input id="remember" type="checkbox" checked> Ricorda il token su questo dispositivo</label><div id="feedback" role="status" style="padding:10px;margin:8px 0;background:#263238;border-radius:8px;color:#fff">Pagina caricata. Inserisci il token e scegli un’operazione.</div><button id="backfill" style="padding:12px 18px;margin-top:8px">Importa prossimo blocco (3 giorni)</button> <button id="status" style="padding:12px 18px;margin-top:8px">Stato agente</button> <button id="export" style="padding:12px 18px;margin-top:8px">Esporta tutti i dati D1</button> <button id="xlsx" style="padding:12px 18px;margin-top:8px">Genera Excel aggiornato</button><pre id="out" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#222;padding:12px;border-radius:8px"></pre><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+      return new Response(`<!doctype html><html lang="it"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Center Sync</title><body style="font:16px system-ui;max-width:560px;margin:40px auto;padding:16px;background:#111;color:#eee"><h2>Training Center Sync</h2><p>Inserisci il tuo SYNC_BEARER_TOKEN configurato nei Secrets Cloudflare. Non è la chiave Garmin.</p><input id="token" type="password" autocomplete="off" placeholder="SYNC_BEARER_TOKEN" style="box-sizing:border-box;width:100%;padding:12px;margin:8px 0;background:#222;color:#fff;border:1px solid #555;border-radius:8px"><label style="display:block;margin:4px 0 12px;color:#ccc"><input id="remember" type="checkbox" checked> Ricorda il token su questo dispositivo</label><div id="feedback" role="status" style="padding:10px;margin:8px 0;background:#263238;border-radius:8px;color:#fff">Pagina caricata. Inserisci il token e scegli un’operazione.</div><button id="backfill" style="padding:12px 18px;margin-top:8px">Importa prossimo blocco (3 giorni)</button> <button id="status" style="padding:12px 18px;margin-top:8px">Stato agente</button> <button id="export" style="padding:12px 18px;margin-top:8px">Esporta tutti i dati D1</button> <button id="xlsx" style="padding:12px 18px;margin-top:8px">Genera Excel aggiornato</button> <button id="auditGrafana" style="padding:12px 18px;margin-top:8px">Audit schema Grafana</button><pre id="out" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#222;padding:12px;border-radius:8px"></pre><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
 (function () {
   const $ = id => document.getElementById(id);
@@ -67,6 +69,25 @@ export default {
   }
   $('backfill').addEventListener('click', () => request('/backfill', 'POST'));
   $('status').addEventListener('click', () => request('/status', 'GET'));
+  $('auditGrafana').addEventListener('click', async () => {
+    const value = getToken(); if (!value) return;
+    const button = $('auditGrafana'); button.disabled = true;
+    show('Audit schema read-only in corso…');
+    try {
+      const response = await fetch('/dashboard-schema', { headers: { Authorization: 'Bearer ' + value }, cache: 'no-store' });
+      const body = await response.json();
+      if (!response.ok || !body || body.ok === false) throw new Error('HTTP ' + response.status + ': ' + JSON.stringify(body));
+      const audit = { exportedAt: new Date().toISOString(), source: 'training-center-sync /dashboard-schema', warning: 'Schema audit only. Samples may contain personal Garmin data; keep this file private.', schema: body };
+      const blob = new Blob([JSON.stringify(audit, null, 2)], { type: 'application/json' });
+      const downloadUrl = URL.createObjectURL(blob), link = document.createElement('a');
+      link.href = downloadUrl; link.download = 'training-center-live-schema-audit.json';
+      document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(downloadUrl);
+      const g = Array.isArray(body.garmin_records) ? body.garmin_records.length : 0;
+      const d = Array.isArray(body.daily_records) ? body.daily_records.length : 0;
+      show('Audit completato: ' + g + ' campi garmin_records e ' + d + ' campi daily_records. JSON scaricato. Non contiene il token.');
+    } catch (error) { show('Audit non riuscito: ' + String(error)); }
+    finally { button.disabled = false; }
+  });
   async function refreshStatus() {
     const value = token.value.trim();
     if (!value) return;
@@ -275,6 +296,75 @@ if (url.pathname === "/dashboard-schema" && request.method === "GET") {
         return json({ ok: false, error: String(error?.message || error).slice(0, 300) }, 500);
       }
     }
+    if (url.pathname === "/dashboard-field-values" && request.method === "GET") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== "Bearer " + expected) return json({ error: "unauthorized" }, 401);
+      const source = (url.searchParams.get("source") || "").trim();
+      const dataset = (url.searchParams.get("dataset") || "").trim();
+      const fieldPath = (url.searchParams.get("field_path") || "").trim();
+      const from = (url.searchParams.get("from") || "").trim();
+      const to = (url.searchParams.get("to") || "").trim();
+      const requestedLimit = Number(url.searchParams.get("limit") || 1000);
+      const limit = Math.min(Math.max(Number.isFinite(requestedLimit) ? Math.trunc(requestedLimit) : 1000, 1), 5000);
+      if (!["daily_records","garmin_records"].includes(source)) return json({error:"source non valido"},400);
+      if (!dataset || dataset.length > 100 || !fieldPath || fieldPath.length > 500) return json({error:"dataset e field_path obbligatori"},400);
+      if ((from && !isValidIsoDate(from)) || (to && !isValidIsoDate(to)) || (from && to && from > to)) return json({error:"intervallo date non valido"},400);
+      try {
+        const sql = "SELECT r.dataset, r.record_date, r.retrieved_at, jt.fullkey AS field_path, jt.type AS value_type, jt.atom AS value FROM " + source + " r, json_tree(r.raw_json) jt WHERE json_valid(r.raw_json) AND r.dataset=? AND jt.fullkey=? " + (from ? "AND r.record_date>=? " : "") + (to ? "AND r.record_date<=? " : "") + "ORDER BY r.record_date ASC, r.retrieved_at ASC LIMIT ?";
+        const params = [dataset, fieldPath];
+        if (from) params.push(from);
+        if (to) params.push(to);
+        params.push(limit);
+        const result = await env.DB.prepare(sql).bind(...params).all();
+        return json({ok:true,readOnly:true,source,dataset,field_path:fieldPath,from:from||null,to:to||null,count:(result.results||[]).length,rows:result.results||[],note:"Valori raw in sola lettura; normalizzazione/unità non dedotte."});
+      } catch(error) { return json({ok:false,readOnly:true,error:String(error?.message||error).slice(0,300)},500); }
+    }
+    if (url.pathname === "/dashboard-field-coverage" && request.method === "GET") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== "Bearer " + expected) return json({ error: "unauthorized" }, 401);
+      const source = (url.searchParams.get("source") || "").trim();
+      const dataset = (url.searchParams.get("dataset") || "").trim();
+      const fieldPath = (url.searchParams.get("field_path") || "").trim();
+      const from = (url.searchParams.get("from") || "").trim();
+      const to = (url.searchParams.get("to") || "").trim();
+      if (!["daily_records","garmin_records"].includes(source)) return json({error:"source non valido"},400);
+      if (!dataset || dataset.length > 100 || !fieldPath || fieldPath.length > 500) return json({error:"dataset e field_path obbligatori"},400);
+      if ((from && !isValidIsoDate(from)) || (to && !isValidIsoDate(to)) || (from && to && from > to)) return json({error:"intervallo date non valido"},400);
+      try {
+        const filters = " r WHERE r.dataset=? " + (from ? "AND r.record_date>=? " : "") + (to ? "AND r.record_date<=? " : "");
+        const baseParams = [dataset]; if(from)baseParams.push(from); if(to)baseParams.push(to);
+        const totalSql = "SELECT COUNT(*) AS total_records, MIN(record_date) AS first_date, MAX(record_date) AS last_date FROM " + source + filters;
+        const total = await env.DB.prepare(totalSql).bind(...baseParams).first();
+        const fieldSql = "SELECT jt.type AS value_type, COUNT(*) AS occurrences, COUNT(DISTINCT r.record_date) AS records_with_field, MIN(r.record_date) AS first_date, MAX(r.record_date) AS last_date FROM " + source + " r, json_tree(r.raw_json) jt WHERE json_valid(r.raw_json) AND r.dataset=? AND jt.fullkey=? " + (from ? "AND r.record_date>=? " : "") + (to ? "AND r.record_date<=? " : "") + "GROUP BY jt.type ORDER BY occurrences DESC";
+        const fieldParams=[dataset,fieldPath];if(from)fieldParams.push(from);if(to)fieldParams.push(to);
+        const field=await env.DB.prepare(fieldSql).bind(...fieldParams).all();
+        return json({ok:true,readOnly:true,source,dataset,field_path:fieldPath,from:from||null,to:to||null,record_scope:{total_records:Number(total?.total_records||0),first_date:total?.first_date||null,last_date:total?.last_date||null},field_coverage:{type_breakdown:field.results||[],records_with_field:(field.results||[]).reduce((n,x)=>Math.max(n,Number(x.records_with_field||0)),0)},note:"Coverage metadata only; records_with_field is distinct record_date and may not represent unique row count when multiple records share a date."});
+      } catch(error) { return json({ok:false,readOnly:true,error:String(error?.message||error).slice(0,300)},500); }
+    }
+    if (url.pathname === "/dashboard-metrics" && request.method === "GET") {
+      const expected = env.SYNC_BEARER_TOKEN;
+      if (!expected || request.headers.get("Authorization") !== "Bearer " + expected) return json({ error: "unauthorized" }, 401);
+      const source = (url.searchParams.get("source") || "daily_records").trim();
+      const dataset = (url.searchParams.get("dataset") || "").trim();
+      const fieldPath = (url.searchParams.get("field_path") || "").trim();
+      const from = (url.searchParams.get("from") || "").trim();
+      const to = (url.searchParams.get("to") || "").trim();
+      const aggregation = (url.searchParams.get("aggregation") || "avg").trim();
+      const requestedLimit = Number(url.searchParams.get("limit") || 366);
+      const limit = Math.min(Math.max(Number.isFinite(requestedLimit) ? Math.trunc(requestedLimit) : 366, 1), 2000);
+      if (!["daily_records","garmin_records"].includes(source)) return json({error:"source non valido"},400);
+      if (!dataset || dataset.length > 100 || !fieldPath || fieldPath.length > 500) return json({error:"dataset e field_path obbligatori"},400);
+      if (!["avg","min","max","sum"].includes(aggregation)) return json({error:"aggregazione non valida"},400);
+      if ((from && !isValidIsoDate(from)) || (to && !isValidIsoDate(to)) || (from && to && from > to)) return json({error:"intervallo date non valido"},400);
+      try {
+        const aggSql = aggregation.toUpperCase() + "(CAST(jt.atom AS REAL))";
+        const sql = "SELECT r.record_date AS date, " + aggSql + " AS value, COUNT(*) AS samples FROM " + source + " r, json_tree(r.raw_json) jt WHERE json_valid(r.raw_json) AND r.dataset=? AND r.record_date IS NOT NULL AND jt.fullkey=? AND jt.type IN ('integer','real') " + (from ? "AND r.record_date>=? " : "") + (to ? "AND r.record_date<=? " : "") + "GROUP BY r.record_date ORDER BY r.record_date ASC LIMIT ?";
+        const params = [dataset,fieldPath];if(from)params.push(from);if(to)params.push(to);params.push(limit);
+        const result=await env.DB.prepare(sql).bind(...params).all();
+        const rows=(result.results||[]).map(row=>({date:row.date,value:row.value,samples:Number(row.samples||0)}));
+        return json({ok:true,readOnly:true,metric:dataset,field_path:fieldPath,source,aggregation,from:from||null,to:to||null,unit:null,count:rows.length,points:rows,coverage:{numeric_points:rows.length,samples:rows.reduce((n,x)=>n+x.samples,0)},note:"Aggregazione numerica generica; unità e significato devono essere verificati."});
+      }catch(error){return json({ok:false,readOnly:true,error:String(error?.message||error).slice(0,300)},500);}
+    }
     if (url.pathname === "/dashboard-record-dates" && request.method === "GET") {
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
@@ -426,7 +516,6 @@ $('run').addEventListener('click',async()=>{
       const expected = env.SYNC_BEARER_TOKEN;
       if (!expected || request.headers.get("Authorization") !== `Bearer ${expected}`) return json({ error: "unauthorized" }, 401);
       try {
-        await ensureCoreSchema(env.DB);
         const [counts, datasets, activities, daily, steps, activityQuality, recordQuality] = await Promise.all([
           env.DB.prepare("SELECT (SELECT COUNT(*) FROM activities) AS activities, (SELECT COUNT(*) FROM activity_details) AS activity_details, (SELECT COUNT(*) FROM daily_records) AS daily_records, (SELECT COUNT(*) FROM garmin_records) AS garmin_records, (SELECT COUNT(*) FROM sync_runs) AS sync_runs").first(),
           env.DB.prepare("SELECT dataset, COUNT(*) AS records, MIN(record_date) AS first_date, MAX(record_date) AS last_date, SUM(CASE WHEN raw_json='[]' OR raw_json='{}' THEN 1 ELSE 0 END) AS empty_records FROM garmin_records GROUP BY dataset ORDER BY dataset").all(),

@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "readOnly": true,
+  "source": [
+    "daily_records",
+    "garmin_records"
+  ],
+  "items": [
+    {
+      "key": "sleep",
+      "metrics": "sleep duration, sleep stages, score",
+      "priority": "CORE",
+      "status": "UNVERIFIED",
+      "mapping": [],
+      "notes": "Requires live schema and coverage validation."
+    },
+    {
+      "key": "hrv",
+      "metrics": "daily HRV, baseline, trend",
+      "priority": "CORE",
+      "status": "UNVERIFIED",
+      "mapping": [],
+      "notes": "Requires live schema and coverage validation."
+    },
+    {
+      "key": "weight",
+      "metrics": "weight measurements, trend",
+      "priority": "CORE",
+      "status": "UNVERIFIED",
+      "mapping": [],
+      "notes": "Requires live schema and coverage validation."
+    },
+    {
+      "key": "resting_hr",
+      "metrics": "resting heart rate",
+      "priority": "CORE",
+      "status": "UNVERIFIED",
+      "mapping": [],
+      "notes": "Requires live schema and coverage validation."
+    },
+    {
+      "key": "steps",
+      "metrics": "steps, daily totals, weekly totals",
+      "priority": "CORE",
+      "status": "UNVERIFIED",
+      "mapping": [],
+      "notes": "Requires live schema and coverage validation."
+    },
+    {
+      "key": "stress",
+      "metrics": "stress daily values, trend",
+      "priority": "CORE",
+      "status": "UNVERIFIED",
+      "mapping": [],
+      "notes": "Requires live schema and coverage validation."
+    },
+    {
+      "key": "training_load",
+      "metrics": "training load, readiness, recovery",
+      "priority": "CORE",
+      "status": "UNVERIFIED",
+      "mapping": [],
+      "notes": "Requires live schema and coverage validation."
+    },
+    {
+      "key": "respiration",
+      "metrics": "sleep/day respiration",
+      "priority": "SECONDARY",
+      "status": "UNVERIFIED",
+      "mapping": [],
+      "notes": "Requires live schema and coverage validation."
+    },
+    {
+      "key": "spo2",
+      "metrics": "SpO2 readings",
+      "priority": "SECONDARY",
+      "status": "UNVERIFIED",
+      "mapping": [],
+      "notes": "Requires live schema and coverage validation."
+    },
+    {
+      "key": "body_composition",
+      "metrics": "body composition metrics",
+      "priority": "SECONDARY",
+      "status": "UNVERIFIED",
+      "mapping": [],
+      "notes": "Requires live schema and coverage validation."
+    },
+    {
+      "key": "hydration",
+      "metrics": "hydration intake",
+      "priority": "EXPERIMENTAL",
+      "status": "UNVERIFIED",
+      "mapping": [],
+      "notes": "Requires live schema and coverage validation."
+    },
+    {
+      "key": "activities",
+      "metrics": "activity distance, duration, pace, HR, calories, sport",
+      "priority": "CORE",
+      "status": "UNVERIFIED",
+      "mapping": [],
+      "notes": "Requires live schema and coverage validation."
+    },
+    {
+      "key": "activity_details",
+      "metrics": "activity streams, detailed metrics",
+      "priority": "SECONDARY",
+      "status": "UNVERIFIED",
+      "mapping": [],
+      "notes": "Requires live schema and coverage validation."
+    }
+  ]
+}

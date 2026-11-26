@@ -1,0 +1,40 @@
+name: Refresh sanitized D1 schema snapshot
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 5 * * 1'
+concurrency:
+  group: garmin-live-schema-readonly
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    env:
+      SYNC_BEARER_TOKEN: ${{ secrets.SYNC_BEARER_TOKEN }}
+      WORKER_BASE_URL: https://training-center-sync.listaconcerti.workers.dev
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/grafana-automated-builder
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Fetch and sanitize live schema (read-only)
+        run: |
+          if [ -z "$SYNC_BEARER_TOKEN" ]; then
+            echo "::warning::Schema refresh skipped: repository secret SYNC_BEARER_TOKEN is not configured."
+            exit 0
+          fi
+          node grafana/fetch-sanitized-live-schema.mjs
+      - name: Commit snapshot if changed (branch workflow only)
+        if: github.event_name != 'pull_request' && env.SYNC_BEARER_TOKEN != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add grafana/live-schema-snapshot.json
+          if git diff --cached --quiet; then echo "No schema changes"; exit 0; fi
+          git commit -m "Refresh sanitized live D1 schema snapshot"
+          git push origin feat/grafana-automated-builder

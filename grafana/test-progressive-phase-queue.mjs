@@ -1,0 +1,10 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';
+const q=JSON.parse(fs.readFileSync('grafana/PROGRESSIVE_CONVERSION_PHASES.json','utf8'));
+assert.equal(q.panels,62);assert.equal(q.targets.length,143);
+assert.equal(new Set(q.targets.map(x=>x.stableKey)).size,143);
+assert.ok(q.targets.every(x=>x.status==='PENDING_LIVE_FIELD_VERIFICATION'));
+assert.ok(q.targets.every(x=>x.stableKey===x.panelId+':'+x.targetIndex));
+assert.equal(q.targets.filter(x=>x.classification==='A').length,71);
+assert.equal(q.targets.filter(x=>x.classification==='B').length,20);
+assert.equal(q.targets.filter(x=>x.classification==='C').length,52);
+console.log('Progressive conversion phase queue integrity checks passed.');

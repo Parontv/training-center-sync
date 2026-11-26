@@ -1,0 +1,11 @@
+import fs from 'node:fs'; import assert from 'node:assert/strict';
+const src=fs.readFileSync('src/index.js','utf8');
+const run=src.slice(src.indexOf('if (url.pathname === "/run"'),src.indexOf('if (url.pathname === "/dashboard"'));
+assert.ok(run.includes('id="auditGrafana"'),'run page must expose audit button');
+assert.ok(run.includes("fetch('/dashboard-schema'"),'audit must fetch schema endpoint');
+assert.ok(run.includes("localStorage.getItem('training_center_sync_token')"),'page should use stored browser token');
+assert.ok(run.includes('training-center-live-schema-audit.json'),'audit downloads a report');
+assert.ok(run.includes('Authorization: ' + "'Bearer ' + value"),'request must authenticate with bearer token');
+assert.ok(!run.includes('console.log(value)')&&!run.includes('console.log(token.value)'),'must not log token');
+assert.ok(run.includes('cache: ' + "'no-store"),'audit request should bypass cache');
+console.log('Browser-side schema audit safety checks passed.');

@@ -1,0 +1,1788 @@
+{
+  "generated": "2026-11-25",
+  "source": "garmin-influx-target-semantic-audit.json",
+  "dashboardPanelCount": 62,
+  "targetCount": 143,
+  "status": "UNVERIFIED",
+  "conversionStrategy": "Infinity -> Worker /dashboard-metrics or other read-only endpoints -> D1 storico_garmin; exact paths require live audit.",
+  "panels": [
+    {
+      "panelId": 15,
+      "panel": "Heart Rate",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "HeartRateIntraday",
+          "fields": "HeartRate",
+          "alias": "Heart Rate",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 26,
+      "panel": "Last Sync ",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "HeartRateIntraday",
+          "fields": "HeartRate",
+          "alias": "",
+          "operations": "last",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 21,
+      "panel": "Heart Rate Distribution",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "HeartRate_Intraday",
+          "fields": "value",
+          "alias": "Heart rate histogram",
+          "operations": "mean",
+          "rawQuery": true,
+          "query": "select mean_value from (SELECT mean(\"HeartRate\") as mean_value FROM \"HeartRateIntraday\" WHERE $timeFilter GROUP BY time(1m) fill(null)) where mean_value <= 96",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "HeartRate_Intraday",
+          "fields": "value",
+          "alias": "Heart rate histogram > 96",
+          "operations": "",
+          "rawQuery": true,
+          "query": "select mean_value from (SELECT mean(\"HeartRate\") as mean_value FROM \"HeartRateIntraday\" WHERE $timeFilter GROUP BY time(1m) fill(null)) where mean_value > 96",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "C",
+          "measurement": "HeartRate_Intraday",
+          "fields": "value",
+          "alias": "Heart rate histogram < 60",
+          "operations": "",
+          "rawQuery": true,
+          "query": "select mean_value from (SELECT mean(\"HeartRate\") as mean_value FROM \"HeartRateIntraday\" WHERE $timeFilter GROUP BY time(1m) fill(null)) where mean_value < 60",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "D",
+          "measurement": "HeartRate_Intraday",
+          "fields": "value",
+          "alias": "Heart rate histogram > 110",
+          "operations": "",
+          "rawQuery": true,
+          "query": "select mean_value from (SELECT mean(\"HeartRate\") as mean_value FROM \"HeartRateIntraday\" WHERE $timeFilter GROUP BY time(1m) fill(null)) where mean_value > 110",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 29,
+      "panel": "Stress",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "StressIntraday",
+          "fields": "stressLevel",
+          "alias": "Stress",
+          "operations": "",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "BodyBatteryIntraday",
+          "fields": "BodyBatteryLevel",
+          "alias": "Body Battery",
+          "operations": "",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 28,
+      "panel": "Today RHR",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "DailyStats",
+          "fields": "restingHeartRate",
+          "alias": "",
+          "operations": "last",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 30,
+      "panel": "Today's Steps",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "DailyStats",
+          "fields": "totalSteps",
+          "alias": "",
+          "operations": "last",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 16,
+      "panel": "Steps Cumulative (24h)",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "StepsIntraday",
+          "fields": "StepsCount",
+          "alias": "Intraday Steps",
+          "operations": "mean,cumulative_sum",
+          "rawQuery": false,
+          "query": "SELECT moving_average(mean(\"value\"), 6) FROM \"HeartRate_Intraday\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 31,
+      "panel": "Today SpO2",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "DailyStats",
+          "fields": "averageSpo2",
+          "alias": "",
+          "operations": "last",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 68,
+      "panel": "Steps Hourly (24h)",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "StepsIntraday",
+          "fields": "StepsCount",
+          "alias": "Hourly Steps",
+          "operations": "sum",
+          "rawQuery": false,
+          "query": "SELECT moving_average(mean(\"value\"), 6) FROM \"HeartRate_Intraday\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 32,
+      "panel": "Last Sleep Hours",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "SleepSummary",
+          "fields": "sleepTimeSeconds",
+          "alias": "Total Asleep",
+          "operations": "last",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 62,
+      "panel": "Breathing Rates",
+      "targets": [
+        {
+          "ref": "B",
+          "measurement": "BreathingRateIntraday",
+          "fields": "BreathingRate",
+          "alias": "BR",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 33,
+      "panel": "High Stress Duration",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "DailyStats",
+          "fields": "highStressDuration",
+          "alias": "Stress",
+          "operations": "last",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 52,
+      "panel": "Sleep Movement Activity",
+      "targets": [
+        {
+          "ref": "E",
+          "measurement": "SleepIntraday",
+          "fields": "SleepMovementActivityLevel",
+          "alias": "Sleeping Movement Activity",
+          "operations": "",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 36,
+      "panel": "Last Sleep",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "SleepSummary",
+          "fields": "deepSleepSeconds",
+          "alias": "Deep",
+          "operations": "last",
+          "rawQuery": false,
+          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "SleepSummary",
+          "fields": "lightSleepSeconds",
+          "alias": "Light",
+          "operations": "last",
+          "rawQuery": false,
+          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "C",
+          "measurement": "SleepSummary",
+          "fields": "remSleepSeconds",
+          "alias": "REM",
+          "operations": "last",
+          "rawQuery": false,
+          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "D",
+          "measurement": "SleepSummary",
+          "fields": "awakeSleepSeconds",
+          "alias": "Awake",
+          "operations": "last",
+          "rawQuery": false,
+          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 7,
+      "panel": "Sleep Intraday Stats",
+      "targets": [
+        {
+          "ref": "C",
+          "measurement": "SleepIntraday",
+          "fields": "heartRate",
+          "alias": "Sleeping Heart Rate",
+          "operations": "",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "D",
+          "measurement": "SleepIntraday",
+          "fields": "spo2Reading",
+          "alias": "SpO2",
+          "operations": "",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "A",
+          "measurement": "HRV_Intraday",
+          "fields": "hrvValue",
+          "alias": "HRV",
+          "operations": "",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 35,
+      "panel": "Today Activity",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "DailyStats",
+          "fields": "sedentarySeconds",
+          "alias": "Sedentary",
+          "operations": "last",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "DailyStats",
+          "fields": "vigorousIntensityMinutes",
+          "alias": "Intense Activity",
+          "operations": "last,math",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "C",
+          "measurement": "DailyStats",
+          "fields": "moderateIntensityMinutes",
+          "alias": "Moderate Activity",
+          "operations": "last,math",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "D",
+          "measurement": "DailyStats",
+          "fields": "sleepingSeconds",
+          "alias": "Sleeping",
+          "operations": "last",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 6,
+      "panel": "Sleep Stages",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "SleepIntraday",
+          "fields": "SleepStageLevel",
+          "alias": "Deep",
+          "operations": "",
+          "rawQuery": true,
+          "query": "SELECT \"SleepStageLevel\"+1 FROM \"SleepIntraday\" WHERE SleepStageLevel=0 AND $timeFilter",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "SleepIntraday",
+          "fields": "SleepStageLevel",
+          "alias": "Light",
+          "operations": "",
+          "rawQuery": true,
+          "query": "SELECT \"SleepStageLevel\"+1 FROM \"SleepIntraday\" WHERE SleepStageLevel=1 AND $timeFilter",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "C",
+          "measurement": "SleepIntraday",
+          "fields": "SleepStageLevel",
+          "alias": "REM",
+          "operations": "",
+          "rawQuery": true,
+          "query": "SELECT \"SleepStageLevel\"+1 FROM \"SleepIntraday\" WHERE SleepStageLevel=2 AND $timeFilter",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "D",
+          "measurement": "SleepIntraday",
+          "fields": "SleepStageLevel",
+          "alias": "Awake",
+          "operations": "",
+          "rawQuery": true,
+          "query": "SELECT \"SleepStageLevel\"+1 FROM \"SleepIntraday\" WHERE SleepStageLevel=3 AND $timeFilter",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 43,
+      "panel": "Activity HR Zones (mean)",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "ActivitySummary",
+          "fields": "hrTimeInZone_1",
+          "alias": "Zone 1",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "ActivitySummary",
+          "fields": "hrTimeInZone_2",
+          "alias": "Zone 2",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "C",
+          "measurement": "ActivitySummary",
+          "fields": "hrTimeInZone_3",
+          "alias": "Zone 3",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "D",
+          "measurement": "ActivitySummary",
+          "fields": "hrTimeInZone_4",
+          "alias": "Zone 4",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "E",
+          "measurement": "ActivitySummary",
+          "fields": "hrTimeInZone_5",
+          "alias": "Zone 5",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 44,
+      "panel": "Activity Calories (mean)",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "ActivitySummary",
+          "fields": "calories",
+          "alias": "calories",
+          "operations": "",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "ActivitySummary",
+          "fields": "bmrCalories",
+          "alias": "BMR calories",
+          "operations": "",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 48,
+      "panel": "Activity HR difference (Max-Avg)",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "ActivitySummary",
+          "fields": "averageHR",
+          "alias": "avgHR",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "ActivitySummary",
+          "fields": "maxHR",
+          "alias": "maxHR",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 53,
+      "panel": "Activity Distance",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "ActivitySummary",
+          "fields": "distance",
+          "alias": "Distance",
+          "operations": "",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 54,
+      "panel": "Activity Duration",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "ActivitySummary",
+          "fields": "elapsedDuration",
+          "alias": "Duration",
+          "operations": "",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 50,
+      "panel": "GPS Track by Velocity",
+      "targets": [
+        {
+          "ref": "I",
+          "measurement": "ActivityGPS",
+          "fields": "Latitude",
+          "alias": "lat",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "J",
+          "measurement": "ActivityGPS",
+          "fields": "Longitude",
+          "alias": "lon",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "A",
+          "measurement": "ActivityGPS",
+          "fields": "HeartRate",
+          "alias": "HR",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "ActivityGPS",
+          "fields": "Speed",
+          "alias": "speed (Km/h)",
+          "operations": "math",
+          "rawQuery": false,
+          "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 49,
+      "panel": "GPS Track by Heart Rate",
+      "targets": [
+        {
+          "ref": "I",
+          "measurement": "ActivityGPS",
+          "fields": "Latitude",
+          "alias": "lat",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "J",
+          "measurement": "ActivityGPS",
+          "fields": "Longitude",
+          "alias": "lon",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "A",
+          "measurement": "ActivityGPS",
+          "fields": "HeartRate",
+          "alias": "HR",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "ActivityGPS",
+          "fields": "Speed",
+          "alias": "speed",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 45,
+      "panel": "GPS Track Heart Rate",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "ActivityGPS",
+          "fields": "HeartRate",
+          "alias": "HR",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 61,
+      "panel": "GPS Track Cadence",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "ActivityGPS",
+          "fields": "Cadence",
+          "alias": "Cadence",
+          "operations": "math",
+          "rawQuery": false,
+          "query": "SELECT (1000/(\"Cadence\"* 60)) FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/) AND $timeFilter",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 57,
+      "panel": "Distance vs HR",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "ActivityGPS",
+          "fields": "Distance",
+          "alias": "Distance",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "ActivityGPS",
+          "fields": "HeartRate",
+          "alias": "Heart Rate",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "C",
+          "measurement": "ActivityGPS",
+          "fields": "Speed",
+          "alias": "Pace",
+          "operations": "math",
+          "rawQuery": false,
+          "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "D",
+          "measurement": "ActivityGPS",
+          "fields": "DurationSeconds",
+          "alias": "Duration",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 55,
+      "panel": "Heart Rate vs Pace",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "ActivityGPS",
+          "fields": "Speed",
+          "alias": "Speed (Km/h)",
+          "operations": "math",
+          "rawQuery": false,
+          "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "ActivityGPS",
+          "fields": "HeartRate",
+          "alias": "Heart Rate",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 47,
+      "panel": "GPS Track pace",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "ActivityGPS",
+          "fields": "Speed",
+          "alias": "m/s",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"Speed\" FROM \"ActivityGPS\" WHERE \"Speed\" > 0 AND  (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/) AND $timeFilter",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "ActivityGPS",
+          "fields": "DurationSeconds",
+          "alias": "Duration",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 46,
+      "panel": "GPS Track Altitude",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "ActivityGPS",
+          "fields": "Altitude",
+          "alias": "Altitude",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 38,
+      "panel": "Recent Activity",
+      "targets": [
+        {
+          "ref": "B",
+          "measurement": "ActivitySummary",
+          "fields": "activityType",
+          "alias": "Activity Type",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "A",
+          "measurement": "ActivitySummary",
+          "fields": "elapsedDuration",
+          "alias": "Duration",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "C",
+          "measurement": "ActivitySummary",
+          "fields": "maxHR",
+          "alias": "Max HR",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "E",
+          "measurement": "ActivitySummary",
+          "fields": "maxSpeed",
+          "alias": "Max Speed",
+          "operations": "math",
+          "rawQuery": false,
+          "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "F",
+          "measurement": "ActivitySummary",
+          "fields": "distance",
+          "alias": "Distance",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "D",
+          "measurement": "ActivitySummary",
+          "fields": "locationName",
+          "alias": "Location",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 41,
+      "panel": "Activities",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "ActivitySummary",
+          "fields": "activityType",
+          "alias": "Activity Timeline",
+          "operations": "",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 59,
+      "panel": "Week at a Glance",
+      "targets": [
+        {
+          "ref": "B",
+          "measurement": "DailyStats",
+          "fields": "totalDistanceMeters",
+          "alias": "Distance Covered",
+          "operations": "max",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "C",
+          "measurement": "DailyStats",
+          "fields": "totalSteps",
+          "alias": "Steps",
+          "operations": "max",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "E",
+          "measurement": "DailyStats",
+          "fields": "sleepingSeconds",
+          "alias": "Total Sleep",
+          "operations": "max",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "D",
+          "measurement": "DailyStats",
+          "fields": "highStressDuration",
+          "alias": "High Stress Duration",
+          "operations": "max",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "H",
+          "measurement": "DailyStats",
+          "fields": "highlyActiveSeconds",
+          "alias": "High Activity Duration",
+          "operations": "max",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "A",
+          "measurement": "DailyStats",
+          "fields": "restingHeartRate",
+          "alias": "Resting Heart Rate",
+          "operations": "max",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "F",
+          "measurement": "DailyStats",
+          "fields": "averageSpo2",
+          "alias": "Avg SpO2",
+          "operations": "max",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "G",
+          "measurement": "DailyStats",
+          "fields": "bodyBatteryChargedValue",
+          "alias": "Body Battery Change",
+          "operations": "max",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 1,
+      "panel": "Daily Steps",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "DailyStats",
+          "fields": "totalSteps",
+          "alias": "Steps",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 3,
+      "panel": "Daily Distance",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "DailyStats",
+          "fields": "totalDistanceMeters",
+          "alias": "Distance Covered",
+          "operations": "max",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 10,
+      "panel": "Daily Calories",
+      "targets": [
+        {
+          "ref": "B",
+          "measurement": "DailyStats",
+          "fields": "bmrKilocalories",
+          "alias": "BMR Calories",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "A",
+          "measurement": "DailyStats",
+          "fields": "activeKilocalories",
+          "alias": "Activity Calories",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 11,
+      "panel": "Daily avg health metrics",
+      "targets": [
+        {
+          "ref": "B",
+          "measurement": "SleepSummary",
+          "fields": "averageSpO2Value",
+          "alias": "Avg SpO2",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "A",
+          "measurement": "HRV_Intraday",
+          "fields": "hrvValue",
+          "alias": "Avg HRV",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "D",
+          "measurement": "DailyStats",
+          "fields": "restingHeartRate",
+          "alias": "Avg Resting HR",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 51,
+      "panel": "Daily avg health metrics",
+      "targets": [
+        {
+          "ref": "E",
+          "measurement": "BreathingRateIntraday",
+          "fields": "BreathingRate",
+          "alias": "Avg Breathing Rate",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "A",
+          "measurement": "StressIntraday",
+          "fields": "stressLevel",
+          "alias": "Avg Stress",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "C",
+          "measurement": "SleepSummary",
+          "fields": "avgSleepStress",
+          "alias": "Avg Sleeping Stress",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 63,
+      "panel": "Race Predictions",
+      "targets": [
+        {
+          "ref": "B",
+          "measurement": "RacePredictions",
+          "fields": "time5K",
+          "alias": "Time 5K",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "A",
+          "measurement": "RacePredictions",
+          "fields": "time10K",
+          "alias": "Time 10K",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "C",
+          "measurement": "RacePredictions",
+          "fields": "timeHalfMarathon",
+          "alias": "Half Marathon",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "D",
+          "measurement": "RacePredictions",
+          "fields": "timeMarathon",
+          "alias": "Full Marathon",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 64,
+      "panel": "VO2 Max",
+      "targets": [
+        {
+          "ref": "B",
+          "measurement": "VO2_Max",
+          "fields": "VO2_max_value",
+          "alias": "VO2 Max",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 69,
+      "panel": "Heatmap for GPS Activity (within selected time)",
+      "targets": [
+        {
+          "ref": "I",
+          "measurement": "ActivityGPS",
+          "fields": "Latitude",
+          "alias": "lat",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "J",
+          "measurement": "ActivityGPS",
+          "fields": "Longitude",
+          "alias": "lon",
+          "operations": "",
+          "rawQuery": false,
+          "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 13,
+      "panel": "Sleep Stages",
+      "targets": [
+        {
+          "ref": "B",
+          "measurement": "SleepSummary",
+          "fields": "deepSleepSeconds",
+          "alias": "Deep Sleep",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "A",
+          "measurement": "SleepSummary",
+          "fields": "lightSleepSeconds",
+          "alias": "Light Sleep",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "C",
+          "measurement": "SleepSummary",
+          "fields": "remSleepSeconds",
+          "alias": "REM Sleep",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "D",
+          "measurement": "SleepSummary",
+          "fields": "awakeSleepSeconds",
+          "alias": "Awake",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 23,
+      "panel": "Avg Activity over given duration",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "DailyStats",
+          "fields": "sedentarySeconds",
+          "alias": "Sedentary",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "DailyStats",
+          "fields": "highlyActiveSeconds",
+          "alias": "Intense Activity",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "C",
+          "measurement": "DailyStats",
+          "fields": "activeSeconds",
+          "alias": "Fair Activity",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "D",
+          "measurement": "DailyStats",
+          "fields": "sleepingSeconds",
+          "alias": "Sleeping",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 12,
+      "panel": "Sleep Score",
+      "targets": [
+        {
+          "ref": "B",
+          "measurement": "SleepSummary",
+          "fields": "sleepScore",
+          "alias": "Sleep Score",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 17,
+      "panel": "Daily Activity Overview",
+      "targets": [
+        {
+          "ref": "D",
+          "measurement": "DailyStats",
+          "fields": "sleepingSeconds",
+          "alias": "Sleeping",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "C",
+          "measurement": "DailyStats",
+          "fields": "sedentarySeconds",
+          "alias": "Sedentary",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "A",
+          "measurement": "DailyStats",
+          "fields": "activeSeconds",
+          "alias": "Active",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "DailyStats",
+          "fields": "highlyActiveSeconds",
+          "alias": "Highly Active",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 19,
+      "panel": "Body Battery overview",
+      "targets": [
+        {
+          "ref": "D",
+          "measurement": "DailyStats",
+          "fields": "bodyBatteryChargedValue",
+          "alias": "Charged",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "C",
+          "measurement": "DailyStats",
+          "fields": "bodyBatteryDrainedValue",
+          "alias": "Drained",
+          "operations": "mean,math",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 4,
+      "panel": "Daily Intensity Minutes",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "DailyStats",
+          "fields": "moderateIntensityMinutes",
+          "alias": "Moderate Intensity",
+          "operations": "max,math",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "DailyStats",
+          "fields": "vigorousIntensityMinutes",
+          "alias": "Vigorous Intensity",
+          "operations": "max,math",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 18,
+      "panel": "Stress overview",
+      "targets": [
+        {
+          "ref": "D",
+          "measurement": "DailyStats",
+          "fields": "lowStressDuration",
+          "alias": "Low Stress duration",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "DailyStats",
+          "fields": "restStressDuration",
+          "alias": "Rest stress duration",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "C",
+          "measurement": "DailyStats",
+          "fields": "mediumStressDuration",
+          "alias": "Medium stress duration",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "E",
+          "measurement": "DailyStats",
+          "fields": "uncategorizedStressDuration",
+          "alias": "Uncategorized stress duration",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "A",
+          "measurement": "DailyStats",
+          "fields": "highStressDuration",
+          "alias": "High stress duration",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 22,
+      "panel": "Average Sleep trends",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "SleepSummary",
+          "fields": "deepSleepSeconds",
+          "alias": "Deep",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "SleepSummary",
+          "fields": "lightSleepSeconds",
+          "alias": "Light",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "C",
+          "measurement": "SleepSummary",
+          "fields": "remSleepSeconds",
+          "alias": "REM",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "D",
+          "measurement": "SleepSummary",
+          "fields": "awakeSleepSeconds",
+          "alias": "Awake",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 37,
+      "panel": "Body Battery Level Change",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "DailyStats",
+          "fields": "bodyBatteryLowestValue",
+          "alias": "bb_low",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "DailyStats",
+          "fields": "bodyBatteryHighestValue",
+          "alias": "bb_high",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 34,
+      "panel": "Weight",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "BodyComposition",
+          "fields": "weight",
+          "alias": "Weight in KG",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 58,
+      "panel": "HR Range (Max-Min)",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "DailyStats",
+          "fields": "minHeartRate",
+          "alias": "hr_low",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "DailyStats",
+          "fields": "maxHeartRate",
+          "alias": "hr_high",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 66,
+      "panel": "Month at a Glance (Daily Average)",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "DailyStats",
+          "fields": "restingHeartRate",
+          "alias": "Resting HR",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "DailyStats",
+          "fields": "highStressDuration",
+          "alias": "High Stress Duration",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "C",
+          "measurement": "DailyStats",
+          "fields": "activeSeconds",
+          "alias": "Active time",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "G",
+          "measurement": "DailyStats",
+          "fields": "bodyBatteryHighestValue",
+          "alias": "Body Battery (Highest)",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "E",
+          "measurement": "DailyStats",
+          "fields": "totalSteps",
+          "alias": "Total Steps",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "D",
+          "measurement": "DailyStats",
+          "fields": "averageSpo2",
+          "alias": "SpO2",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "H",
+          "measurement": "SleepSummary",
+          "fields": "sleepScore",
+          "alias": "Sleep Score",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "F",
+          "measurement": "DailyStats",
+          "fields": "sleepingSeconds",
+          "alias": "Total Sleep",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "I",
+          "measurement": "HRV_Intraday",
+          "fields": "hrvValue",
+          "alias": "HRV",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 67,
+      "panel": "Month at a Glance (Intraday)",
+      "targets": [
+        {
+          "ref": "D",
+          "measurement": "HeartRateIntraday",
+          "fields": "HeartRate",
+          "alias": "Band Wearing",
+          "operations": "count",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "E",
+          "measurement": "HeartRateIntraday",
+          "fields": "HeartRate",
+          "alias": "HR Zones",
+          "operations": "median",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "A",
+          "measurement": "BodyBatteryIntraday",
+          "fields": "BodyBatteryLevel",
+          "alias": "Body Battery",
+          "operations": "median",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "B",
+          "measurement": "StressIntraday",
+          "fields": "stressLevel",
+          "alias": "Stress Level",
+          "operations": "median",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        },
+        {
+          "ref": "C",
+          "measurement": "StepsIntraday",
+          "fields": "StepsCount",
+          "alias": "Steps Taken",
+          "operations": "sum",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 65,
+      "panel": "HR Histogram Heatmap",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "HeartRateIntraday",
+          "fields": "HeartRate",
+          "alias": "Heart Rate",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 20,
+      "panel": "Hourly walk heatmap",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "StepsIntraday",
+          "fields": "StepsCount",
+          "alias": "Hourly Steps",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 27,
+      "panel": "Sleep Regularity",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "SleepIntraday",
+          "fields": "SleepStageLevel",
+          "alias": "Sleep Regularity",
+          "operations": "median",
+          "rawQuery": false,
+          "query": "SELECT median(\"level\") FROM \"Sleep Levels\" WHERE $timeFilter GROUP BY time(1h)",
+          "status": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "panelId": 60,
+      "panel": "Battery Level (Requires GarminHomeAssistant from ConnectIQ integration)",
+      "targets": [
+        {
+          "ref": "A",
+          "measurement": "%",
+          "fields": "value",
+          "alias": "Device Battery Level",
+          "operations": "mean",
+          "rawQuery": false,
+          "query": "",
+          "status": "UNVERIFIED"
+        }
+      ]
+    }
+  ]
+}

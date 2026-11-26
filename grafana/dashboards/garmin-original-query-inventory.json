@@ -1,0 +1,3007 @@
+{
+  "reference": "arpanghosh8453/garmin-grafana/Grafana_Dashboard/Garmin-Grafana-Dashboard.json",
+  "sourceDashboardTitle": "Garmin Stats",
+  "panelCount": 62,
+  "createdAt": "2026-11-25",
+  "architecture": "Grafana Cloud + Infinity + protected Worker API + D1 storico_garmin (no InfluxDB)",
+  "mappingStatus": "REFERENCE_QUERY_INVENTORY; field/schema verification pending",
+  "panels": [
+    {
+      "id": 14,
+      "title": "Intraday Health Stats",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "targets": []
+    },
+    {
+      "id": 25,
+      "title": "Support Me!",
+      "type": "text",
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 0,
+        "y": 1
+      },
+      "targets": []
+    },
+    {
+      "id": 15,
+      "title": "Heart Rate",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 9,
+        "w": 21,
+        "x": 3,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "HeartRateIntraday",
+          "alias": "Heart Rate",
+          "groupBy": [
+            {
+              "params": [
+                "2m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "title": "Last Sync ",
+      "type": "stat",
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 0,
+        "y": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "HeartRateIntraday",
+          "groupBy": []
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "title": "Heart Rate Distribution",
+      "type": "histogram",
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 7
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "HeartRate_Intraday",
+          "alias": "Heart rate histogram",
+          "query": "select mean_value from (SELECT mean(\"HeartRate\") as mean_value FROM \"HeartRateIntraday\" WHERE $timeFilter GROUP BY time(1m) fill(null)) where mean_value <= 96",
+          "rawQuery": true,
+          "groupBy": [
+            {
+              "params": [
+                "$interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "measurement": "HeartRate_Intraday",
+          "alias": "Heart rate histogram > 96",
+          "query": "select mean_value from (SELECT mean(\"HeartRate\") as mean_value FROM \"HeartRateIntraday\" WHERE $timeFilter GROUP BY time(1m) fill(null)) where mean_value > 96",
+          "rawQuery": true,
+          "groupBy": []
+        },
+        {
+          "refId": "C",
+          "measurement": "HeartRate_Intraday",
+          "alias": "Heart rate histogram < 60",
+          "query": "select mean_value from (SELECT mean(\"HeartRate\") as mean_value FROM \"HeartRateIntraday\" WHERE $timeFilter GROUP BY time(1m) fill(null)) where mean_value < 60",
+          "rawQuery": true,
+          "groupBy": []
+        },
+        {
+          "refId": "D",
+          "measurement": "HeartRate_Intraday",
+          "alias": "Heart rate histogram > 110",
+          "query": "select mean_value from (SELECT mean(\"HeartRate\") as mean_value FROM \"HeartRateIntraday\" WHERE $timeFilter GROUP BY time(1m) fill(null)) where mean_value > 110",
+          "rawQuery": true,
+          "groupBy": []
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "title": "Stress",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 21,
+        "x": 3,
+        "y": 10
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "StressIntraday",
+          "alias": "Stress",
+          "groupBy": []
+        },
+        {
+          "refId": "B",
+          "measurement": "BodyBatteryIntraday",
+          "alias": "Body Battery",
+          "groupBy": []
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "title": "Today RHR",
+      "type": "gauge",
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 0,
+        "y": 11
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "DailyStats",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "title": "Today's Steps",
+      "type": "gauge",
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 0,
+        "y": 16
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "DailyStats",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "title": "Steps Cumulative (24h)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 21,
+        "x": 3,
+        "y": 18
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "StepsIntraday",
+          "alias": "Intraday Steps",
+          "query": "SELECT moving_average(mean(\"value\"), 6) FROM \"HeartRate_Intraday\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "groupBy": [
+            {
+              "params": [
+                "15m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "title": "Today SpO2",
+      "type": "gauge",
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 0,
+        "y": 22
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "DailyStats",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 68,
+      "title": "Steps Hourly (24h)",
+      "type": "state-timeline",
+      "gridPos": {
+        "h": 3,
+        "w": 21,
+        "x": 3,
+        "y": 26
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "StepsIntraday",
+          "alias": "Hourly Steps",
+          "query": "SELECT moving_average(mean(\"value\"), 6) FROM \"HeartRate_Intraday\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "groupBy": [
+            {
+              "params": [
+                "1h"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "0"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "title": "Last Sleep Hours",
+      "type": "gauge",
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 0,
+        "y": 28
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "SleepSummary",
+          "alias": "Total Asleep",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 62,
+      "title": "Breathing Rates",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 21,
+        "x": 3,
+        "y": 29
+      },
+      "targets": [
+        {
+          "refId": "B",
+          "measurement": "BreathingRateIntraday",
+          "alias": "BR",
+          "groupBy": [
+            {
+              "params": [
+                "2m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "title": "High Stress Duration",
+      "type": "gauge",
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 0,
+        "y": 34
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "DailyStats",
+          "alias": "Stress",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 52,
+      "title": "Sleep Movement Activity",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 21,
+        "x": 3,
+        "y": 36
+      },
+      "targets": [
+        {
+          "refId": "E",
+          "measurement": "SleepIntraday",
+          "alias": "Sleeping Movement Activity",
+          "groupBy": []
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "title": "Last Sleep",
+      "type": "piechart",
+      "gridPos": {
+        "h": 9,
+        "w": 3,
+        "x": 0,
+        "y": 41
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "SleepSummary",
+          "alias": "Deep",
+          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "measurement": "SleepSummary",
+          "alias": "Light",
+          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "C",
+          "measurement": "SleepSummary",
+          "alias": "REM",
+          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "D",
+          "measurement": "SleepSummary",
+          "alias": "Awake",
+          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Sleep Intraday Stats",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 9,
+        "w": 21,
+        "x": 3,
+        "y": 43
+      },
+      "targets": [
+        {
+          "refId": "C",
+          "measurement": "SleepIntraday",
+          "alias": "Sleeping Heart Rate",
+          "groupBy": []
+        },
+        {
+          "refId": "D",
+          "measurement": "SleepIntraday",
+          "alias": "SpO2",
+          "groupBy": []
+        },
+        {
+          "refId": "A",
+          "measurement": "HRV_Intraday",
+          "alias": "HRV",
+          "groupBy": []
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "title": "Today Activity",
+      "type": "piechart",
+      "gridPos": {
+        "h": 9,
+        "w": 3,
+        "x": 0,
+        "y": 50
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "DailyStats",
+          "alias": "Sedentary",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "measurement": "DailyStats",
+          "alias": "Intense Activity",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "C",
+          "measurement": "DailyStats",
+          "alias": "Moderate Activity",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "D",
+          "measurement": "DailyStats",
+          "alias": "Sleeping",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Sleep Stages",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 21,
+        "x": 3,
+        "y": 52
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "SleepIntraday",
+          "alias": "Deep",
+          "query": "SELECT \"SleepStageLevel\"+1 FROM \"SleepIntraday\" WHERE SleepStageLevel=0 AND $timeFilter",
+          "rawQuery": true,
+          "groupBy": []
+        },
+        {
+          "refId": "B",
+          "measurement": "SleepIntraday",
+          "alias": "Light",
+          "query": "SELECT \"SleepStageLevel\"+1 FROM \"SleepIntraday\" WHERE SleepStageLevel=1 AND $timeFilter",
+          "rawQuery": true,
+          "groupBy": []
+        },
+        {
+          "refId": "C",
+          "measurement": "SleepIntraday",
+          "alias": "REM",
+          "query": "SELECT \"SleepStageLevel\"+1 FROM \"SleepIntraday\" WHERE SleepStageLevel=2 AND $timeFilter",
+          "rawQuery": true,
+          "groupBy": []
+        },
+        {
+          "refId": "D",
+          "measurement": "SleepIntraday",
+          "alias": "Awake",
+          "query": "SELECT \"SleepStageLevel\"+1 FROM \"SleepIntraday\" WHERE SleepStageLevel=3 AND $timeFilter",
+          "rawQuery": true,
+          "groupBy": []
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "title": "Activity HR Zones (mean)",
+      "type": "piechart",
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 0,
+        "y": 59
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "ActivitySummary",
+          "alias": "Zone 1",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "measurement": "ActivitySummary",
+          "alias": "Zone 2",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "C",
+          "measurement": "ActivitySummary",
+          "alias": "Zone 3",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "D",
+          "measurement": "ActivitySummary",
+          "alias": "Zone 4",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "E",
+          "measurement": "ActivitySummary",
+          "alias": "Zone 5",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "title": "Activity Calories (mean)",
+      "type": "piechart",
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 5,
+        "y": 59
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "ActivitySummary",
+          "alias": "calories",
+          "groupBy": []
+        },
+        {
+          "refId": "B",
+          "measurement": "ActivitySummary",
+          "alias": "BMR calories",
+          "groupBy": []
+        }
+      ]
+    },
+    {
+      "id": 48,
+      "title": "Activity HR difference (Max-Avg)",
+      "type": "barchart",
+      "gridPos": {
+        "h": 9,
+        "w": 4,
+        "x": 10,
+        "y": 59
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "ActivitySummary",
+          "alias": "avgHR",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "measurement": "ActivitySummary",
+          "alias": "maxHR",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 53,
+      "title": "Activity Distance",
+      "type": "barchart",
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 14,
+        "y": 59
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "ActivitySummary",
+          "alias": "Distance",
+          "groupBy": []
+        }
+      ]
+    },
+    {
+      "id": 54,
+      "title": "Activity Duration",
+      "type": "barchart",
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 19,
+        "y": 59
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "ActivitySummary",
+          "alias": "Duration",
+          "groupBy": []
+        }
+      ]
+    },
+    {
+      "id": 42,
+      "title": "Recent Activities",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 68
+      },
+      "targets": []
+    },
+    {
+      "id": 50,
+      "title": "GPS Track by Velocity",
+      "type": "geomap",
+      "gridPos": {
+        "h": 11,
+        "w": 12,
+        "x": 0,
+        "y": 69
+      },
+      "targets": [
+        {
+          "refId": "I",
+          "measurement": "ActivityGPS",
+          "alias": "lat",
+          "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+          "rawQuery": false,
+          "groupBy": []
+        },
+        {
+          "refId": "J",
+          "measurement": "ActivityGPS",
+          "alias": "lon",
+          "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+          "rawQuery": false,
+          "groupBy": []
+        },
+        {
+          "refId": "A",
+          "measurement": "ActivityGPS",
+          "alias": "HR",
+          "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+          "rawQuery": false,
+          "groupBy": []
+        },
+        {
+          "refId": "B",
+          "measurement": "ActivityGPS",
+          "alias": "speed (Km/h)",
+          "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+          "rawQuery": false,
+          "groupBy": []
+        }
+      ]
+    },
+    {
+      "id": 49,
+      "title": "GPS Track by Heart Rate",
+      "type": "geomap",
+      "gridPos": {
+        "h": 11,
+        "w": 12,
+        "x": 12,
+        "y": 69
+      },
+      "targets": [
+        {
+          "refId": "I",
+          "measurement": "ActivityGPS",
+          "alias": "lat",
+          "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+          "rawQuery": false,
+          "groupBy": []
+        },
+        {
+          "refId": "J",
+          "measurement": "ActivityGPS",
+          "alias": "lon",
+          "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+          "rawQuery": false,
+          "groupBy": []
+        },
+        {
+          "refId": "A",
+          "measurement": "ActivityGPS",
+          "alias": "HR",
+          "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+          "rawQuery": false,
+          "groupBy": []
+        },
+        {
+          "refId": "B",
+          "measurement": "ActivityGPS",
+          "alias": "speed",
+          "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+          "rawQuery": false,
+          "groupBy": []
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "title": "GPS Track Heart Rate",
+      "type": "barchart",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 80
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "ActivityGPS",
+          "alias": "HR",
+          "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+          "rawQuery": false,
+          "groupBy": []
+        }
+      ]
+    },
+    {
+      "id": 61,
+      "title": "GPS Track Cadence",
+      "type": "barchart",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 88
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "ActivityGPS",
+          "alias": "Cadence",
+          "query": "SELECT (1000/(\"Cadence\"* 60)) FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/) AND $timeFilter",
+          "rawQuery": false,
+          "groupBy": []
+        }
+      ]
+    },
+    {
+      "id": 57,
+      "title": "Distance vs HR",
+      "type": "trend",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 96
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "ActivityGPS",
+          "alias": "Distance",
+          "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+          "rawQuery": false,
+          "groupBy": []
+        },
+        {
+          "refId": "B",
+          "measurement": "ActivityGPS",
+          "alias": "Heart Rate",
+          "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+          "rawQuery": false,
+          "groupBy": []
+        },
+        {
+          "refId": "C",
+          "measurement": "ActivityGPS",
+          "alias": "Pace",
+          "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+          "rawQuery": false,
+          "groupBy": []
+        },
+        {
+          "refId": "D",
+          "measurement": "ActivityGPS",
+          "alias": "Duration",
+          "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+          "rawQuery": false,
+          "groupBy": []
+        }
+      ]
+    },
+    {
+      "id": 55,
+      "title": "Heart Rate vs Pace",
+      "type": "xychart",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 104
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "ActivityGPS",
+          "alias": "Speed (Km/h)",
+          "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+          "rawQuery": false,
+          "groupBy": []
+        },
+        {
+          "refId": "B",
+          "measurement": "ActivityGPS",
+          "alias": "Heart Rate",
+          "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+          "rawQuery": false,
+          "groupBy": []
+        }
+      ]
+    },
+    {
+      "id": 47,
+      "title": "GPS Track pace",
+      "type": "barchart",
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 112
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "ActivityGPS",
+          "alias": "m/s",
+          "query": "SELECT \"Speed\" FROM \"ActivityGPS\" WHERE \"Speed\" > 0 AND  (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/) AND $timeFilter",
+          "rawQuery": false,
+          "groupBy": []
+        },
+        {
+          "refId": "B",
+          "measurement": "ActivityGPS",
+          "alias": "Duration",
+          "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+          "rawQuery": false,
+          "groupBy": []
+        }
+      ]
+    },
+    {
+      "id": 46,
+      "title": "GPS Track Altitude",
+      "type": "barchart",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 119
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "ActivityGPS",
+          "alias": "Altitude",
+          "query": "SELECT \"HeartRate\" FROM \"ActivityGPS\" WHERE (\"ActivitySelector\"::tag =~ /^$ActivityGPS$/)",
+          "rawQuery": false,
+          "groupBy": []
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "title": "Recent Activity",
+      "type": "table",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 127
+      },
+      "targets": [
+        {
+          "refId": "B",
+          "measurement": "ActivitySummary",
+          "alias": "Activity Type",
+          "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+          "rawQuery": false,
+          "groupBy": []
+        },
+        {
+          "refId": "A",
+          "measurement": "ActivitySummary",
+          "alias": "Duration",
+          "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+          "rawQuery": false,
+          "groupBy": []
+        },
+        {
+          "refId": "C",
+          "measurement": "ActivitySummary",
+          "alias": "Max HR",
+          "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+          "rawQuery": false,
+          "groupBy": []
+        },
+        {
+          "refId": "E",
+          "measurement": "ActivitySummary",
+          "alias": "Max Speed",
+          "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+          "rawQuery": false,
+          "groupBy": []
+        },
+        {
+          "refId": "F",
+          "measurement": "ActivitySummary",
+          "alias": "Distance",
+          "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+          "rawQuery": false,
+          "groupBy": []
+        },
+        {
+          "refId": "D",
+          "measurement": "ActivitySummary",
+          "alias": "Location",
+          "query": "SELECT \"duration\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') AND $timeFilter ORDER BY time DESC",
+          "rawQuery": false,
+          "groupBy": []
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "title": "Activities",
+      "type": "state-timeline",
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 135
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "ActivitySummary",
+          "alias": "Activity Timeline",
+          "groupBy": []
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Long term visualization",
+      "type": "row",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 139
+      },
+      "targets": []
+    },
+    {
+      "id": 59,
+      "title": "Week at a Glance",
+      "type": "table",
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 140
+      },
+      "targets": [
+        {
+          "refId": "B",
+          "measurement": "DailyStats",
+          "alias": "Distance Covered",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "C",
+          "measurement": "DailyStats",
+          "alias": "Steps",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "E",
+          "measurement": "DailyStats",
+          "alias": "Total Sleep",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "D",
+          "measurement": "DailyStats",
+          "alias": "High Stress Duration",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "H",
+          "measurement": "DailyStats",
+          "alias": "High Activity Duration",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "A",
+          "measurement": "DailyStats",
+          "alias": "Resting Heart Rate",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "F",
+          "measurement": "DailyStats",
+          "alias": "Avg SpO2",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "G",
+          "measurement": "DailyStats",
+          "alias": "Body Battery Change",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "title": "Daily Steps",
+      "type": "barchart",
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 0,
+        "y": 151
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "DailyStats",
+          "alias": "Steps",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Daily Distance",
+      "type": "barchart",
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 8,
+        "y": 151
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "DailyStats",
+          "alias": "Distance Covered",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Daily Calories",
+      "type": "barchart",
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 16,
+        "y": 151
+      },
+      "targets": [
+        {
+          "refId": "B",
+          "measurement": "DailyStats",
+          "alias": "BMR Calories",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "A",
+          "measurement": "DailyStats",
+          "alias": "Activity Calories",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "title": "Daily avg health metrics",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 160
+      },
+      "targets": [
+        {
+          "refId": "B",
+          "measurement": "SleepSummary",
+          "alias": "Avg SpO2",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "A",
+          "measurement": "HRV_Intraday",
+          "alias": "Avg HRV",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "D",
+          "measurement": "DailyStats",
+          "alias": "Avg Resting HR",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 51,
+      "title": "Daily avg health metrics",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 160
+      },
+      "targets": [
+        {
+          "refId": "E",
+          "measurement": "BreathingRateIntraday",
+          "alias": "Avg Breathing Rate",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "A",
+          "measurement": "StressIntraday",
+          "alias": "Avg Stress",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "C",
+          "measurement": "SleepSummary",
+          "alias": "Avg Sleeping Stress",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 63,
+      "title": "Race Predictions",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 0,
+        "y": 169
+      },
+      "targets": [
+        {
+          "refId": "B",
+          "measurement": "RacePredictions",
+          "alias": "Time 5K",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "A",
+          "measurement": "RacePredictions",
+          "alias": "Time 10K",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "C",
+          "measurement": "RacePredictions",
+          "alias": "Half Marathon",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "D",
+          "measurement": "RacePredictions",
+          "alias": "Full Marathon",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 64,
+      "title": "VO2 Max",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 8,
+        "y": 169
+      },
+      "targets": [
+        {
+          "refId": "B",
+          "measurement": "VO2_Max",
+          "alias": "VO2 Max",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 69,
+      "title": "Heatmap for GPS Activity (within selected time)",
+      "type": "geomap",
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 16,
+        "y": 169
+      },
+      "targets": [
+        {
+          "refId": "I",
+          "measurement": "ActivityGPS",
+          "alias": "lat",
+          "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+          "rawQuery": false,
+          "groupBy": []
+        },
+        {
+          "refId": "J",
+          "measurement": "ActivityGPS",
+          "alias": "lon",
+          "query": "SELECT \"Latitude\",\"Longitude\" FROM \"ActivityGPS\" WHERE \"ActivitySelector\"::tag = \"20250413T084245UTC-Other-Lap3\" AND $timeFilter",
+          "rawQuery": false,
+          "groupBy": []
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "title": "Sleep Stages",
+      "type": "barchart",
+      "gridPos": {
+        "h": 11,
+        "w": 9,
+        "x": 0,
+        "y": 179
+      },
+      "targets": [
+        {
+          "refId": "B",
+          "measurement": "SleepSummary",
+          "alias": "Deep Sleep",
+          "groupBy": [
+            {
+              "params": [
+                "12h"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "A",
+          "measurement": "SleepSummary",
+          "alias": "Light Sleep",
+          "groupBy": [
+            {
+              "params": [
+                "12h"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "C",
+          "measurement": "SleepSummary",
+          "alias": "REM Sleep",
+          "groupBy": [
+            {
+              "params": [
+                "12h"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "D",
+          "measurement": "SleepSummary",
+          "alias": "Awake",
+          "groupBy": [
+            {
+              "params": [
+                "12h"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "title": "Avg Activity over given duration",
+      "type": "piechart",
+      "gridPos": {
+        "h": 11,
+        "w": 7,
+        "x": 9,
+        "y": 179
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "DailyStats",
+          "alias": "Sedentary",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "measurement": "DailyStats",
+          "alias": "Intense Activity",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "C",
+          "measurement": "DailyStats",
+          "alias": "Fair Activity",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "D",
+          "measurement": "DailyStats",
+          "alias": "Sleeping",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "title": "Sleep Score",
+      "type": "barchart",
+      "gridPos": {
+        "h": 11,
+        "w": 8,
+        "x": 16,
+        "y": 179
+      },
+      "targets": [
+        {
+          "refId": "B",
+          "measurement": "SleepSummary",
+          "alias": "Sleep Score",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "title": "Daily Activity Overview",
+      "type": "barchart",
+      "gridPos": {
+        "h": 11,
+        "w": 9,
+        "x": 0,
+        "y": 190
+      },
+      "targets": [
+        {
+          "refId": "D",
+          "measurement": "DailyStats",
+          "alias": "Sleeping",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "C",
+          "measurement": "DailyStats",
+          "alias": "Sedentary",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "A",
+          "measurement": "DailyStats",
+          "alias": "Active",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "measurement": "DailyStats",
+          "alias": "Highly Active",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "title": "Body Battery overview",
+      "type": "barchart",
+      "gridPos": {
+        "h": 11,
+        "w": 8,
+        "x": 9,
+        "y": 190
+      },
+      "targets": [
+        {
+          "refId": "D",
+          "measurement": "DailyStats",
+          "alias": "Charged",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "C",
+          "measurement": "DailyStats",
+          "alias": "Drained",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Daily Intensity Minutes",
+      "type": "barchart",
+      "gridPos": {
+        "h": 11,
+        "w": 7,
+        "x": 17,
+        "y": 190
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "DailyStats",
+          "alias": "Moderate Intensity",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "measurement": "DailyStats",
+          "alias": "Vigorous Intensity",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "title": "Stress overview",
+      "type": "barchart",
+      "gridPos": {
+        "h": 14,
+        "w": 10,
+        "x": 0,
+        "y": 201
+      },
+      "targets": [
+        {
+          "refId": "D",
+          "measurement": "DailyStats",
+          "alias": "Low Stress duration",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "measurement": "DailyStats",
+          "alias": "Rest stress duration",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "C",
+          "measurement": "DailyStats",
+          "alias": "Medium stress duration",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "E",
+          "measurement": "DailyStats",
+          "alias": "Uncategorized stress duration",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "A",
+          "measurement": "DailyStats",
+          "alias": "High stress duration",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "title": "Average Sleep trends",
+      "type": "piechart",
+      "gridPos": {
+        "h": 6,
+        "w": 7,
+        "x": 10,
+        "y": 201
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "SleepSummary",
+          "alias": "Deep",
+          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "measurement": "SleepSummary",
+          "alias": "Light",
+          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "C",
+          "measurement": "SleepSummary",
+          "alias": "REM",
+          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "D",
+          "measurement": "SleepSummary",
+          "alias": "Awake",
+          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "title": "Body Battery Level Change",
+      "type": "barchart",
+      "gridPos": {
+        "h": 7,
+        "w": 7,
+        "x": 17,
+        "y": 201
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "DailyStats",
+          "alias": "bb_low",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "measurement": "DailyStats",
+          "alias": "bb_high",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "title": "Weight",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 7,
+        "x": 10,
+        "y": 207
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "BodyComposition",
+          "alias": "Weight in KG",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 58,
+      "title": "HR Range (Max-Min)",
+      "type": "barchart",
+      "gridPos": {
+        "h": 7,
+        "w": 7,
+        "x": 17,
+        "y": 208
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "DailyStats",
+          "alias": "hr_low",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "measurement": "DailyStats",
+          "alias": "hr_high",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 66,
+      "title": "Month at a Glance (Daily Average)",
+      "type": "state-timeline",
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 215
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "DailyStats",
+          "alias": "Resting HR",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "measurement": "DailyStats",
+          "alias": "High Stress Duration",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "C",
+          "measurement": "DailyStats",
+          "alias": "Active time",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "G",
+          "measurement": "DailyStats",
+          "alias": "Body Battery (Highest)",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "E",
+          "measurement": "DailyStats",
+          "alias": "Total Steps",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "D",
+          "measurement": "DailyStats",
+          "alias": "SpO2",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "H",
+          "measurement": "SleepSummary",
+          "alias": "Sleep Score",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "F",
+          "measurement": "DailyStats",
+          "alias": "Total Sleep",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "I",
+          "measurement": "HRV_Intraday",
+          "alias": "HRV",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 67,
+      "title": "Month at a Glance (Intraday)",
+      "type": "state-timeline",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 226
+      },
+      "targets": [
+        {
+          "refId": "D",
+          "measurement": "HeartRateIntraday",
+          "alias": "Band Wearing",
+          "groupBy": [
+            {
+              "params": [
+                "2m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "0"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "E",
+          "measurement": "HeartRateIntraday",
+          "alias": "HR Zones",
+          "groupBy": [
+            {
+              "params": [
+                "1h"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "A",
+          "measurement": "BodyBatteryIntraday",
+          "alias": "Body Battery",
+          "groupBy": [
+            {
+              "params": [
+                "1h"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "measurement": "StressIntraday",
+          "alias": "Stress Level",
+          "groupBy": [
+            {
+              "params": [
+                "1h"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        },
+        {
+          "refId": "C",
+          "measurement": "StepsIntraday",
+          "alias": "Steps Taken",
+          "groupBy": [
+            {
+              "params": [
+                "1h"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 65,
+      "title": "HR Histogram Heatmap",
+      "type": "heatmap",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 234
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "HeartRateIntraday",
+          "alias": "Heart Rate",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "title": "Hourly walk heatmap",
+      "type": "marcusolsson-hourly-heatmap-panel",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 242
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "StepsIntraday",
+          "alias": "Hourly Steps",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "title": "Sleep Regularity",
+      "type": "marcusolsson-hourly-heatmap-panel",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 242
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "SleepIntraday",
+          "alias": "Sleep Regularity",
+          "query": "SELECT median(\"level\") FROM \"Sleep Levels\" WHERE $timeFilter GROUP BY time(1h)",
+          "rawQuery": false,
+          "groupBy": [
+            {
+              "params": [
+                "1h"
+              ],
+              "type": "time"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 60,
+      "title": "Battery Level (Requires GarminHomeAssistant from ConnectIQ integration)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 252
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "measurement": "%",
+          "alias": "Device Battery Level",
+          "groupBy": [
+            {
+              "params": [
+                "10m"
+              ],
+              "type": "time"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

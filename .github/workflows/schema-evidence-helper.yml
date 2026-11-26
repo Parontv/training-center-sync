@@ -1,0 +1,17 @@
+name: Privacy-safe schema evidence helper
+on:
+  pull_request:
+    paths:
+      - 'grafana/summarize-live-schema-evidence.mjs'
+      - 'grafana/test-schema-evidence-helper.mjs'
+      - '.github/workflows/schema-evidence-helper.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node grafana/test-schema-evidence-helper.mjs
+      - run: node --check grafana/summarize-live-schema-evidence.mjs

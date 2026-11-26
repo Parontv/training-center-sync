@@ -1,0 +1,26 @@
+name: Dashboard metrics API static safety
+on:
+  pull_request:
+    paths:
+      - src/index.js
+      - grafana/test-dashboard-metrics-api.mjs
+      - .github/workflows/dashboard-metrics-api-validation.yml
+  push:
+    branches:
+      - feat/grafana-automated-builder
+    paths:
+      - src/index.js
+      - grafana/test-dashboard-metrics-api.mjs
+      - .github/workflows/dashboard-metrics-api-validation.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node grafana/test-dashboard-metrics-api.mjs

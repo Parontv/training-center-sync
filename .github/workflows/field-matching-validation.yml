@@ -1,0 +1,43 @@
+name: Field matching scaffold validation
+on:
+  pull_request:
+    paths:
+      - grafana/PROGRESSIVE_CONVERSION_PHASES.json
+      - grafana/suggest-live-field-matches.mjs
+      - grafana/test-field-match-suggestions.mjs
+      - grafana/build-conversion-priority-plan.mjs
+      - grafana/test-conversion-priority-plan.mjs
+      - grafana/CORE_METRIC_EVIDENCE_CATALOG.json
+      - grafana/test-core-metric-evidence-catalog.mjs
+      - grafana/CORE_PANEL_MAPPING_REVIEW.json
+      - grafana/test-core-panel-mapping-review.mjs
+  push:
+    branches:
+      - feat/grafana-automated-builder
+    paths:
+      - grafana/PROGRESSIVE_CONVERSION_PHASES.json
+      - grafana/suggest-live-field-matches.mjs
+      - grafana/test-field-match-suggestions.mjs
+      - grafana/build-conversion-priority-plan.mjs
+      - grafana/test-conversion-priority-plan.mjs
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate matcher with synthetic schema
+        run: node grafana/test-field-match-suggestions.mjs
+      - name: Generate conversion work priority plan
+        run: node grafana/build-conversion-priority-plan.mjs
+      - name: Validate priority plan
+        run: node grafana/test-conversion-priority-plan.mjs
+      - name: Validate live-schema evidence catalog
+        run: node grafana/test-core-metric-evidence-catalog.mjs
+      - name: Validate core panel mapping review
+        run: node grafana/test-core-panel-mapping-review.mjs

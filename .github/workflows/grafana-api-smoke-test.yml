@@ -1,0 +1,45 @@
+name: Grafana API smoke test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/grafana-automated-builder]
+    paths:
+      - '.github/workflows/grafana-api-smoke-test.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check required credentials
+        env:
+          GRAFANA_URL: ${{ secrets.GRAFANA_URL }}
+          GRAFANA_TOKEN: ${{ secrets.GRAFANA_TOKEN }}
+        run: |
+          test -n "$GRAFANA_URL" || { echo "Missing GRAFANA_URL repository secret"; exit 1; }
+          test -n "$GRAFANA_TOKEN" || { echo "Missing GRAFANA_TOKEN repository secret"; exit 1; }
+      - name: Verify and collect read-only Grafana evidence
+        env:
+          GRAFANA_URL: ${{ secrets.GRAFANA_URL }}
+          GRAFANA_TOKEN: ${{ secrets.GRAFANA_TOKEN }}
+        run: |
+          set -euo pipefail
+          BASE="${GRAFANA_URL%/}"
+          mkdir -p evidence
+          curl --fail --silent --show-error -H "Authorization: Bearer $GRAFANA_TOKEN" "$BASE/api/user" -o /tmp/user.json
+          node -e 'const d=require("/tmp/user.json"); console.log("Authenticated API user:",d.login || d.email)'
+          curl --fail --silent --show-error -H "Authorization: Bearer $GRAFANA_TOKEN" "$BASE/api/datasources" -o /tmp/ds.json
+          node -e 'const d=require("/tmp/ds.json");if(!Array.isArray(d))process.exit(1);const x=d.find(v=>(v.name||"").trim()==="TrainingCenter-D1");if(!x){console.log("TrainingCenter-D1 not found");process.exit(2)};console.log("Datasource:",x.name,"uid="+x.uid,"type="+x.type);require("fs").writeFileSync("evidence/datasource-summary.json",JSON.stringify({name:x.name.trim(),uid:x.uid,type:x.type,access:x.access},null,2))'
+          curl --fail --silent --show-error -H "Authorization: Bearer $GRAFANA_TOKEN" "$BASE/api/search?type=dash-db" -o /tmp/dashboards.json
+          node -e 'const d=require("/tmp/dashboards.json");const x=d.find(v=>v.uid==="lirklwv");if(!x)process.exit(2);console.log("Reference dashboard:",x.title,x.uid)'
+          curl --fail --silent --show-error -H "Authorization: Bearer $GRAFANA_TOKEN" "$BASE/api/dashboards/uid/lirklwv" -o evidence/reference-dashboard.json
+          node -e 'const d=require("./evidence/reference-dashboard.json");if(!d.dashboard||!Array.isArray(d.dashboard.panels))process.exit(2);console.log("Collected panels:",d.dashboard.panels.length);require("fs").writeFileSync("evidence/dashboard-summary.json",JSON.stringify({title:d.dashboard.title,uid:d.dashboard.uid,panels:d.dashboard.panels.length,version:d.dashboard.version},null,2))'
+          echo "Read-only collection complete."
+      - uses: actions/upload-artifact@v4
+        with:
+          name: grafana-readonly-evidence
+          path: evidence/
+          retention-days: 14
