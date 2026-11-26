@@ -1,0 +1,10 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';
+const review=JSON.parse(fs.readFileSync('grafana/CORE_PANEL_MAPPING_REVIEW.json','utf8'));
+assert.ok(review.targets.length>=10);
+assert.ok(review.targets.every(x=>x.status==='REVIEW_CANDIDATE'));
+assert.ok(review.targets.every(x=>x.stableKey&&x.dataset&&x.field_path&&x.reason));
+assert.ok(!review.targets.some(x=>x.status==='VERIFIED'));
+assert.ok(review.targets.some(x=>x.stableKey==='30:0'&&x.field_path==='$.totalSteps'));
+assert.ok(review.targets.some(x=>x.stableKey==='32:0'&&x.field_path==='$.sleepTimeSeconds'));
+assert.ok(review.targets.some(x=>x.stableKey==='28:0'&&x.field_path==='$.restingHeartRate'));
+console.log('Core panel mapping review safeguards passed.');
