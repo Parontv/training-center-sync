@@ -7990,6 +7990,270 @@
         }
       },
       "description": "Calories per activity."
+    },
+    {
+      "id": 102,
+      "title": "Activity Average Heart Rate",
+      "type": "barchart",
+      "gridPos": {
+        "x": 0,
+        "y": 145,
+        "w": 8,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "training-center-d1"
+          },
+          "type": "json",
+          "source": "url",
+          "url": "https://training-center-sync.listaconcerti.workers.dev/dashboard-data",
+          "parser": "backend",
+          "format": "table",
+          "root_selector": "activities",
+          "columns": [
+            {
+              "selector": "start_time_local",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "average_hr",
+              "text": "Average HR",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bpm"
+        },
+        "overrides": []
+      },
+      "options": {
+        "orientation": "vertical",
+        "showValue": "never",
+        "legend": {
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      }
+    },
+    {
+      "id": 103,
+      "title": "Activity Maximum Heart Rate",
+      "type": "barchart",
+      "gridPos": {
+        "x": 8,
+        "y": 145,
+        "w": 8,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "training-center-d1"
+          },
+          "type": "json",
+          "source": "url",
+          "url": "https://training-center-sync.listaconcerti.workers.dev/dashboard-data",
+          "parser": "backend",
+          "format": "table",
+          "root_selector": "activities",
+          "columns": [
+            {
+              "selector": "start_time_local",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "max_hr",
+              "text": "Max HR",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bpm"
+        },
+        "overrides": []
+      },
+      "options": {
+        "orientation": "vertical",
+        "showValue": "never",
+        "legend": {
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      }
+    },
+    {
+      "id": 104,
+      "title": "Activity Type",
+      "type": "table",
+      "gridPos": {
+        "x": 16,
+        "y": 145,
+        "w": 8,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "training-center-d1"
+          },
+          "type": "json",
+          "source": "url",
+          "url": "https://training-center-sync.listaconcerti.workers.dev/dashboard-data",
+          "parser": "backend",
+          "format": "table",
+          "root_selector": "activities",
+          "columns": [
+            {
+              "selector": "start_time_local",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "activity_type",
+              "text": "Activity Type",
+              "type": "string"
+            },
+            {
+              "selector": "activity_name",
+              "text": "Activity",
+              "type": "string"
+            }
+          ]
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm"
+      }
+    },
+    {
+      "id": 105,
+      "title": "Activity Distance and Duration",
+      "type": "table",
+      "gridPos": {
+        "x": 0,
+        "y": 153,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "training-center-d1"
+          },
+          "type": "json",
+          "source": "url",
+          "url": "https://training-center-sync.listaconcerti.workers.dev/dashboard-data",
+          "parser": "backend",
+          "format": "table",
+          "root_selector": "activities",
+          "columns": [
+            {
+              "selector": "start_time_local",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "activity_name",
+              "text": "Activity",
+              "type": "string"
+            },
+            {
+              "selector": "distance_m",
+              "text": "Distance (m)",
+              "type": "number"
+            },
+            {
+              "selector": "duration_s",
+              "text": "Duration (s)",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm"
+      }
+    },
+    {
+      "id": 106,
+      "title": "Activity Calories and HR",
+      "type": "table",
+      "gridPos": {
+        "x": 12,
+        "y": 153,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "training-center-d1"
+          },
+          "type": "json",
+          "source": "url",
+          "url": "https://training-center-sync.listaconcerti.workers.dev/dashboard-data",
+          "parser": "backend",
+          "format": "table",
+          "root_selector": "activities",
+          "columns": [
+            {
+              "selector": "start_time_local",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "activity_name",
+              "text": "Activity",
+              "type": "string"
+            },
+            {
+              "selector": "calories",
+              "text": "Calories",
+              "type": "number"
+            },
+            {
+              "selector": "average_hr",
+              "text": "Average HR",
+              "type": "number"
+            },
+            {
+              "selector": "max_hr",
+              "text": "Max HR",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm"
+      }
     }
   ],
   "refresh": "15m",
@@ -8276,5 +8540,5 @@
   "uid": "garmin-stats-d1-progressive",
   "version": 1,
   "weekStart": "",
-  "description": "Garmin data from Cloudflare D1 via Training Center Worker and Infinity. Original dashboard layout retained; verified connected panels progressively converted."
+  "description": "Garmin data from Cloudflare D1 via Training Center Worker and Infinity. Original dashboard layout retained; verified connected panels progressively converted. Additional activity panels use normalized activity fields returned by /dashboard-data."
 }
