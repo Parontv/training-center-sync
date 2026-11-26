@@ -39,3 +39,10 @@ Date: 2026-11-26
 - Updated both workflows to skip authenticated live stages with a clear warning when the secret is absent, instead of failing unrelated CI validation. Authenticated stages are gated and private raw audit cleanup is retained.
 - Added a static regression assertion for graceful skip and secret-gated workflow steps.
 - No credential was requested or exposed. No live Worker, D1, sync, cron, or Grafana publishing action was taken.
+
+
+## Conversion-engine test hardening (2026-11-26)
+- Added a synthetic conversion-engine test using a temporary VERIFIED mapping fixture for target 30:0.
+- The test runs the candidate generator, asserts exactly one fixture target is activated and the remaining target set stays inert, and restores all tracked inputs/generated files in a finally block.
+- Added a dedicated GitHub Actions validation workflow for engine input integrity and synthetic conversion.
+- This tests deterministic conversion behavior only; it does not validate live Worker data, Infinity URL parameter handling, or panel rendering.
