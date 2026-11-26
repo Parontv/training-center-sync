@@ -1,0 +1,431 @@
+{
+  "generatedAt": "2026-11-26",
+  "reference": "Garmin Stats",
+  "panelCount": 62,
+  "targetCount": 143,
+  "proposalCount": 24,
+  "policy": "No mapping is marked verified; panel linkage is proposed and not auto-enabled.",
+  "proposals": [
+    {
+      "metric": "steps",
+      "source": "daily_records",
+      "dataset": "steps",
+      "field_path": "$.totalSteps",
+      "aggregation_candidate": "sum",
+      "unit_candidate": "steps",
+      "affected_panel_ids": [
+        1,
+        30,
+        16,
+        68,
+        59
+      ],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "steps_distance",
+      "source": "daily_records",
+      "dataset": "steps",
+      "field_path": "$.totalDistance",
+      "aggregation_candidate": "sum",
+      "unit_candidate": "distance units not verified",
+      "affected_panel_ids": [
+        3,
+        59
+      ],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "steps_goal",
+      "source": "daily_records",
+      "dataset": "steps",
+      "field_path": "$.stepGoal",
+      "aggregation_candidate": "not applicable",
+      "unit_candidate": "steps",
+      "affected_panel_ids": [
+        30
+      ],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "steps_daily_summary",
+      "source": "daily_records",
+      "dataset": "daily_summaries",
+      "field_path": "$.movement.steps.value",
+      "aggregation_candidate": "sum",
+      "unit_candidate": "steps",
+      "affected_panel_ids": [
+        1,
+        59
+      ],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "steps_distance_daily_summary",
+      "source": "daily_records",
+      "dataset": "daily_summaries",
+      "field_path": "$.movement.steps.distanceInMeters",
+      "aggregation_candidate": "sum",
+      "unit_candidate": "meters (field name only)",
+      "affected_panel_ids": [
+        3
+      ],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "resting_hr",
+      "source": "daily_records",
+      "dataset": "daily_summaries",
+      "field_path": "$.heartRate.restingValue",
+      "aggregation_candidate": "avg",
+      "unit_candidate": "bpm inferred from field context; not validated",
+      "affected_panel_ids": [
+        28,
+        11,
+        51
+      ],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "max_hr",
+      "source": "daily_records",
+      "dataset": "daily_summaries",
+      "field_path": "$.heartRate.maxValue",
+      "aggregation_candidate": "max",
+      "unit_candidate": "bpm inferred from field context; not validated",
+      "affected_panel_ids": [
+        11,
+        51
+      ],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "min_hr",
+      "source": "daily_records",
+      "dataset": "daily_summaries",
+      "field_path": "$.heartRate.minValue",
+      "aggregation_candidate": "min",
+      "unit_candidate": "bpm inferred from field context; not validated",
+      "affected_panel_ids": [
+        58
+      ],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "calories_total",
+      "source": "daily_records",
+      "dataset": "daily_summaries",
+      "field_path": "$.calories.burnedTotal",
+      "aggregation_candidate": "sum",
+      "unit_candidate": "calories inferred from field context; not validated",
+      "affected_panel_ids": [
+        10,
+        17
+      ],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "calories_active",
+      "source": "daily_records",
+      "dataset": "daily_summaries",
+      "field_path": "$.calories.burnedActive",
+      "aggregation_candidate": "sum",
+      "unit_candidate": "calories inferred from field context; not validated",
+      "affected_panel_ids": [
+        10,
+        17
+      ],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "intensity_moderate",
+      "source": "daily_records",
+      "dataset": "daily_summaries",
+      "field_path": "$.intensityMinutes.moderate",
+      "aggregation_candidate": "sum",
+      "unit_candidate": "minutes inferred from field context; not validated",
+      "affected_panel_ids": [
+        4,
+        17
+      ],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "intensity_vigorous",
+      "source": "daily_records",
+      "dataset": "daily_summaries",
+      "field_path": "$.intensityMinutes.vigorous",
+      "aggregation_candidate": "sum",
+      "unit_candidate": "minutes inferred from field context; not validated",
+      "affected_panel_ids": [
+        4,
+        17
+      ],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "stress_avg",
+      "source": "daily_records",
+      "dataset": "daily_summaries",
+      "field_path": "$.stress.avgLevel",
+      "aggregation_candidate": "avg",
+      "unit_candidate": "scale not verified",
+      "affected_panel_ids": [],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "stress_high_duration",
+      "source": "daily_records",
+      "dataset": "daily_summaries",
+      "field_path": "$.stress.highStressDurationInMillis",
+      "aggregation_candidate": "sum",
+      "unit_candidate": "milliseconds inferred from field name; not validated",
+      "affected_panel_ids": [],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "sleep_duration",
+      "source": "daily_records",
+      "dataset": "sleep",
+      "field_path": "$.sleepTimeSeconds",
+      "aggregation_candidate": "not applicable",
+      "unit_candidate": "seconds inferred from field name; not validated",
+      "affected_panel_ids": [],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "sleep_deep",
+      "source": "daily_records",
+      "dataset": "sleep",
+      "field_path": "$.deepSleepSeconds",
+      "aggregation_candidate": "not applicable",
+      "unit_candidate": "seconds inferred from field name; not validated",
+      "affected_panel_ids": [],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "sleep_light",
+      "source": "daily_records",
+      "dataset": "sleep",
+      "field_path": "$.lightSleepSeconds",
+      "aggregation_candidate": "not applicable",
+      "unit_candidate": "seconds inferred from field name; not validated",
+      "affected_panel_ids": [],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "sleep_rem",
+      "source": "daily_records",
+      "dataset": "sleep",
+      "field_path": "$.remSleepSeconds",
+      "aggregation_candidate": "not applicable",
+      "unit_candidate": "seconds inferred from field name; not validated",
+      "affected_panel_ids": [],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "sleep_awake",
+      "source": "daily_records",
+      "dataset": "sleep",
+      "field_path": "$.awakeSleepSeconds",
+      "aggregation_candidate": "not applicable",
+      "unit_candidate": "seconds inferred from field name; not validated",
+      "affected_panel_ids": [],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "fitness_age_rhr",
+      "source": "daily_records",
+      "dataset": "fitness_age",
+      "field_path": "$.components.rhr.value",
+      "aggregation_candidate": "not applicable",
+      "unit_candidate": "bpm inferred from field context; not validated",
+      "affected_panel_ids": [],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "bmi",
+      "source": "daily_records",
+      "dataset": "fitness_age",
+      "field_path": "$.components.bmi.value",
+      "aggregation_candidate": "not applicable",
+      "unit_candidate": "BMI inferred from field context; not validated",
+      "affected_panel_ids": [],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "body_fat",
+      "source": "daily_records",
+      "dataset": "fitness_age",
+      "field_path": "$.components.bodyFat.value",
+      "aggregation_candidate": "not applicable",
+      "unit_candidate": "percent inferred from field context; not validated",
+      "affected_panel_ids": [],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "hrv_last_night",
+      "source": "daily_records",
+      "dataset": "hrv",
+      "field_path": "$.hrvSummaries[0].lastNightAvg",
+      "aggregation_candidate": "not applicable",
+      "unit_candidate": "ms inferred from field context; not validated",
+      "affected_panel_ids": [],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    },
+    {
+      "metric": "body_battery_charge",
+      "source": "daily_records",
+      "dataset": "body_battery",
+      "field_path": "$.charged",
+      "aggregation_candidate": "not applicable",
+      "unit_candidate": "scale not verified",
+      "affected_panel_ids": [],
+      "status": "PROPOSAL_ONLY",
+      "validation_required": [
+        "raw value sample review",
+        "record/date cardinality",
+        "units and aggregation semantics",
+        "date-range and endpoint-cost check"
+      ]
+    }
+  ]
+}
