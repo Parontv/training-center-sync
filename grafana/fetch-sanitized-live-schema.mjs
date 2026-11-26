@@ -5,7 +5,7 @@ const base=(process.env.WORKER_BASE_URL||'https://training-center-sync.listaconc
 const token=process.env.SYNC_BEARER_TOKEN;
 if(!token)throw new Error('SYNC_BEARER_TOKEN secret is missing');
 const res=await fetch(base+'/dashboard-schema',{headers:{Authorization:'Bearer '+token},cache:'no-store'});
-if(!res.ok)throw new Error('Schema endpoint returned HTTP '+res.status);
+if(!res.ok){const errorBody=await res.json().catch(()=>null);const reason=String(errorBody?.error||errorBody?.message||'no structured error').slice(0,200);throw new Error('Schema endpoint returned HTTP '+res.status+' ('+reason+')');}
 const data=await res.json();
 if(!data.ok)throw new Error('Schema endpoint response was not ok');
 const sanitize=(rows)=>(rows||[]).map(({dataset,field_path,value_type,occurrences,records_with_field})=>({dataset,field_path,value_type,occurrences,records_with_field}));
