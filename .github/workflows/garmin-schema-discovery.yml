@@ -48,6 +48,9 @@ jobs:
         env:
           CANDIDATES_OUTPUT: grafana/schema-candidates-sanitized.json
         run: node grafana/analyze-live-schema.mjs grafana/live-schema-audit.json
+      - name: Probe core field coverage (read-only)
+        if: env.SYNC_BEARER_TOKEN != ''
+        run: node grafana/probe-core-field-coverage.mjs
       - name: Upload sanitized candidate catalogue only
         if: env.SYNC_BEARER_TOKEN != ''
         uses: actions/upload-artifact@v4
@@ -57,6 +60,7 @@ jobs:
             grafana/schema-candidates-sanitized.json
             grafana/FIELD_MATCH_SUGGESTIONS.json
             grafana/live-schema-snapshot.json
+            grafana/core-field-coverage-sanitized.json
           if-no-files-found: error
           retention-days: 30
       - name: Delete private audit
