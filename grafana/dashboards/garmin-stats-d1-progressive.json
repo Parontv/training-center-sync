@@ -565,14 +565,14 @@
       "transformations": [],
       "transparent": true,
       "type": "timeseries",
-      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending."
+      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending. ATTENZIONE: endpoint Worker protetto da SYNC_BEARER_TOKEN; autenticazione datasource da verificare."
     },
     {
       "datasource": {
         "type": "yesoreyeram-infinity-datasource",
         "uid": "training-center-d1"
       },
-      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending.",
+      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending. ATTENZIONE: endpoint Worker protetto da SYNC_BEARER_TOKEN; autenticazione datasource da verificare.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -667,7 +667,7 @@
         "type": "yesoreyeram-infinity-datasource",
         "uid": "training-center-d1"
       },
-      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending.",
+      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending. ATTENZIONE: endpoint Worker protetto da SYNC_BEARER_TOKEN; autenticazione datasource da verificare.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -886,14 +886,14 @@
       "transformations": [],
       "transparent": true,
       "type": "timeseries",
-      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending."
+      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending. ATTENZIONE: endpoint Worker protetto da SYNC_BEARER_TOKEN; autenticazione datasource da verificare."
     },
     {
       "datasource": {
         "type": "yesoreyeram-infinity-datasource",
         "uid": "training-center-d1"
       },
-      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending.",
+      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending. ATTENZIONE: endpoint Worker protetto da SYNC_BEARER_TOKEN; autenticazione datasource da verificare.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1150,7 +1150,7 @@
       "transparent": true,
       "type": "gauge",
       "transformations": [],
-      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending."
+      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending. ATTENZIONE: endpoint Worker protetto da SYNC_BEARER_TOKEN; autenticazione datasource da verificare."
     },
     {
       "datasource": {
@@ -1357,7 +1357,7 @@
       "transparent": true,
       "type": "gauge",
       "transformations": [],
-      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending."
+      "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified. D1 field candidate wired to /dashboard-metrics; semantic validation still pending. ATTENZIONE: endpoint Worker protetto da SYNC_BEARER_TOKEN; autenticazione datasource da verificare."
     },
     {
       "datasource": {
@@ -1691,7 +1691,7 @@
       "transparent": true,
       "type": "piechart",
       "transformations": [],
-      "description": "Sleep stage field candidates from D1. Duration semantics and transformation remain subject to live verification."
+      "description": "Sleep stage field candidates from D1. Duration semantics and transformation remain subject to live verification. ATTENZIONE: endpoint Worker protetto da SYNC_BEARER_TOKEN; autenticazione datasource da verificare."
     },
     {
       "datasource": {
@@ -2488,7 +2488,7 @@
       ],
       "transparent": true,
       "type": "barchart",
-      "description": "Connected to average and maximum heart rate fields in Worker activities. The preserved transformation calculates maxHR minus avgHR."
+      "description": "Connected to average and maximum heart rate fields in Worker activities. The preserved transformation calculates maxHR minus avgHR. ATTENZIONE: endpoint Worker protetto da SYNC_BEARER_TOKEN; autenticazione datasource da verificare."
     },
     {
       "datasource": {
@@ -2616,7 +2616,7 @@
       "transformations": [],
       "transparent": true,
       "type": "barchart",
-      "description": "Connected to distance_m in Worker activities (recent 500 records)."
+      "description": "Connected to distance_m in Worker activities (recent 500 records). ATTENZIONE: endpoint Worker protetto da SYNC_BEARER_TOKEN; autenticazione datasource da verificare."
     },
     {
       "datasource": {
@@ -2774,7 +2774,7 @@
       "transformations": [],
       "transparent": true,
       "type": "barchart",
-      "description": "Connected to duration_s in Worker activities (recent 500 records)."
+      "description": "Connected to duration_s in Worker activities (recent 500 records). ATTENZIONE: endpoint Worker protetto da SYNC_BEARER_TOKEN; autenticazione datasource da verificare."
     },
     {
       "collapsed": false,
@@ -3948,7 +3948,7 @@
         "type": "yesoreyeram-infinity-datasource",
         "uid": "training-center-d1"
       },
-      "description": "Connected to Worker activities. Shows recent records (Worker limit: 500); the Grafana time picker does not filter this response.",
+      "description": "Connected to Worker activities. Shows recent records (Worker limit: 500); the Grafana time picker does not filter this response. ATTENZIONE: endpoint Worker protetto da SYNC_BEARER_TOKEN; autenticazione datasource da verificare.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -4348,7 +4348,7 @@
       "title": "Activities",
       "transparent": true,
       "type": "state-timeline",
-      "description": "Connected to Worker activities. Recent 500 records; no server-side time picker filtering."
+      "description": "Connected to Worker activities. Recent 500 records; no server-side time picker filtering. ATTENZIONE: endpoint Worker protetto da SYNC_BEARER_TOKEN; autenticazione datasource da verificare."
     },
     {
       "collapsed": false,
@@ -8217,7 +8217,7 @@
           "sort": "desc"
         }
       },
-      "description": "Average and maximum heart rate per activity."
+      "description": "Average and maximum heart rate per activity. ATTENZIONE: endpoint Worker protetto da SYNC_BEARER_TOKEN; autenticazione datasource da verificare."
     },
     {
       "id": 101,
@@ -8272,7 +8272,7 @@
           "mode": "single"
         }
       },
-      "description": "Calories per activity."
+      "description": "Calories per activity. ATTENZIONE: endpoint Worker protetto da SYNC_BEARER_TOKEN; autenticazione datasource da verificare."
     },
     {
       "id": 102,
@@ -8326,7 +8326,8 @@
         "tooltip": {
           "mode": "single"
         }
-      }
+      },
+      "description": " ATTENZIONE: endpoint Worker protetto da SYNC_BEARER_TOKEN; autenticazione datasource da verificare."
     },
     {
       "id": 103,
@@ -8380,7 +8381,8 @@
         "tooltip": {
           "mode": "single"
         }
-      }
+      },
+      "description": " ATTENZIONE: endpoint Worker protetto da SYNC_BEARER_TOKEN; autenticazione datasource da verificare."
     },
     {
       "id": 104,
@@ -8427,7 +8429,8 @@
       "options": {
         "showHeader": true,
         "cellHeight": "sm"
-      }
+      },
+      "description": " ATTENZIONE: endpoint Worker protetto da SYNC_BEARER_TOKEN; autenticazione datasource da verificare."
     },
     {
       "id": 105,
@@ -8479,7 +8482,8 @@
       "options": {
         "showHeader": true,
         "cellHeight": "sm"
-      }
+      },
+      "description": " ATTENZIONE: endpoint Worker protetto da SYNC_BEARER_TOKEN; autenticazione datasource da verificare."
     },
     {
       "id": 106,
@@ -8536,7 +8540,8 @@
       "options": {
         "showHeader": true,
         "cellHeight": "sm"
-      }
+      },
+      "description": " ATTENZIONE: endpoint Worker protetto da SYNC_BEARER_TOKEN; autenticazione datasource da verificare."
     }
   ],
   "refresh": "15m",
@@ -8550,8 +8555,8 @@
     "list": [
       {
         "current": {
-          "text": "Europe/Budapest",
-          "value": "Europe/Budapest"
+          "text": "Europe/Rome",
+          "value": "Europe/Rome"
         },
         "description": "Your local time zone for grouping stats",
         "label": "Local Time Zone",
@@ -8578,7 +8583,7 @@
             "value": "Europe/Madrid"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "Europe/Rome",
             "value": "Europe/Rome"
           },
@@ -8608,7 +8613,7 @@
             "value": "Europe/Warsaw"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "Europe/Budapest",
             "value": "Europe/Budapest"
           },
@@ -8818,10 +8823,10 @@
     "to": "now"
   },
   "timepicker": {},
-  "timezone": "browser",
+  "timezone": "Europe/Rome",
   "title": "Garmin Stats · Training Center",
   "uid": "garmin-stats-d1-progressive",
   "version": 1,
   "weekStart": "",
-  "description": "Garmin data from Cloudflare D1 via Training Center Worker and Infinity. Original dashboard layout retained; verified connected panels progressively converted. Additional activity panels use normalized activity fields returned by /dashboard-data."
+  "description": "Garmin data from Cloudflare D1 via Training Center Worker and Infinity. Original dashboard layout retained; verified connected panels progressively converted. Additional activity panels use normalized activity fields returned by /dashboard-data. Dashboard in sviluppo. Gli endpoint Worker protetti richiedono configurazione di autenticazione nella datasource Infinity; i pannelli non sono live-verified."
 }
