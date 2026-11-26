@@ -12,6 +12,9 @@ permissions:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    env:
+      SYNC_BEARER_TOKEN: ${{ secrets.SYNC_BEARER_TOKEN }}
+      WORKER_BASE_URL: https://training-center-sync.listaconcerti.workers.dev
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,12 +23,14 @@ jobs:
         with:
           node-version: '22'
       - name: Fetch and sanitize live schema (read-only)
-        run: node grafana/fetch-sanitized-live-schema.mjs
-        env:
-          SYNC_BEARER_TOKEN: ${{ secrets.SYNC_BEARER_TOKEN }}
-          WORKER_BASE_URL: https://training-center-sync.listaconcerti.workers.dev
+        run: |
+          if [ -z "$SYNC_BEARER_TOKEN" ]; then
+            echo "::warning::Schema refresh skipped: repository secret SYNC_BEARER_TOKEN is not configured."
+            exit 0
+          fi
+          node grafana/fetch-sanitized-live-schema.mjs
       - name: Commit snapshot if changed (branch workflow only)
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && env.SYNC_BEARER_TOKEN != ''
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -34,7 +39,7 @@ jobs:
           git commit -m "Refresh sanitized live D1 schema snapshot"
           git push origin feat/grafana-automated-builder
       - name: Upload sanitized schema snapshot as artifact
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && env.SYNC_BEARER_TOKEN != ''
         uses: actions/upload-artifact@v4
         with:
           name: sanitized-live-schema
