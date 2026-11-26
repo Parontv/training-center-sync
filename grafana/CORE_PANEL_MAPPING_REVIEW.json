@@ -1,0 +1,20 @@
+{
+  "generatedAt": "2026-11-26",
+  "sourceDashboard": "Garmin Stats",
+  "sourceUid": "feiibsx498gsgb",
+  "schemaArtifactRun": 45883431337,
+  "policy": "High-score heuristic suggestions plus schema existence are still not semantic/unit verification. These mappings are REVIEW_CANDIDATE only.",
+  "targets": [
+    {"stableKey":"28:0","panelTitle":"Today RHR","sourceCandidate":"daily_records","dataset":"daily_heart_rate","field_path":"$.restingHeartRate","schemaRecordsWithField":1144,"matcherScore":90,"status":"REVIEW_CANDIDATE","reason":"Exact path candidate and high coverage; aggregation, date uniqueness and unit still need validation."},
+    {"stableKey":"30:0","panelTitle":"Today's Steps","sourceCandidate":"daily_records","dataset":"steps","field_path":"$.totalSteps","schemaRecordsWithField":1203,"matcherScore":96,"status":"REVIEW_CANDIDATE","reason":"Exact field and strong coverage; confirm record-date and row uniqueness."},
+    {"stableKey":"32:0","panelTitle":"Last Sleep Hours","sourceCandidate":"daily_records","dataset":"sleep","field_path":"$.sleepTimeSeconds","schemaRecordsWithField":832,"matcherScore":96,"status":"REVIEW_CANDIDATE","reason":"Exact field and coverage; confirm date handling and seconds-to-display conversion."},
+    {"stableKey":"36:0","panelTitle":"Last Sleep","sourceCandidate":"daily_records","dataset":"sleep","field_path":"$.deepSleepSeconds","schemaRecordsWithField":670,"matcherScore":146,"status":"REVIEW_CANDIDATE","reason":"Field exists; source panel meaning and transformation need review."},
+    {"stableKey":"36:1","panelTitle":"Last Sleep","sourceCandidate":"daily_records","dataset":"sleep","field_path":"$.lightSleepSeconds","schemaRecordsWithField":670,"matcherScore":146,"status":"REVIEW_CANDIDATE","reason":"Field exists; source panel meaning and transformation need review."},
+    {"stableKey":"36:2","panelTitle":"Last Sleep","sourceCandidate":"daily_records","dataset":"sleep","field_path":"$.remSleepSeconds","schemaRecordsWithField":639,"matcherScore":146,"status":"REVIEW_CANDIDATE","reason":"Field exists; source panel meaning and transformation need review."},
+    {"stableKey":"36:3","panelTitle":"Last Sleep","sourceCandidate":"daily_records","dataset":"sleep","field_path":"$.awakeSleepSeconds","schemaRecordsWithField":670,"matcherScore":146,"status":"REVIEW_CANDIDATE","reason":"Field exists; source panel meaning and transformation need review."},
+    {"stableKey":"29:0","panelTitle":"Stress","sourceCandidate":"daily_records","dataset":"stress","field_path":"$.values.overallStressLevel","schemaRecordsWithField":419,"matcherScore":56,"status":"REVIEW_CANDIDATE","reason":"Exact path candidate; scale, date semantics and aggregation need review."},
+    {"stableKey":"31:0","panelTitle":"Today SpO2","sourceCandidate":"daily_records","dataset":"spo2_acclimation","field_path":"$.averageSpO2","schemaRecordsWithField":2223,"matcherScore":96,"status":"REVIEW_CANDIDATE","reason":"Schema field exists but artifact type was null; numeric query suitability not yet established."},
+    {"stableKey":"33:0","panelTitle":"High Stress Duration","sourceCandidate":"daily_records","dataset":"daily_summaries","field_path":"$.stress.highStressDurationInMillis","schemaRecordsWithField":419,"matcherScore":68,"status":"REVIEW_CANDIDATE","reason":"Field exists; duration unit and display conversion need review."},
+    {"stableKey":"16:0","panelTitle":"Steps Cumulative (24h)","sourceCandidate":"daily_records","dataset":"daily_summaries","field_path":"$.movement.steps.value","schemaRecordsWithField":1203,"matcherScore":56,"status":"REVIEW_CANDIDATE","reason":"Daily step field candidate, not an intraday cumulative series. Source panel's 24h behavior cannot be reproduced from this mapping alone."}
+  ]
+}
