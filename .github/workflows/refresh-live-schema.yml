@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.ref || 'feat/grafana-automated-builder' }}
+          ref: feat/grafana-automated-builder
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -38,10 +38,3 @@ jobs:
           if git diff --cached --quiet; then echo "No schema changes"; exit 0; fi
           git commit -m "Refresh sanitized live D1 schema snapshot"
           git push origin feat/grafana-automated-builder
-      - name: Upload sanitized schema snapshot as artifact
-        if: github.event_name == 'pull_request' && env.SYNC_BEARER_TOKEN != ''
-        uses: actions/upload-artifact@v4
-        with:
-          name: sanitized-live-schema
-          path: grafana/live-schema-snapshot.json
-          retention-days: 7
