@@ -36,3 +36,21 @@ This pass closes the remaining code-side work where safe and records the externa
 
 ## Safety boundary
 No deployment, production Worker changes, D1 mutation, Garmin sync/backfill or cron changes, dashboard publishing or PR merge performed.
+
+
+## Live schema verification addendum (2026-11-26, 20:07 UTC)
+- Re-ran the read-only Garmin schema discovery job (job 140145509387, workflow run 45883431337).
+- **Confirmed:** GitHub Actions receives the repository secret `SYNC_BEARER_TOKEN` (masked in logs). The authenticated Worker request succeeded; schema audit, sanitization, candidate generation and artifact upload all completed.
+- `WORKER_BASE` repository variable is empty in this workflow, but the fetch script falls back to the configured Worker URL; the request succeeded. Variable is therefore not a blocker for this discovery workflow.
+- Sanitized snapshot totals: 3,719 Garmin field metadata entries and 4,032 daily-record field metadata entries, across 19 datasets each.
+- Candidate catalog: 4,498 candidates, 2,508 numeric candidates and 1,990 semantic-review candidates. All remain unverified by design.
+- Field matcher: suggestions for 140/143 targets. Distribution of top suggestion scores: 48 targets >=80, 31 targets 40–79, 61 targets 1–39, 3 targets no suggestions. Heuristic scores are not evidence of correct semantics; particularly GPS/intraday/activity targets remain weak and must not be auto-promoted.
+- Sanitized artifact `garmin-schema-candidates` uploaded successfully; the raw private audit was deleted by workflow cleanup. No raw samples or secret values were committed.
+- **Corrected blocker:** repository secret is present and working; the earlier missing-secret conclusion was false for the latest run. The live schema evidence gate is now cleared for discovery, but actual metric semantics, units, aggregation, temporal coverage and query suitability remain unverified.
+
+## Next development priorities
+1. Review the sanitized snapshot by dataset/path, emphasizing high-coverage fields and avoiding duplicate fields from the two snapshot sources.
+2. Build a conservative, evidence-based mapping review ledger for CORE daily metrics first; do not use heuristic suggestions alone to verify.
+3. Run conversion generator tests and wire only mappings whose source, field path, aggregation, unit and time semantics are evidenced.
+4. Keep the 62-panel original clone and thematic dashboards intact; no duplicate dashboard rebuild.
+5. Live Grafana Infinity UI verification remains the final external gate; no publishing, deployment, D1 mutation, sync/backfill/cron changes or PR merge.
