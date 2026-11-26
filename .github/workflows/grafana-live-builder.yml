@@ -26,27 +26,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Fetch live schema securely (when credentials are configured)
-        env:
-          SYNC_BEARER_TOKEN: ${{ secrets.SYNC_BEARER_TOKEN }}
-          WORKER_BASE: ${{ secrets.WORKER_BASE_URL }}
+      - name: Validate source-faithful progressive clone
         run: |
-          if [ -n "$SYNC_BEARER_TOKEN" ]; then
-            BASE="${WORKER_BASE:-https://training-center-sync.listaconcerti.workers.dev}"
-            curl --fail --silent --show-error -H "Authorization: Bearer $SYNC_BEARER_TOKEN" "$BASE/dashboard-schema" -o grafana/live-schema-audit.json
-            node grafana/analyze-live-schema.mjs grafana/live-schema-audit.json
-            node grafana/build-live-candidate-dashboard.mjs
-          else
-            echo "No repository bearer secret; building clearly labeled structural preview."
-            cp grafana/preview-metric-fixture.json grafana/metric-candidates.json
-            PREVIEW_MODE=true node grafana/build-live-candidate-dashboard.mjs grafana/metric-candidates.json
-          fi
-      - name: Run dashboard and deployment readiness tests
-        run: |
-          node grafana/test-live-candidate-dashboard.mjs
-          python grafana/scripts/test-deployment-readiness.py grafana/generated/garmin-live-candidate.json
-      - uses: actions/upload-artifact@v4
-        with:
-          name: garmin-live-dashboard-candidate
-          path: grafana/generated/garmin-live-candidate.json
-          retention-days: 14
+          node grafana/test-progressive-clone.mjs
+          node grafana/test-conversion-engine.mjs
+
