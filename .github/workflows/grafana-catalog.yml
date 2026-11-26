@@ -62,6 +62,8 @@ jobs:
         run: node grafana/test-reference-fidelity-audit.mjs
       - name: Verify Phase 2 schema evidence safety gate
         run: node grafana/test-phase2-evidence-gate.mjs
+      - name: Verify strictly read-only dashboard-data API contract
+        run: node grafana/test-phase3-readonly-dashboard-data.mjs
       - name: Verify live schema catalog and evidence ledger
         run: node grafana/test-live-schema-catalog.mjs
       - name: Verify conversion engine input integrity
