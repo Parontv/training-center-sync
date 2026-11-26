@@ -7874,6 +7874,122 @@
       "type": "timeseries",
       "transformations": [],
       "description": "PENDING D1 MAPPING: source panel layout/style preserved; no query is enabled until its Garmin field and semantics are verified."
+    },
+    {
+      "id": 100,
+      "title": "Activity Heart Rate",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 1,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "training-center-d1"
+          },
+          "type": "json",
+          "source": "url",
+          "url": "https://training-center-sync.listaconcerti.workers.dev/dashboard-data",
+          "parser": "backend",
+          "format": "table",
+          "root_selector": "activities",
+          "columns": [
+            {
+              "selector": "start_time_local",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "average_hr",
+              "text": "Average HR",
+              "type": "number"
+            },
+            {
+              "selector": "max_hr",
+              "text": "Max HR",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bpm"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "showLegend": true,
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "description": "Average and maximum heart rate per activity."
+    },
+    {
+      "id": 101,
+      "title": "Activity Calories",
+      "type": "barchart",
+      "gridPos": {
+        "x": 12,
+        "y": 1,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "training-center-d1"
+          },
+          "type": "json",
+          "source": "url",
+          "url": "https://training-center-sync.listaconcerti.workers.dev/dashboard-data",
+          "parser": "backend",
+          "format": "table",
+          "root_selector": "activities",
+          "columns": [
+            {
+              "selector": "start_time_local",
+              "text": "Time",
+              "type": "time"
+            },
+            {
+              "selector": "calories",
+              "text": "Calories",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kcal"
+        },
+        "overrides": []
+      },
+      "options": {
+        "orientation": "vertical",
+        "showValue": "never",
+        "legend": {
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "description": "Calories per activity."
     }
   ],
   "refresh": "15m",
@@ -8156,9 +8272,9 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Garmin Stats · D1 Progressive",
+  "title": "Garmin Stats · Training Center",
   "uid": "garmin-stats-d1-progressive",
   "version": 1,
   "weekStart": "",
-  "description": "Progressive D1 conversion of the preserved 62-panel Garmin Stats reference. Five activity panels are wired to the authenticated Worker /dashboard-data endpoint. The response is limited to the most recent 500 activities and is not server-filtered by the Grafana time picker. Remaining panels are preserved visually but query-inert pending verified mappings."
+  "description": "Garmin data from Cloudflare D1 via Training Center Worker and Infinity. Original dashboard layout retained; verified connected panels progressively converted."
 }
