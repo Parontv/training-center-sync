@@ -24,3 +24,10 @@ Date: 2026-11-26
 2. Run the read-only schema discovery workflow.
 3. Review sanitized artifact with field suggestions.
 4. Select fields and units for actual mappings, then convert highest-priority panels.
+
+## Follow-on development pass (2026-11-26)
+- Improved field matching: token extraction from query references and ranking by exact field path, dataset, and panel title signals.
+- Added synthetic integration test that creates a fixture snapshot, runs the matching engine, verifies 143-target output and unverified status, then removes generated files.
+- Added deterministic 143-target work-priority generator that separates CORE/SECONDARY/EXPERIMENTAL tiers and query complexity.
+- Added priority-plan integrity tests and wired these into CI.
+- Latest PR #10 head verified mergeable and remains draft. No Actions results returned for this newest head.
