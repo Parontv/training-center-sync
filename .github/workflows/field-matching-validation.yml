@@ -8,6 +8,8 @@ on:
       - grafana/build-conversion-priority-plan.mjs
       - grafana/test-conversion-priority-plan.mjs
       - grafana/test-core-field-coverage-probe.mjs
+      - grafana/CORE_METRIC_EVIDENCE_CATALOG.json
+      - grafana/test-core-metric-evidence-catalog.mjs
       - grafana/probe-core-field-coverage.mjs
   push:
     branches:
@@ -37,3 +39,5 @@ jobs:
         run: node grafana/test-conversion-priority-plan.mjs
       - name: Validate read-only coverage probe safeguards
         run: node grafana/test-core-field-coverage-probe.mjs
+      - name: Validate live-schema evidence catalog
+        run: node grafana/test-core-metric-evidence-catalog.mjs
